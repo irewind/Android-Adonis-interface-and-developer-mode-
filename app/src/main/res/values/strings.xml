@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">IRewind</string>
+    <string name="app_name">iRewind</string>
     <string name="title_activity_irsplash">IRSplashActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -10,5 +10,6 @@
     <string name="title_activity_irforgot_password">Recover password</string>
     <string name="login_sign_up"><u>Sign up</u></string>
     <string name="title_activity_irregister">IRRegisterActivity</string>
+    <string name="action_sign_in_google">Sign in with Google</string>
 
 </resources>

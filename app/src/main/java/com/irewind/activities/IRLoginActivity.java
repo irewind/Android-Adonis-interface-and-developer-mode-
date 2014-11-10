@@ -2,28 +2,23 @@ package com.irewind.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 
-import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.view.WindowCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -35,7 +30,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,16 +48,6 @@ import butterknife.InjectView;
  */
 public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -73,10 +57,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @InjectView(R.id.password) EditText mPasswordView;
     @InjectView(R.id.email_login_form) View mEmailLoginFormView;
     @InjectView(R.id.plus_sign_in_button) SignInButton mPlusSignInButton;
-    @InjectView(R.id.plus_sign_out_buttons) View mSignOutButtons;
     @InjectView(R.id.email_sign_in_button) Button mSignButton;
     @InjectView(R.id.forgot_password) TextView mForgotPassword;
     @InjectView(R.id.register) TextView mRegister;
+    @InjectView(R.id.email_sign_in_facebook) Button mSignFacebook;
+    @InjectView(R.id.email_sign_in_google) Button mSignGoogle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +92,22 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         mSignButton.setOnClickListener(this);
         mForgotPassword.setOnClickListener(this);
         mRegister.setOnClickListener(this);
+        mSignFacebook.setOnClickListener(this);
+        mSignGoogle.setOnClickListener(this);
 
+        final View activityRootView = findViewById(R.id.activityRoot);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+                            findViewById(R.id.media).setVisibility(View.GONE);
+                        } else {
+                            findViewById(R.id.media).setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -126,6 +126,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             case R.id.register:
                 Intent intentRegister = new Intent(this, IRRegisterActivity.class);
                 startActivity(intentRegister);
+                break;
+            case R.id.email_sign_in_google:
+                mPlusSignInButton.performClick();
+                break;
+            case R.id.email_sign_in_facebook:
                 break;
         }
     }
@@ -201,56 +206,31 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     /**
      * Shows the progress UI and hides the login form.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
             });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override
     protected void onPlusClientSignIn() {
         //Set up sign out and disconnect buttons.
-        Button signOutButton = (Button) findViewById(R.id.plus_sign_out_button);
-        signOutButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
-        Button disconnectButton = (Button) findViewById(R.id.plus_disconnect_button);
-        disconnectButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                revokeAccess();
-            }
-        });
     }
 
     @Override
@@ -263,8 +243,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         //TODO: Update this logic to also handle the user logged in by email.
         boolean connected = getPlusClient().isConnected();
 
-        mSignOutButtons.setVisibility(connected ? View.VISIBLE : View.GONE);
-        mPlusSignInButton.setVisibility(connected ? View.GONE : View.VISIBLE);
+//        mPlusSignInButton.setVisibility(connected ? View.GONE : View.VISIBLE);
         mEmailLoginFormView.setVisibility(connected ? View.GONE : View.VISIBLE);
     }
 
@@ -367,14 +346,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
             }
 
             // TODO: register the new account here.

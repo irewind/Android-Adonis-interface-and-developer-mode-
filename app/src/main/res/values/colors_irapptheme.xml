@@ -3,4 +3,6 @@
     <color name="irapptheme_color">#ffffff</color>
     <color name="irapptheme_color_hint">#E6E6E6</color>
     <color name="irapptheme_color_pressed">#999999</color>
+    <color name="color_facebook">#46629E</color>
+    <color name="color_google">#4986E7</color>
 </resources>
