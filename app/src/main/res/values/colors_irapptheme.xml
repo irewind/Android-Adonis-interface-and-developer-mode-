@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="irapptheme_color">#ffffff</color>
+    <color name="irapptheme_color_hint">#E6E6E6</color>
+    <color name="irapptheme_color_pressed">#999999</color>
+</resources>
