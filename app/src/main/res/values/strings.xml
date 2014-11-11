@@ -23,5 +23,6 @@
     <string name="title_activity_irconfirm_change">IRConfirmChangeActivity</string>
     <string name="confirmation_email">Confirmation email sent</string>
     <string name="title_activity_irtab">IRTabActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

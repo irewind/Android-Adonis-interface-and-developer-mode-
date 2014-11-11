@@ -20,8 +20,6 @@ public class IRSplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-//        getSupportActionBar().hide();
         setContentView(R.layout.activity_irsplash);
 
         mContext = this;
