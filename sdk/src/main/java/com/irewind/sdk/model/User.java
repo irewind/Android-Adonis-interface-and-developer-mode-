@@ -27,8 +27,14 @@ public class User {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("authProvider")
+    private String authProvider;
+
     @SerializedName("role")
     private String role;
+
+    @SerializedName("picture")
+    private String picture;
 
     @SerializedName("lastLoginDate")
     private Date lastLoginDate;
@@ -57,12 +63,16 @@ public class User {
         return createdDate;
     }
 
-    public String getStatus() {
-        return status;
+    public String getAuthProvider() {
+        return authProvider;
     }
 
     public String getRole() {
         return role;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 
     public Date getLastLoginDate() {
@@ -79,7 +89,9 @@ public class User {
                 ", fullname='" + fullname + '\'' +
                 ", createdDate=" + createdDate +
                 ", status='" + status + '\'' +
+                ", authProvider='" + authProvider + '\'' +
                 ", role='" + role + '\'' +
+                ", picture='" + picture + '\'' +
                 ", lastLoginDate=" + lastLoginDate +
                 '}';
     }

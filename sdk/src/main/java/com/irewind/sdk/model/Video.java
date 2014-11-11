@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class Video {
+public class Video extends BaseResponse {
 
     @SerializedName("videoId")
     private String videoId;
@@ -106,6 +106,13 @@ public class Video {
 
     @Override
     public String toString() {
+        if (super.getError() != null) {
+            return "Video{" +
+                    "error='" + super.getError() + '\'' +
+                    ", errorDescription='" + super.getErrorDescription() + '\'' +
+                    '}';
+        }
+
         return "Video{" +
                 "videoId='" + videoId + '\'' +
                 ", title='" + title + '\'' +
