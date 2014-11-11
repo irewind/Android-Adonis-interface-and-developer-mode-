@@ -32,6 +32,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    applicationVariants.all { variant ->
+
+        def apk = variant.outputFile;
+        def newName;
+
+        if (variant.buildType.name == "release") {
+            newName = apk.name.replace(".apk", "-release-irewind" + "-v" + defaultConfig.versionName + ".apk");
+        } else {
+            newName = apk.name.replace(".apk", "-irewind" + "-v" + defaultConfig.versionName + ".apk");
+        }
+
+
+        variant.outputFile = new File(apk.parentFile, newName);
+
+        if (variant.zipAlign) {
+            variant.outputFile = new File(apk.parentFile, newName.replace("-unaligned", ""));
+        }
+
+        logger.info('INFO: Set outputFile to ' + variant.outputFile + " for [" + variant.name + "]");
+    }
 }
 
 dependencies {
@@ -40,4 +60,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.jakewharton:butterknife:6.0.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.sothree.slidinguppanel:library:2.0.2'
 }

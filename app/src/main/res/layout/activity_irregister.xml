@@ -1,8 +1,223 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.irewind.activities.IRRegisterActivity"
-    android:background="@drawable/bg_app">
+    android:gravity="bottom"
+    sothree:panelHeight="68dp"
+    sothree:shadowHeight="4dp">
 
-</RelativeLayout>
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.irewind.activities.IRRegisterActivity"
+        android:background="@drawable/bg_login">
+        <!-- Login progress -->
+        <ProgressBar
+            android:id="@+id/login_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+
+        <ScrollView
+            android:id="@+id/login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/media"
+            android:layout_alignParentTop="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/email_login_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin">
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="@dimen/login_logo_size"
+                        android:layout_height="@dimen/login_logo_size"
+                        android:src="@drawable/logo"
+                        android:layout_marginTop="@dimen/login_logo_top"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center" />
+
+                    <EditText
+                        android:id="@+id/first"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/first_name"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:textColor="@color/irapptheme_color"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_marginTop="15dp"
+                        android:nextFocusDown="@+id/last"
+                        android:textColorHint="@color/irapptheme_color_hint" />
+
+                    <EditText
+                        android:id="@+id/last"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/last_name"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:textColor="@color/irapptheme_color"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_marginTop="10dp"
+                        android:nextFocusDown="@+id/email"
+                        android:textColorHint="@color/irapptheme_color_hint" />
+
+                    <EditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:layout_marginTop="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/irapptheme_color"
+                        android:nextFocusDown="@+id/password"
+                        android:textColorHint="@color/irapptheme_color_hint" />
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_password"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:textColor="@color/irapptheme_color"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_marginTop="10dp"
+                        android:textColorHint="@color/irapptheme_color_hint" />
+
+                    <Button
+                        android:id="@+id/register"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/join"
+                        android:textColor="@color/irapptheme_color"
+                        android:background="@drawable/btn_standard" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/irapptheme_color"
+                            android:textSize="16sp"
+                            android:text="Already a member?" />
+
+                        <TextView
+                            android:id="@+id/login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@drawable/ir_text_color_change"
+                            android:layout_marginLeft="5dp"
+                            android:textSize="16sp"
+                            android:text="@string/register_sign_in" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By Joining iRewind you agree to our"
+                        android:layout_gravity="center"
+                        android:textColor="@color/irapptheme_color"
+                        android:textSize="13sp"
+                        android:layout_marginTop="20dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/terms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@drawable/ir_text_color_change"
+                            android:textSize="13sp"
+                            android:text="@string/terms" />
+
+                        <TextView
+                            android:id="@+id/privacy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@drawable/ir_text_color_change"
+                            android:text="@string/policy"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="3dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="and"
+                            android:textColor="@color/irapptheme_color"
+                            android:layout_marginLeft="3dp"
+                            android:textSize="13sp"
+                            android:layout_marginRight="3dp" />
+
+                        <TextView
+                            android:id="@+id/cookie"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:textColor="@drawable/ir_text_color_change"
+                            android:text="@string/cookie" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#222">
+            <Button
+                android:id="@+id/closePanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="C"/>
+            </RelativeLayout>
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top"
+            android:visibility="visible"/>
+        </RelativeLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

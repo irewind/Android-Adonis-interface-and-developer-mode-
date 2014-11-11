@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.irewind.R;
+import com.irewind.utils.ProjectFonts;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -89,6 +91,13 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 return false;
             }
         });
+
+        mSignFacebook.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mSignGoogle.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mEmailView.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mPasswordView.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mSignButton.setTypeface(ProjectFonts.newInstance(this).getNormal());
+
         mSignButton.setOnClickListener(this);
         mForgotPassword.setOnClickListener(this);
         mRegister.setOnClickListener(this);
@@ -358,7 +367,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             showProgress(false);
 
             if (success) {
-                finish();
+                Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
+                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

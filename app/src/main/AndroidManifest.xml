@@ -41,12 +41,24 @@
             android:name="com.irewind.activities.IRForgotPasswordActivity"
             android:label="@string/title_activity_irforgot_password"
             android:screenOrientation="portrait"
-            android:theme="@style/IRAppTheme.Splash" />
+            android:theme="@style/IRAppTheme.Splash"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.irewind.activities.IRRegisterActivity"
             android:label="@string/title_activity_irregister"
             android:screenOrientation="portrait"
-            android:theme="@style/IRAppTheme.Splash"></activity>
+            android:theme="@style/IRAppTheme.Splash"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.irewind.activities.IRConfirmChangeActivity"
+            android:label="@string/title_activity_irconfirm_change"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Splash" />
+        <activity
+            android:name="com.irewind.activities.IRTabActivity"
+            android:label="@string/title_activity_irtab"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -54,8 +66,6 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="4a9d7c15ee3f03a7f1d65eaed144b5e7c1dae1ea" />
-
-
     </application>
 
 </manifest>

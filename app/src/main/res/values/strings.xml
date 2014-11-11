@@ -11,5 +11,17 @@
     <string name="login_sign_up"><u>Sign up</u></string>
     <string name="title_activity_irregister">IRRegisterActivity</string>
     <string name="action_sign_in_google">Sign in with Google</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="join">Join</string>
+    <string name="register_sign_in"><u>Sign in</u></string>
+    <string name="terms"><u>Terms of Service</u>,</string>
+    <string name="policy"><u>Privacy Policy</u></string>
+    <string name="cookie"><u>Cookie Policy</u></string>
+    <string name="submit">Submit</string>
+    <string name="forgot_info">Please enter the email address you registered with. We will send you an e-mail with instructions for changing your password.</string>
+    <string name="title_activity_irconfirm_change">IRConfirmChangeActivity</string>
+    <string name="confirmation_email">Confirmation email sent</string>
+    <string name="title_activity_irtab">IRTabActivity</string>
 
 </resources>
