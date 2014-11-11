@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class AccessToken extends BaseResponse {
     @SerializedName("access_token")
-    private String accessToken;
+    private String currentToken;
 
     @SerializedName("token_type")
     private String tokenType;
@@ -18,8 +18,8 @@ public class AccessToken extends BaseResponse {
     @SerializedName("scope")
     private String scope;
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getCurrentToken() {
+        return currentToken;
     }
 
     public String getTokenType() {
@@ -48,7 +48,7 @@ public class AccessToken extends BaseResponse {
         }
 
         return "AccessToken{" +
-                "accessToken='" + accessToken + '\'' +
+                "currentToken='" + currentToken + '\'' +
                 ", tokenType='" + tokenType + '\'' +
                 ", refreshToken='" + refreshToken + '\'' +
                 ", expiresIn=" + expiresIn +

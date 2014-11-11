@@ -1,6 +1,5 @@
 package com.irewind.sdk.api;
 
-import com.irewind.sdk.Constants;
 import com.irewind.sdk.model.AccessToken;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -37,27 +36,29 @@ public class OAuthClient extends OkClient {
     }
 
     /**
-     * Replaces the access token with the new one in the request.
+     * Replaces the header value with the new one in the request.
      * @param request Input request to modify
-     * @return An other request with the same parameters, but the replaced authorization header
+     * @param headerName header name to modify
+     * @param headerValue header value to modify
+     * @return An other request with the same parameters, but the replaced header
      */
-    private Request changeTokenInRequest(Request request){
+    private Request replaceHeaderInRequest(Request request, String headerName, String headerValue){
         List<Header> tempHeaders = request.getHeaders(); // this one is an unmodifiable list.
         List<Header> headers = new ArrayList<Header>();
         headers.addAll(tempHeaders); // this one is modifiable
         Iterator<Header> iter = headers.iterator();
-        boolean hadAuthHeader = false;
-        // we check if there was an authentication header in the original request
+        boolean hadHeader = false;
+        // we check if there was a header in the original request
         while(iter.hasNext()){
             Header h = iter.next();
-            if (h.getName().equals("Authorization")){
+            if (h.getName().equals(headerName)){
                 iter.remove();
-                hadAuthHeader = true;
+                hadHeader = true;
             }
         }
-        // if there was an authentication header, replace it with another one containing the new access token.
-        if (hadAuthHeader){
-            headers.add(new Header("Authorization", "Bearer " + accessToken.getAccessToken()));
+        // if there was a header, replace it with another one containing the new value.
+        if (hadHeader){
+            headers.add(new Header(headerName, headerValue));
         }
         // everything stays the same, except the headers
         return new Request(request.getMethod(), request.getUrl(), headers, request.getBody());
@@ -72,7 +73,7 @@ public class OAuthClient extends OkClient {
             this.accessToken = authService.refreshAccessToken(accessToken.getRefreshToken());
             if (accessToken.getError() == null) {
                 // the headers should be modified because the access token changed
-                Request newRequest = changeTokenInRequest(request);
+                Request newRequest = replaceHeaderInRequest(request, "Authorization", "Bearer " + accessToken.getCurrentToken());
                 return super.execute(newRequest);
             }
             return response;

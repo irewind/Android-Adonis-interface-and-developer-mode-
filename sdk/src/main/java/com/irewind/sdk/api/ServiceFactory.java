@@ -1,9 +1,12 @@
 package com.irewind.sdk.api;
 
-import android.util.Base64;
-
-import com.irewind.sdk.model.AccessToken;
+import com.squareup.okhttp.OkAuthenticator;
 import com.squareup.okhttp.OkHttpClient;
+
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.URL;
+import java.util.List;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -17,26 +20,31 @@ public class ServiceFactory {
     private ServiceFactory() {}
 
     public static OAuthService createOAuthService(final String baseUrl, final String clientId, final String clientSecret) {
-        final String basicAuthCredentials = Base64.encodeToString((clientId + ":" + clientSecret).getBytes(), Base64.NO_WRAP);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setAuthenticator(new OkAuthenticator() {
+            @Override
+            public Credential authenticate(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
+                return Credential.basic(clientId, clientSecret);
+            }
+
+            @Override
+            public Credential authenticateProxy(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
+                return null;
+            }
+        });
 
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
-                .setClient(new OkClient(new OkHttpClient()))
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-                        request.addHeader("Authorization", "Basic " + basicAuthCredentials);
-                    }
-                })
+                .setClient(new OkClient(okHttpClient))
                 .build();
 
         return adapter.create(OAuthService.class);
     }
 
-    public static ApiService createApiService(String baseUrl, final AccessToken accessToken, OAuthService authService) {
+    public static ApiService createApiService(String baseUrl, final String accessToken) {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
-                .setClient(new OAuthClient(new OkHttpClient(), accessToken, authService));
+                .setClient(new OkClient(new OkHttpClient()));
 
         if (accessToken != null) {
             builder.setRequestInterceptor(new RequestInterceptor() {
@@ -44,7 +52,7 @@ public class ServiceFactory {
                 public void intercept(RequestFacade request) {
                     request.addHeader("Accept", "application/json");
                     request.addHeader("Authorization", "Bearer" +
-                            " " + accessToken.getAccessToken());
+                            " " + accessToken);
                 }
             });
         }
