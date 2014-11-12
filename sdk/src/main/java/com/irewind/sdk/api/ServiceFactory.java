@@ -19,7 +19,7 @@ public class ServiceFactory {
 
     private ServiceFactory() {}
 
-    public static OAuthService createOAuthService(final String baseUrl, final String clientId, final String clientSecret) {
+    public static AuthenticationService createAuthenticationService(final String baseUrl, final String clientId, final String clientSecret) {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setAuthenticator(new OkAuthenticator() {
             @Override
@@ -38,24 +38,13 @@ public class ServiceFactory {
                 .setClient(new OkClient(okHttpClient))
                 .build();
 
-        return adapter.create(OAuthService.class);
+        return adapter.create(AuthenticationService.class);
     }
 
-    public static ApiService createApiService(String baseUrl, final String accessToken) {
+    public static ApiService createApiService(String baseUrl) {
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
                 .setClient(new OkClient(new OkHttpClient()));
-
-        if (accessToken != null) {
-            builder.setRequestInterceptor(new RequestInterceptor() {
-                @Override
-                public void intercept(RequestFacade request) {
-                    request.addHeader("Accept", "application/json");
-                    request.addHeader("Authorization", "Bearer" +
-                            " " + accessToken);
-                }
-            });
-        }
 
         RestAdapter adapter = builder.build();
 
