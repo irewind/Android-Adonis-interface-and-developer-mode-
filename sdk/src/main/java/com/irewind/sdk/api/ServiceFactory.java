@@ -19,7 +19,7 @@ public class ServiceFactory {
 
     private ServiceFactory() {}
 
-    public static AuthenticationService createAuthenticationService(final String baseUrl, final String clientId, final String clientSecret) {
+    public static AuthenticationService createAuthenticationService(final String baseURL, final String clientId, final String clientSecret) {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setAuthenticator(new OkAuthenticator() {
             @Override
@@ -34,16 +34,16 @@ public class ServiceFactory {
         });
 
         RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(baseUrl)
+                .setEndpoint(baseURL)
                 .setClient(new OkClient(okHttpClient))
                 .build();
 
         return adapter.create(AuthenticationService.class);
     }
 
-    public static ApiService createApiService(String baseUrl) {
+    public static ApiService createApiService(String baseURL) {
         RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(baseUrl)
+                .setEndpoint(baseURL)
                 .setClient(new OkClient(new OkHttpClient()));
 
         RestAdapter adapter = builder.build();

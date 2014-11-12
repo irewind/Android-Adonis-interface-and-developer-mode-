@@ -7,7 +7,7 @@ import java.util.Date;
 public class User {
 
     @SerializedName("userId")
-    private Integer id;
+    private long id;
 
     @SerializedName("email")
     private String email;
@@ -39,7 +39,7 @@ public class User {
     @SerializedName("lastLoginDate")
     private Date lastLoginDate;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 

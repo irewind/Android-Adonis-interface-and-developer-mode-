@@ -7,7 +7,7 @@ import java.util.Date;
 public class Video extends BaseResponse {
 
     @SerializedName("videoId")
-    private String videoId;
+    private long videoId;
 
     @SerializedName("title")
     private String title;
@@ -48,7 +48,7 @@ public class Video extends BaseResponse {
     @SerializedName("publicToken")
     private String publicToken;
 
-    public String getVideoId() {
+    public long getVideoId() {
         return videoId;
     }
 

@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName;
 public class Tag extends BaseResponse {
 
     @SerializedName("tagId")
-    private Integer tagId;
+    private long tagId;
 
     @SerializedName("tagName")
     private String tagName;
 
-    public Integer getTagId() {
+    public long getTagId() {
         return tagId;
     }
 
