@@ -5,12 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.irewind.R;
 
 
-public class IRSplashActivity extends Activity {
+public class IRSplashActivity extends ActionBarActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 3000;
     private Context mContext;
@@ -19,7 +20,7 @@ public class IRSplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
-
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_irsplash);
 
         mContext = this;

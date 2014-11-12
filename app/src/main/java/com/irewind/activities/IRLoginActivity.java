@@ -7,12 +7,12 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
@@ -27,6 +27,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
@@ -35,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.irewind.R;
+import com.irewind.utils.CheckUtil;
+import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
 
 import butterknife.ButterKnife;
@@ -50,6 +59,7 @@ import butterknife.InjectView;
  */
 public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
+    private static final String TAG = "Login";
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -64,12 +74,26 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @InjectView(R.id.register) TextView mRegister;
     @InjectView(R.id.email_sign_in_facebook) Button mSignFacebook;
     @InjectView(R.id.email_sign_in_google) Button mSignGoogle;
+    @InjectView(R.id.facebook_sign_in_button)
+    LoginButton mFacebookLogin;
+
+    private UiLifecycleHelper uiHelper;
+    private Session.StatusCallback callback = new Session.StatusCallback() {
+        @Override
+        public void call(final Session session, final SessionState state, final Exception exception) {
+            onSessionStateChange(session, state, exception);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
         ButterKnife.inject(this);
+
+        uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstanceState);
 
         if (supportsGooglePlayServices()) {
             // Set a listener to connect the user when the G+ button is clicked.
@@ -120,6 +144,59 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Session session = Session.getActiveSession();
+        if (session != null &&
+                (session.isOpened() || session.isClosed()) ) {
+            onSessionStateChange(session, session.getState(), null);
+        }
+        uiHelper.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+        if (state.isOpened()) {
+            Log.i(TAG, "Logged in...");
+            Request request = Request.newMeRequest(session,
+                    new Request.GraphUserCallback() {
+                        // callback after Graph API response with user object
+
+                        @Override
+                        public void onCompleted(GraphUser user,
+                                                Response response) {
+                            // TODO Auto-generated method stub
+                            if (user != null && user.asMap() != null && user.asMap().get("email") != null) {
+
+                            } else {
+
+                            }
+                        }
+                    });
+            Request.executeBatchAsync(request);
+        } else if (state.isClosed()) {
+            Log.i(TAG, "Logged out...");
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.plus_sign_in_button:
@@ -140,6 +217,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 mPlusSignInButton.performClick();
                 break;
             case R.id.email_sign_in_facebook:
+                mFacebookLogin.performClick();
                 break;
         }
     }
@@ -170,22 +248,22 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         boolean cancel = false;
         View focusView = null;
 
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!CheckUtil.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password)){
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!CheckUtil.isPasswordValid(password)){
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
             cancel = true;
         }
 
@@ -200,16 +278,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**

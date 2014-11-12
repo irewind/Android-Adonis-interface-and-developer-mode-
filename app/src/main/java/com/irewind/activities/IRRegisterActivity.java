@@ -1,23 +1,23 @@
 package com.irewind.activities;
 
-import android.app.Activity;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.irewind.R;
-import com.irewind.utils.Log;
+import com.irewind.utils.CheckUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRRegisterActivity extends Activity implements View.OnClickListener {
+public class IRRegisterActivity extends ActionBarActivity implements View.OnClickListener {
 
     @InjectView(R.id.login_progress)
     View mProgressView;
@@ -29,6 +29,8 @@ public class IRRegisterActivity extends Activity implements View.OnClickListener
     EditText mEmail;
     @InjectView(R.id.password)
     EditText mPassword;
+    @InjectView(R.id.confirm)
+    EditText mConfirm;
     @InjectView(R.id.sliding_layout)
     SlidingUpPanelLayout mSlidingUpLayout;
     @InjectView(R.id.terms)
@@ -39,10 +41,15 @@ public class IRRegisterActivity extends Activity implements View.OnClickListener
     TextView mCookie;
     @InjectView(R.id.closePanel)
     Button mClosePanel;
+    @InjectView(R.id.register)
+    Button mRegister;
+    @InjectView(R.id.login_form)
+    View mRegisterForm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_irregister);
         ButterKnife.inject(this);
 
@@ -50,6 +57,7 @@ public class IRRegisterActivity extends Activity implements View.OnClickListener
         mPrivacy.setOnClickListener(this);
         mCookie.setOnClickListener(this);
         mClosePanel.setOnClickListener(this);
+        mRegister.setOnClickListener(this);
 
         mSlidingUpLayout.setPanelHeight(0);
         mSlidingUpLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -96,7 +104,102 @@ public class IRRegisterActivity extends Activity implements View.OnClickListener
                 mSlidingUpLayout.setSlidingEnabled(true);
                 mSlidingUpLayout.collapsePanel();
                 break;
+            case R.id.register:
+                attemptRegister();
+                break;
         }
+    }
+
+    private void attemptRegister() {
+//        if (mAuthTask != null) {
+//            return;
+//        }
+
+        // Reset errors.
+        mEmail.setError(null);
+        mFirst.setError(null);
+        mLast.setError(null);
+        mPassword.setError(null);
+        mConfirm.setError(null);
+
+        // Store values at the time of the login attempt.
+        String email = mEmail.getText().toString();
+        String password = mPassword.getText().toString();
+        String confirm = mConfirm.getText().toString();
+        String firstname = mFirst.getText().toString();
+        String lastname = mLast.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(firstname)){
+            mFirst.setError(getString(R.string.error_field_required));
+            focusView = mFirst;
+            cancel = true;
+        } else if (TextUtils.isEmpty(lastname)){
+            mLast.setError(getString(R.string.error_field_required));
+            focusView = mLast;
+            cancel = true;
+        } else if (TextUtils.isEmpty(email)) {
+            mEmail.setError(getString(R.string.error_field_required));
+            focusView = mEmail;
+            cancel = true;
+        } else if (!CheckUtil.isEmailValid(email)) {
+            mEmail.setError(getString(R.string.error_invalid_email));
+            focusView = mEmail;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password)){
+            mPassword.setError(getString(R.string.error_field_required));
+            focusView = mPassword;
+            cancel = true;
+        } else if (!CheckUtil.isPasswordValid(password)){
+            mPassword.setError(getString(R.string.error_invalid_password));
+            focusView = mPassword;
+            cancel = true;
+        } else if (!CheckUtil.isPasswordValid(password, confirm)){
+            mConfirm.setError(getString(R.string.error_match));
+            focusView = mConfirm;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+//            showProgress(true);
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    public void showProgress(final boolean show) {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+        mRegisterForm.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override

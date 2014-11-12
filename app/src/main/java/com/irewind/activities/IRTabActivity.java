@@ -1,10 +1,10 @@
 package com.irewind.activities;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +21,7 @@ import at.markushi.ui.CircleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRTabActivity extends Activity implements View.OnClickListener{
+public class IRTabActivity extends ActionBarActivity implements View.OnClickListener{
 
     @InjectView(R.id.circle)
     CircleButton mCircleButton;
@@ -34,14 +34,17 @@ public class IRTabActivity extends Activity implements View.OnClickListener{
     @InjectView(R.id.more)
     ImageButton mMore;
 
+    private Fragment mLibraryFragment, mPeopleFragment, mAccountFragment, mMoreFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_irtab);
         ButterKnife.inject(this);
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, IRLibraryFragment.newInstance())
+            mLibraryFragment = IRLibraryFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, mLibraryFragment)
                     .disallowAddToBackStack()
                     .commit();
             mLibrary.setSelected(true);
@@ -54,50 +57,39 @@ public class IRTabActivity extends Activity implements View.OnClickListener{
         mCircleButton.setOnClickListener(this);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_irtab, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.library:
                 if(switchSelection(mLibrary)){
-                    switchFragment(IRLibraryFragment.newInstance());
+                    if (mLibraryFragment == null){
+                        mLibraryFragment = IRLibraryFragment.newInstance();
+                    }
+                    switchFragment(mLibraryFragment);
                 }
                 break;
             case R.id.people:
                 if(switchSelection(mPeople)){
-                    switchFragment(IRPeopleFragment.newInstance());
+                    if (mPeopleFragment == null){
+                        mPeopleFragment = IRPeopleFragment.newInstance();
+                    }
+                    switchFragment(mPeopleFragment);
                 }
                 break;
             case R.id.account:
                 if(switchSelection(mAccount)){
-                    switchFragment(IRAccountFragment.newInstance());
+                    if (mAccountFragment == null){
+                        mAccountFragment = IRAccountFragment.newInstance();
+                    }
+                    switchFragment(mAccountFragment);
                 }
                 break;
             case R.id.more:
                 if(switchSelection(mMore)){
-                    switchFragment(IRMoreFragment.newInstance());
+                    if (mMoreFragment == null){
+                        mMoreFragment = IRAccountFragment.newInstance();
+                    }
+                    switchFragment(mMoreFragment);
                 }
                 break;
             case R.id.circle:
@@ -142,10 +134,9 @@ public class IRTabActivity extends Activity implements View.OnClickListener{
     }
 
     private void switchFragment(Fragment fragment){
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.setCustomAnimations(0, R.anim.enter);
-        ft.add(R.id.container, fragment)
+        ft.replace(R.id.container, fragment)
           .disallowAddToBackStack()
           .commit();
     }

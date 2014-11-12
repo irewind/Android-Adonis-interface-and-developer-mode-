@@ -5,4 +5,11 @@
     android:background="#f3a"
     tools:context="com.irewind.fragments.IRMoreFragment">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TEST TEST TEST"
+        android:layout_centerInParent="true"
+        android:textColor="@color/irapptheme_color"/>
+
 </RelativeLayout>

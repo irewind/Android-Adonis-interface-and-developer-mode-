@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="IRAppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="IRAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:editTextBackground">@drawable/irapptheme_edit_text_holo_light</item>
     </style>
@@ -19,6 +19,10 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:maxWidth">600dp</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    </style>
+
+    <style name="IREditText" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/irapptheme_edit_text_holo_light</item>
     </style>
 
 </resources>

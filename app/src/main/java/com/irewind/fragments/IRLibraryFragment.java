@@ -1,14 +1,24 @@
 package com.irewind.fragments;
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.irewind.R;
 
+import butterknife.ButterKnife;
+import com.jazzyviewpager.JazzyViewPager;
+
 public class IRLibraryFragment extends Fragment {
+
+    private JazzyViewPager mJazzyViewPager;
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
@@ -22,6 +32,7 @@ public class IRLibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -29,5 +40,85 @@ public class IRLibraryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_irlibrary, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+
+        mJazzyViewPager = (JazzyViewPager) view.findViewById(R.id.jazzy);
+        setupJazziness(JazzyViewPager.TransitionEffect.ZoomIn);
+    }
+
+    private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
+        mJazzyViewPager.setTransitionEffect(effect);
+        mJazzyViewPager.setAdapter(new SlidePagerAdapter(getChildFragmentManager()));
+        mJazzyViewPager.setPageMargin(0);
+        mJazzyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if (i == 0){
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(0);
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                } else {
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+    }
+
+    public class SlidePagerAdapter extends FragmentPagerAdapter {
+        public SlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+
+        @Override
+        public Fragment getItem(int position) {
+			/*
+			 * IMPORTANT: This is the point. We create a RootFragment acting as
+			 * a container for other fragments
+			 */
+            Fragment fragment;
+            if (position == 0) {
+                fragment = new IRMoreFragment().newInstance();
+            } else {
+                fragment = IRPeopleFragment.newInstance();
+            }
+
+            mJazzyViewPager.setObjectForPosition(fragment, position);
+
+            return fragment;
+        }
+
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mJazzyViewPager.setCurrentItem(0, true);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -69,7 +69,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:layout_marginTop="10dp"
-                    android:textColorHint="@color/irapptheme_color_hint" />
+                    android:textColorHint="@color/irapptheme_color_hint"
+                    style="@style/IREditText"/>
 
                 <TextView
                     android:id="@+id/forgot_password"
@@ -153,6 +154,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <com.facebook.widget.LoginButton
+        android:id="@+id/facebook_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 </RelativeLayout>
 
 

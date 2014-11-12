@@ -63,7 +63,8 @@
                         android:singleLine="true"
                         android:layout_marginTop="15dp"
                         android:nextFocusDown="@+id/last"
-                        android:textColorHint="@color/irapptheme_color_hint" />
+                        android:textColorHint="@color/irapptheme_color_hint"
+                        style="@style/IREditText" />
 
                     <EditText
                         android:id="@+id/last"
@@ -78,7 +79,8 @@
                         android:singleLine="true"
                         android:layout_marginTop="10dp"
                         android:nextFocusDown="@+id/email"
-                        android:textColorHint="@color/irapptheme_color_hint" />
+                        android:textColorHint="@color/irapptheme_color_hint"
+                        style="@style/IREditText" />
 
                     <EditText
                         android:id="@+id/email"
@@ -91,7 +93,8 @@
                         android:singleLine="true"
                         android:textColor="@color/irapptheme_color"
                         android:nextFocusDown="@+id/password"
-                        android:textColorHint="@color/irapptheme_color_hint" />
+                        android:textColorHint="@color/irapptheme_color_hint"
+                        style="@style/IREditText" />
 
                     <EditText
                         android:id="@+id/password"
@@ -105,7 +108,23 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_marginTop="10dp"
-                        android:textColorHint="@color/irapptheme_color_hint" />
+                        android:textColorHint="@color/irapptheme_color_hint"
+                        style="@style/IREditText" />
+
+                    <EditText
+                        android:id="@+id/confirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/confirm_password"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:textColor="@color/irapptheme_color"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_marginTop="10dp"
+                        android:textColorHint="@color/irapptheme_color_hint"
+                        style="@style/IREditText" />
 
                     <Button
                         android:id="@+id/register"
@@ -199,25 +218,28 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="#222">
+
             <Button
                 android:id="@+id/closePanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="C"/>
-            </RelativeLayout>
+                android:text="C" />
+        </RelativeLayout>
+
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/top"
-            android:visibility="visible"/>
-        </RelativeLayout>
+            android:visibility="visible" />
+    </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
