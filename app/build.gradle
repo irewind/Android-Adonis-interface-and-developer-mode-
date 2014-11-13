@@ -62,6 +62,7 @@ android {
 
         logger.info('INFO: Set outputFile to ' + variant.outputFile + " for [" + variant.name + "]");
     }
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'jni/'] } }
 }
 
 dependencies {

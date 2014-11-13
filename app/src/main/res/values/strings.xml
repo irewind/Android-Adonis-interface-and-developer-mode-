@@ -44,4 +44,12 @@
 
     <string name="facebook_app_id">789867464371033</string>
     <string name="title_facebook_login">Login to Facebook</string>
+    <string name="account">Settings</string>
+    <string name="personal_data">Personal data</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
+    <string name="change">Change</string>
+    <string name="current_password">Current Password</string>
+    <string name="change_password">Change password</string>
+    <string name="new_password">New password</string>
 </resources>

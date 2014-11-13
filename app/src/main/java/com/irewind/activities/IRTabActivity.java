@@ -1,14 +1,19 @@
 package com.irewind.activities;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.irewind.R;
 import com.irewind.fragments.IRAccountFragment;
@@ -34,13 +39,30 @@ public class IRTabActivity extends ActionBarActivity implements View.OnClickList
     @InjectView(R.id.more)
     ImageButton mMore;
 
-    private Fragment mLibraryFragment, mPeopleFragment, mAccountFragment, mMoreFragment;
+    public static ImageButton abBack, abSearch;
+    public static TextView abTitle;
+
+    public static Fragment mLibraryFragment, mPeopleFragment, mAccountFragment, mMoreFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_irtab);
         ButterKnife.inject(this);
+
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.nav_bar));
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeAsUpIndicator(0);
+        View view = getLayoutInflater().inflate(R.layout.actionbar, null);
+        abTitle = (TextView) view.findViewById(R.id.title);
+        abSearch = (ImageButton) view.findViewById(R.id.btn_search);
+        abBack = (ImageButton) view.findViewById(R.id.btn_back);
+        getSupportActionBar().setCustomView(view);
+
         if (savedInstanceState == null) {
             mLibraryFragment = IRLibraryFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
@@ -55,6 +77,29 @@ public class IRTabActivity extends ActionBarActivity implements View.OnClickList
         mAccount.setOnClickListener(this);
         mMore.setOnClickListener(this);
         mCircleButton.setOnClickListener(this);
+
+        final View activityRootView = findViewById(R.id.activityRoot);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                        if (heightDiff > 160) { // if more than 100 pixels, its probably a keyboard...
+                            findViewById(R.id.tabLayout).setVisibility(View.GONE);
+                            FrameLayout v = (FrameLayout) findViewById(R.id.container);
+                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                            params.setMargins(0,0,0,0);
+                            v.setLayoutParams(params);
+                        } else {
+                            findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
+                            Resources r = IRTabActivity.this.getResources();
+                            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -20, r.getDisplayMetrics());
+                            FrameLayout v = (FrameLayout) findViewById(R.id.container);
+                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                            params.setMargins(0,0,0, px);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -87,7 +132,7 @@ public class IRTabActivity extends ActionBarActivity implements View.OnClickList
             case R.id.more:
                 if(switchSelection(mMore)){
                     if (mMoreFragment == null){
-                        mMoreFragment = IRAccountFragment.newInstance();
+                        mMoreFragment = IRMoreFragment.newInstance();
                     }
                     switchFragment(mMoreFragment);
                 }

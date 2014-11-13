@@ -2,8 +2,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#07f"
     tools:context="com.irewind.fragments.IRAccountFragment">
 
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@android:color/white">
 
+        <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_app" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+
+            <com.irewind.ui.views.RoundedImageView
+                android:id="@+id/roundedImageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_default_picture" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/roundedImageView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="asdasdasd"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="test@test.com"
+                android:textColor="#bbb"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listViewAccount"
+        android:layout_width="match_parent"
+        android:layout_height="153dp"
+        android:layout_below="@+id/top" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/listViewAccount"
+        android:layout_marginTop="10dp"/>
 </RelativeLayout>

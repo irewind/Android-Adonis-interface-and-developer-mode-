@@ -5,4 +5,7 @@
     <color name="irapptheme_color_pressed">#999999</color>
     <color name="color_facebook">#46629E</color>
     <color name="color_google">#4986E7</color>
+    <color name="account_gray">#77777E</color>
+    <color name="separator">#E5E5E5</color>
+    <color name="change_color">#117cff</color>
 </resources>

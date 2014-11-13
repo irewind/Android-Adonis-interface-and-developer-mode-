@@ -32,7 +32,6 @@ public class IRLibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -64,11 +63,9 @@ public class IRLibraryFragment extends Fragment {
             @Override
             public void onPageSelected(int i) {
                 if (i == 0){
-                    ((ActionBarActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(0);
-                    ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
                 } else {
-                    ((ActionBarActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
-                    ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                 }
             }
 
@@ -107,18 +104,6 @@ public class IRLibraryFragment extends Fragment {
         @Override
         public int getCount() {
             return 2;
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // handle item selection
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mJazzyViewPager.setCurrentItem(0, true);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 }

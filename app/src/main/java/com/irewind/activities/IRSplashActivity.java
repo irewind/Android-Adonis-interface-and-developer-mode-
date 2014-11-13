@@ -35,7 +35,7 @@ public class IRSplashActivity extends ActionBarActivity {
             public void run() {
 
                 finish();
-                Intent mainIntent = new Intent(mContext, IRLoginActivity.class);
+                Intent mainIntent = new Intent(mContext, IRTabActivity.class);
                 startActivity(mainIntent);
 
             }
