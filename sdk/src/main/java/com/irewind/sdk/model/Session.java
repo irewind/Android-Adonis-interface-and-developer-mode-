@@ -2,11 +2,11 @@ package com.irewind.sdk.model;
 
 import android.content.*;
 import android.os.*;
-import android.util.Log;
 
 import com.irewind.sdk.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.TokenCachingStrategy;
-import com.irewind.sdk.iRewindException;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.SessionRefresher;
 
 import java.io.*;
 import java.util.*;
@@ -32,36 +32,10 @@ public class Session implements Serializable {
      */
     public static final String TAG = Session.class.getCanonicalName();
 
-    /**
-     * The action used to indicate that the active session has been set.
-     */
-    public static final String ACTION_ACTIVE_SESSION_SET = "com.irewind.sdk.ACTIVE_SESSION_SET";
-
-    /**
-     * The action used to indicate that the active session has been set to null.
-     */
-    public static final String ACTION_ACTIVE_SESSION_UNSET = "com.irewind.sdk.ACTIVE_SESSION_UNSET";
-
-    /**
-     * The action used to indicate that the active session has been opened.
-     */
-    public static final String ACTION_ACTIVE_SESSION_OPENED = "com.irewind.sdk.ACTIVE_SESSION_OPENED";
-
-    /**
-     * The action used to indicate that the active session has been closed.
-     */
-    public static final String ACTION_ACTIVE_SESSION_CLOSED = "com.irewind.sdk.ACTIVE_SESSION_CLOSED";
-
-    private static final Object STATIC_LOCK = new Object();
-    private static Session activeSession;
-    private static volatile Context staticContext;
-
     // Token extension constants
     private static final int TOKEN_EXTEND_THRESHOLD_SECONDS = 24 * 60 * 60; // 1
     // day
     private static final int TOKEN_EXTEND_RETRY_SECONDS = 60 * 60; // 1 hour
-
-    private static final String SESSION_BUNDLE_SAVE_KEY = "com.irewind.sdk.Session.saveSessionKey";
 
     private SessionState state;
     private AccessToken tokenInfo;
@@ -70,6 +44,8 @@ public class Session implements Serializable {
     // This is the object that synchronizes access to state and tokenInfo
     private final Object lock = new Object();
     private TokenCachingStrategy tokenCachingStrategy;
+
+    private SessionRefresher sessionRefresher;
 
     private Session(SessionState state,
                     AccessToken tokenInfo, Date lastAttemptedTokenExtendDate) {
@@ -88,17 +64,15 @@ public class Session implements Serializable {
         this(currentContext, null, true);
     }
 
-    Session(Context context,TokenCachingStrategy tokenCachingStrategy) {
+    public Session(Context context,TokenCachingStrategy tokenCachingStrategy) {
         this(context, tokenCachingStrategy, true);
     }
 
-    Session(Context context, TokenCachingStrategy tokenCachingStrategy,
+    public  Session(Context context, TokenCachingStrategy tokenCachingStrategy,
             boolean loadTokenFromCache) {
 
-        initializeStaticContext(context);
-
         if (tokenCachingStrategy == null) {
-            tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(staticContext);
+            tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(context);
         }
 
         this.tokenCachingStrategy = tokenCachingStrategy;
@@ -166,6 +140,48 @@ public class Session implements Serializable {
         }
     }
 
+    public AccessToken getTokenInfo() {
+        synchronized (this.lock) {
+            return tokenInfo;
+        }
+    }
+
+    public void setTokenInfo(AccessToken tokenInfo) {
+        synchronized (this.lock) {
+            this.tokenInfo = tokenInfo;
+        }
+    }
+
+    public Date getLastAttemptedTokenExtendDate() {
+        synchronized (this.lock) {
+            return lastAttemptedTokenExtendDate;
+        }
+    }
+
+    public void setLastAttemptedTokenExtendDate(Date lastAttemptedTokenExtendDate) {
+        synchronized (this.lock) {
+            this.lastAttemptedTokenExtendDate = lastAttemptedTokenExtendDate;
+        }
+    }
+
+    public void setTokenCachingStrategy(TokenCachingStrategy tokenCachingStrategy) {
+        synchronized (this.lock) {
+            this.tokenCachingStrategy = tokenCachingStrategy;
+        }
+    }
+
+    public SessionRefresher getSessionRefresher() {
+        synchronized (this.lock) {
+            return sessionRefresher;
+        }
+    }
+
+    public void setSessionRefresher(SessionRefresher sessionRefresher) {
+        synchronized (this.lock) {
+            this.sessionRefresher = sessionRefresher;
+        }
+    }
+
     /**
      * <p>
      * Returns the time at which the current token will expire.
@@ -214,7 +230,6 @@ public class Session implements Serializable {
                 this.tokenCachingStrategy.save(accessToken.toBundle());
             }
 
-            final SessionState oldState = state;
             state = SessionState.OPENED;
         }
     }
@@ -255,193 +270,13 @@ public class Session implements Serializable {
         close();
     }
 
-    void extendTokenCompleted(Bundle bundle) {
-        synchronized (this.lock) {
-            final SessionState oldState = this.state;
-
-            switch (this.state) {
-                case OPENED:
-                    this.state = SessionState.OPENED_TOKEN_UPDATED;
-                    break;
-                case OPENED_TOKEN_UPDATED:
-                    break;
-                default:
-                    // Silently ignore attempts to refresh token if we are not open
-                    Log.d(TAG, "refreshToken ignored in state " + this.state);
-                    return;
-            }
-            this.tokenInfo = AccessToken.createFromBundle(bundle);
-            if (this.tokenCachingStrategy != null) {
-                this.tokenCachingStrategy.save(this.tokenInfo.toBundle());
-            }
-        }
-    }
-
-    /**
-     * Save the Session object into the supplied Bundle. This method is intended to be called from an
-     * Activity or Fragment's onSaveInstanceState method in order to preserve Sessions across Activity lifecycle events.
-     *
-     * @param session the Session to save
-     * @param bundle  the Bundle to save the Session to
-     */
-    public static final void saveSession(Session session, Bundle bundle) {
-        if (bundle != null && session != null && !bundle.containsKey(SESSION_BUNDLE_SAVE_KEY)) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try {
-                new ObjectOutputStream(outputStream).writeObject(session);
-            } catch (IOException e) {
-                throw new iRewindException("Unable to save session.", e);
-            }
-            bundle.putByteArray(SESSION_BUNDLE_SAVE_KEY, outputStream.toByteArray());
-        }
-    }
-
-    /**
-     * Restores the saved session from a Bundle, if any. Returns the restored Session or
-     * null if it could not be restored. This method is intended to be called from an Activity or Fragment's
-     * onCreate method when a Session has previously been saved into a Bundle via saveState to preserve a Session
-     * across Activity lifecycle events.
-     *
-     * @param context         the Activity or Service creating the Session, must not be null
-     * @param cachingStrategy the TokenCachingStrategy to use to load and store the token. If this is
-     *                        null, a default token cachingStrategy that stores data in
-     *                        SharedPreferences will be used
-     * @param bundle          the bundle to restore the Session from
-     * @return the restored Session, or null
-     */
-    public static final Session restoreSession(
-            Context context, TokenCachingStrategy cachingStrategy, Bundle bundle) {
-        if (bundle == null) {
-            return null;
-        }
-        byte[] data = bundle.getByteArray(SESSION_BUNDLE_SAVE_KEY);
-        if (data != null) {
-            ByteArrayInputStream is = new ByteArrayInputStream(data);
-            try {
-                Session session = (Session) (new ObjectInputStream(is)).readObject();
-                initializeStaticContext(context);
-                if (cachingStrategy != null) {
-                    session.tokenCachingStrategy = cachingStrategy;
-                } else {
-                    session.tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(context);
-                }
-                return session;
-            } catch (ClassNotFoundException e) {
-                Log.w(TAG, "Unable to restore session", e);
-            } catch (IOException e) {
-                Log.w(TAG, "Unable to restore session.", e);
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Returns the current active Session, or null if there is none.
-     *
-     * @return the current active Session, or null if there is none.
-     */
-    public static final Session getActiveSession() {
-        synchronized (Session.STATIC_LOCK) {
-            return Session.activeSession;
-        }
-    }
-
-    /**
-     * <p>
-     * Sets the current active Session.
-     * </p>
-     * <p>
-     * The active Session is used implicitly by predefined Request factory
-     * methods as well as optionally by UI controls in the sdk.
-     * </p>
-     * <p>
-     * It is legal to set this to null, or to a Session that is not yet open.
-     * </p>
-     *
-     * @param session A Session to use as the active Session, or null to indicate
-     *                that there is no active Session.
-     */
-    public static final void setActiveSession(Session session) {
-        synchronized (Session.STATIC_LOCK) {
-            if (session != Session.activeSession) {
-                Session oldSession = Session.activeSession;
-
-                if (oldSession != null) {
-                    oldSession.close();
-                }
-
-                Session.activeSession = session;
-            }
-        }
-    }
-
-    /**
-     * If a cached token is available, creates and opens the session and makes it active without any user interaction,
-     * otherwise this does nothing.
-     *
-     * @param context The Context creating this session
-     * @return The new session or null if one could not be created
-     */
-    public static Session openActiveSessionFromCache(Context context) {
-        return openActiveSession(context);
-    }
-
-    /**
-     * Opens a session based on an existing iRewind access token, and also makes this session
-     * the currently active session. This method should be used
-     * only in instances where an application has previously obtained an access token and wishes
-     * to import it into the Session/TokenCachingStrategy-based session-management system. A primary
-     * example would be an application which previously did not use the iRewind SDK for Android
-     * and implemented its own session-management scheme, but wishes to implement an upgrade path
-     * for existing users so they do not need to log in again when upgrading to a version of
-     * the app that uses the SDK. In general, this method will be called only once, when the app
-     * detects that it has been upgraded -- after that, the usual Session lifecycle methods
-     * should be used to manage the session and its associated token.
-     * <p/>
-     * No validation is done that the token, token source, or permissions are actually valid.
-     * It is the caller's responsibility to ensure that these accurately reflect the state of
-     * the token that has been passed in, or calls to the iRewind API may fail.
-     *
-     * @param context     the Context to use for creation the session
-     * @param accessToken the access token obtained from iRewind
-     * @return The new Session or null if one could not be created
-     */
-    public static Session openActiveSessionWithAccessToken(Context context, AccessToken accessToken) {
-        Session session = new Session(context, null, false);
-
-        setActiveSession(session);
-
-        return session;
-    }
-
-    private static Session openActiveSession(Context context) {
-        Session session = new Builder(context).build();
-        if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState())) {
-            setActiveSession(session);
-            return session;
-        }
-        return null;
-    }
-
-    static Context getStaticContext() {
-        return staticContext;
-    }
-
-    static void initializeStaticContext(Context currentContext) {
-        if ((currentContext != null) && (staticContext == null)) {
-            Context applicationContext = currentContext.getApplicationContext();
-            staticContext = (applicationContext != null) ? applicationContext : currentContext;
-        }
-    }
-
-    private void saveTokenToCache(AccessToken newToken) {
+    public void saveTokenToCache(AccessToken newToken) {
         if (newToken != null && tokenCachingStrategy != null) {
             tokenCachingStrategy.save(newToken.toBundle());
         }
     }
 
-    boolean shouldExtendAccessToken() {
+    public boolean shouldExtendAccessToken() {
         boolean result = false;
 
         Date now = new Date();
@@ -453,22 +288,6 @@ public class Session implements Serializable {
         }
 
         return result;
-    }
-
-    AccessToken getTokenInfo() {
-        return tokenInfo;
-    }
-
-    void setTokenInfo(AccessToken tokenInfo) {
-        this.tokenInfo = tokenInfo;
-    }
-
-    Date getLastAttemptedTokenExtendDate() {
-        return lastAttemptedTokenExtendDate;
-    }
-
-    void setLastAttemptedTokenExtendDate(Date lastAttemptedTokenExtendDate) {
-        this.lastAttemptedTokenExtendDate = lastAttemptedTokenExtendDate;
     }
 
     @Override

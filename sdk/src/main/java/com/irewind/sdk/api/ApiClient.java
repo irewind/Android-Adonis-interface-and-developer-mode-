@@ -1,11 +1,11 @@
 package com.irewind.sdk.api;
 
+import com.irewind.sdk.model.Session;
+
 public class ApiClient {
-    private AuthenticationService authenticationService;
     private ApiService apiService;
 
-    public ApiClient(final String baseURL, final String clientId, final String clientSecret) {
-        authenticationService = ServiceFactory.createAuthenticationService(baseURL, clientId, clientSecret);
+    public ApiClient(final String baseURL) {
         apiService = ServiceFactory.createApiService(baseURL);
     }
 
@@ -13,32 +13,31 @@ public class ApiClient {
         return false;
     }
 
-    public void login(String username, String password) {
-
-    }
-
-    public void register(String email,
+    public void register(Session session,
+                         String email,
                          String firstName,
                          String lastName,
                          String password) {
     }
 
-    public void loginFACEBOOK(String email,
-                        String socialId,
-                        String socialIdProvider,
-                        String firstName,
-                        String lastName,
-                        String pictureURL) {
+    public void loginFACEBOOK(Session session,
+                              String email,
+                              String socialId,
+                              String socialIdProvider,
+                              String firstName,
+                              String lastName,
+                              String pictureURL) {
 
 
     }
 
-    public void loginGOOGLE(String email,
-                        String socialId,
-                        String socialIdProvider,
-                        String firstName,
-                        String lastName,
-                        String pictureURL) {
+    public void loginGOOGLE(Session session,
+                            String email,
+                            String socialId,
+                            String socialIdProvider,
+                            String firstName,
+                            String lastName,
+                            String pictureURL) {
 
 
     }

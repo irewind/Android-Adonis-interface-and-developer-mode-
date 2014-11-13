@@ -84,11 +84,11 @@ public class AccessToken extends BaseResponse implements Serializable {
         this.lastRefreshDate = lastRefreshDate;
     }
 
-    static AccessToken createEmptyToken() {
+    public static AccessToken createEmptyToken() {
         return new AccessToken("", null, null, null, Long.MAX_VALUE, new Date());
     }
 
-    static AccessToken createFromBundle(Bundle bundle) {
+    public static AccessToken createFromBundle(Bundle bundle) {
         return new AccessToken(
                 bundle.getString(TokenCachingStrategy.TYPE_KEY),
                 bundle.getString(TokenCachingStrategy.CURRENT_TOKEN_KEY),

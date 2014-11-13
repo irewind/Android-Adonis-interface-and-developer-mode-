@@ -8,7 +8,6 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.List;
 
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
@@ -19,7 +18,7 @@ public class ServiceFactory {
 
     private ServiceFactory() {}
 
-    public static AuthenticationService createAuthenticationService(final String baseURL, final String clientId, final String clientSecret) {
+    public static SessionService createSessionService(final String baseURL, final String clientId, final String clientSecret) {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setAuthenticator(new OkAuthenticator() {
             @Override
@@ -38,7 +37,7 @@ public class ServiceFactory {
                 .setClient(new OkClient(okHttpClient))
                 .build();
 
-        return adapter.create(AuthenticationService.class);
+        return adapter.create(SessionService.class);
     }
 
     public static ApiService createApiService(String baseURL) {

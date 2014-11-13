@@ -7,7 +7,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
-public interface AuthenticationService {
+public interface SessionService {
 
     @POST("/oauth/token?grant_type=password")
     @FormUrlEncoded
