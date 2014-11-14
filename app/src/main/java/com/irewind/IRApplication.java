@@ -4,6 +4,8 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 
+import com.irewind.sdk.iRewindConfig;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class IRApplication extends Application{
@@ -26,11 +28,12 @@ public class IRApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        CalligraphyConfig.initDefault("fonts/OpenSans-Regular.ttf", R.attr.fontPath);
 
         instance = this;
 
         Injector.init(getRootModule(), this);
+
+        CalligraphyConfig.initDefault("fonts/OpenSans-Regular.ttf", R.attr.fontPath);
     }
 
     private Object getRootModule() {

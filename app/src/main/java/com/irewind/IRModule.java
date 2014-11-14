@@ -1,9 +1,14 @@
 package com.irewind;
 
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.iRewindConfig;
+import com.irewind.sdk.model.Session;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,5 +50,18 @@ public class IRModule {
          *         .setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
          */
         return new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    }
+
+    @Singleton
+    @Provides
+    iRewindConfig provideConfig() {
+        return new iRewindConfig("http://web01.dev.irewind.com/api", "web-client", "web-client-secret");
+    }
+
+    @Singleton
+    @Provides
+    SessionClient provideSessionClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
+        SessionClient sessionClient = new SessionClient(context, config, eventBus);
+        return sessionClient;
     }
 }
