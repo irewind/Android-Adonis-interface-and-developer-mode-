@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.irewind.activities.IRRegisterActivity"
-        android:background="@drawable/bg_login">
+        android:background="@drawable/bg_app">
         <!-- Login progress -->
         <ProgressBar
             android:id="@+id/login_progress"
@@ -166,7 +166,7 @@
                         android:text="By Joining iRewind you agree to our"
                         android:layout_gravity="center"
                         android:textColor="@color/irapptheme_color"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:layout_marginTop="20dp" />
 
                     <LinearLayout
@@ -181,7 +181,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@drawable/ir_text_color_change"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:text="@string/terms" />
 
                         <TextView
@@ -190,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@drawable/ir_text_color_change"
                             android:text="@string/policy"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:layout_marginLeft="3dp" />
 
                         <TextView
@@ -199,17 +199,22 @@
                             android:text="and"
                             android:textColor="@color/irapptheme_color"
                             android:layout_marginLeft="3dp"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:layout_marginRight="3dp" />
 
                         <TextView
                             android:id="@+id/cookie"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textColor="@drawable/ir_text_color_change"
                             android:text="@string/cookie" />
                     </LinearLayout>
+                    
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"/>
                 </LinearLayout>
             </RelativeLayout>
         </ScrollView>

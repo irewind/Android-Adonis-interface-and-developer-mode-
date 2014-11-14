@@ -2,10 +2,14 @@ package com.irewind.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 
 import com.irewind.R;
 import com.irewind.utils.CheckUtil;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.ButterKnife;
@@ -48,12 +53,23 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     View mRegisterForm;
     @InjectView(R.id.webView)
     WebView mWebView;
+    @InjectView(R.id.login)
+    TextView mLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irregister);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setTranslucentStatus(true);
+        }
+
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+
         ButterKnife.inject(this);
 
         mTerms.setOnClickListener(this);
@@ -61,6 +77,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         mCookie.setOnClickListener(this);
         mClosePanel.setOnClickListener(this);
         mRegister.setOnClickListener(this);
+        mLogin.setOnClickListener(this);
 
         mSlidingUpLayout.setPanelHeight(0);
         mSlidingUpLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -113,7 +130,23 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             case R.id.register:
                 attemptRegister();
                 break;
+            case R.id.login:
+                finish();
+                break;
         }
+    }
+
+    @TargetApi(19)
+    private void setTranslucentStatus(boolean on) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     private void attemptRegister() {

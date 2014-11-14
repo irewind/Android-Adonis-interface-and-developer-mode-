@@ -1,6 +1,10 @@
 package com.irewind.fragments;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -102,9 +106,48 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
                         .commit();
                 break;
             case 2:
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                String version = pInfo.versionName;
+                String uriText =
+                        "mailto:cviacob@gmail.com" + //TODO CHANGE DEFAULT EMAIL
+                                "?subject=" + "[iRewind] Feedback" +
+                                "&body=" + "iRewind version: " + version + "\n" +
+                                "Android: " + Build.VERSION.RELEASE + "\n" +
+                                "Device: " + getDeviceName() + "\n\n";
 
+                Uri uri = Uri.parse(uriText);
+
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(uri);
+                startActivity(Intent.createChooser(sendIntent, "Send email"));
                 break;
         }
     }
 
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
 }

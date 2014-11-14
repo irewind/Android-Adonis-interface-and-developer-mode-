@@ -3,6 +3,7 @@ package com.irewind.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 
+import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.IntentCompat;
@@ -19,6 +21,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -44,6 +48,7 @@ import com.irewind.R;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -89,6 +94,15 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setTranslucentStatus(true);
+        }
+
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+
         ButterKnife.inject(this);
 
         uiHelper = new UiLifecycleHelper(this, callback);
@@ -169,6 +183,19 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         uiHelper.onSaveInstanceState(outState);
+    }
+
+    @TargetApi(19)
+    private void setTranslucentStatus(boolean on) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
