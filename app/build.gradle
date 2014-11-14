@@ -73,6 +73,7 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.sothree.slidinguppanel:library:2.0.2'
     compile 'com.github.markushi:circlebutton:1.1'
+    compile project (':sdk')
     compile project(':fb')
     compile 'uk.co.chrisjenx:calligraphy:1.2.0'
 }
