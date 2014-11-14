@@ -55,6 +55,8 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     WebView mWebView;
     @InjectView(R.id.login)
     TextView mLogin;
+    @InjectView(R.id.titleSlide)
+    TextView mTitleSlide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,14 +115,17 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.terms:
                 mWebView.loadUrl(getString(R.string.terms_link));
+                mTitleSlide.setText(getString(R.string.term_cond));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.privacy:
                 mWebView.loadUrl(getString(R.string.privacy_policy));
+                mTitleSlide.setText(getString(R.string.policy_s));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.cookie:
                 mWebView.loadUrl(getString(R.string.cookie_link));
+                mTitleSlide.setText(getString(R.string.cookie_s));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.closePanel:

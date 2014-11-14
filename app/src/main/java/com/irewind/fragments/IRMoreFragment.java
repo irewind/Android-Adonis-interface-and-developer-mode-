@@ -114,11 +114,9 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
                 }
                 String version = pInfo.versionName;
                 String uriText =
-                        "mailto:cviacob@gmail.com" + //TODO CHANGE DEFAULT EMAIL
+                        "mailto:contact@irewind.com" +
                                 "?subject=" + "[iRewind] Feedback" +
-                                "&body=" + "iRewind version: " + version + "\n" +
-                                "Android: " + Build.VERSION.RELEASE + "\n" +
-                                "Device: " + getDeviceName() + "\n\n";
+                                "&body=" + "iRewind version: " + version + "\n\n";
 
                 Uri uri = Uri.parse(uriText);
 

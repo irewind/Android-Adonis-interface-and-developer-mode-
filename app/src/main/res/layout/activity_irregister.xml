@@ -228,15 +228,23 @@
             android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="#222">
+            android:background="@color/slide_up_top_color">
+
+            <TextView
+                android:id="@+id/titleSlide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"/>
 
             <Button
                 android:id="@+id/closePanel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="C" />
+                android:background="@drawable/btn_close_slide"/>
         </RelativeLayout>
 
         <WebView
