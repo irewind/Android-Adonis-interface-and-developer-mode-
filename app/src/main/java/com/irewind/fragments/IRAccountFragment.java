@@ -53,7 +53,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_iraccount, container, false);
+        return getActivity().getLayoutInflater().inflate(R.layout.fragment_iraccount, container, false);
     }
 
     @Override

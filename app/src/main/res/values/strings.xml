@@ -16,7 +16,9 @@
     <string name="join">Join</string>
     <string name="register_sign_in"><u>Sign in</u></string>
     <string name="terms"><u>Terms of Service</u>,</string>
+    <string name="term_cond">Terms &amp; conditions</string>
     <string name="policy"><u>Privacy Policy</u></string>
+    <string name="policy_s"><u>Privacy policy</u></string>
     <string name="cookie"><u>Cookie Policy</u></string>
     <string name="submit">Submit</string>
     <string name="forgot_info">Please enter the email address you registered with. We will send you an e-mail with instructions for changing your password.</string>
@@ -56,4 +58,6 @@
     <string name="comment_video_notif">Someone makes a comment on one of my videos</string>
     <string name="like_video_notif">Someone likes one of my videos</string>
     <string name="notifications">Notifications</string>
+    <string name="more">Profile</string>
+    <string name="terms_link">http://video.irewind.com/api/terms</string>
 </resources>

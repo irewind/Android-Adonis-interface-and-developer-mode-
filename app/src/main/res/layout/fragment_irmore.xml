@@ -47,7 +47,6 @@
                 android:textSize="17sp" />
 
             <TextView
-                fontPath="fonts/OpenSans-Regular.ttf"
                 android:id="@+id/emailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

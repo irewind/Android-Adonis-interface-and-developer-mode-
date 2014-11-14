@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     Button mRegister;
     @InjectView(R.id.login_form)
     View mRegisterForm;
+    @InjectView(R.id.webView)
+    WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.terms:
+                mWebView.loadUrl(getString(R.string.terms_link));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.privacy:

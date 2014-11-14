@@ -66,15 +66,15 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
         super.onResume();
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(getString(R.string.account));
+        IRTabActivity.abTitle.setText(getString(R.string.more));
     }
 
     private void setupAdapter() {
         mAccountListView.setOnItemClickListener(this);
         List<String> dataList = new ArrayList<String>();
-        dataList.add("Change personal data");
-        dataList.add("Change password");
-        dataList.add("Change notification settings");
+        dataList.add("Terms & conditions");
+        dataList.add("Privacy policy");
+        dataList.add("Feed-back form");
 
         mMoreAdapter = new IRMoreAdapter(getActivity(), R.layout.row_account_list, dataList);
         mAccountListView.setAdapter(mMoreAdapter);
@@ -84,31 +84,25 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                IRTabActivity.mAccountFragment = IRAccountPersonalFragment.newInstance();
+                IRTabActivity.mMoreFragment = IRMoreTermsFragment.newInstance();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();
                 ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft.replace(R.id.container, IRTabActivity.mAccountFragment)
+                ft.replace(R.id.container, IRTabActivity.mMoreFragment)
                         .disallowAddToBackStack()
                         .commit();
                 break;
             case 1:
-                IRTabActivity.mAccountFragment = IRAccountPasswordFragment.newInstance();
+                IRTabActivity.mMoreFragment = IRMorePrivacyFragment.newInstance();
                 FragmentManager fragmentManager2 = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft2 = fragmentManager2.beginTransaction();
                 ft2.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft2.replace(R.id.container, IRTabActivity.mAccountFragment)
+                ft2.replace(R.id.container, IRTabActivity.mMoreFragment)
                         .disallowAddToBackStack()
                         .commit();
                 break;
             case 2:
-                IRTabActivity.mAccountFragment = IRAccountNotificationFragment.newInstance();
-                FragmentManager fragmentManager3 = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft3 = fragmentManager3.beginTransaction();
-                ft3.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft3.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+
                 break;
         }
     }

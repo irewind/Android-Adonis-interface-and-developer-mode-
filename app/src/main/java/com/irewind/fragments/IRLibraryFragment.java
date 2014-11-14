@@ -47,7 +47,7 @@ public class IRLibraryFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         mJazzyViewPager = (JazzyViewPager) view.findViewById(R.id.jazzy);
-        setupJazziness(JazzyViewPager.TransitionEffect.ZoomIn);
+//        setupJazziness(JazzyViewPager.TransitionEffect.ZoomIn);
     }
 
     private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
