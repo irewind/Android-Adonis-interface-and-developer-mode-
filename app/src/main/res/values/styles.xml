@@ -25,4 +25,14 @@
         <item name="android:background">@drawable/irapptheme_edit_text_holo_light</item>
     </style>
 
+    <style name="IRSwitch">
+        <item name="android:switchMinWidth">50dp</item>
+        <item name="android:switchPadding">16dp</item>
+        <item name="android:textOff"></item>
+        <item name="android:textOn"></item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+        <item name="android:thumbTextPadding">15dp</item>
+        <item name="android:track">@drawable/switch_ir_track</item>
+    </style>
+
 </resources>

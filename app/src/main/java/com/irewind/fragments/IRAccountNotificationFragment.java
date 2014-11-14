@@ -11,15 +11,14 @@ import android.view.ViewGroup;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 
+public class IRAccountNotificationFragment extends Fragment {
 
-public class IRAccountPersonalFragment extends Fragment {
-
-    public static IRAccountPersonalFragment newInstance() {
-        IRAccountPersonalFragment fragment = new IRAccountPersonalFragment();
+    public static IRAccountNotificationFragment newInstance() {
+        IRAccountNotificationFragment fragment = new IRAccountNotificationFragment();
         return fragment;
     }
 
-    public IRAccountPersonalFragment() {
+    public IRAccountNotificationFragment() {
         // Required empty public constructor
     }
 
@@ -32,7 +31,7 @@ public class IRAccountPersonalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return getActivity().getLayoutInflater().inflate(R.layout.fragment_iraccount_personal, container, false);
+        return getActivity().getLayoutInflater().inflate(R.layout.fragment_irnotifications, container, false);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class IRAccountPersonalFragment extends Fragment {
                         .commit();
             }
         });
+        IRTabActivity.abTitle.setText(getString(R.string.notifications));
         IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(getString(R.string.personal_data));
     }
 }

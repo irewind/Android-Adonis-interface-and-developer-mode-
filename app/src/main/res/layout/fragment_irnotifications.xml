@@ -1,0 +1,152 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.irewind.fragments.IRAccountNotificationFragment"
+    tools:ignore="MissingPrefix" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_app" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+
+            <com.irewind.ui.views.RoundedImageView
+                android:id="@+id/roundedImageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_default_picture" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/roundedImageView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="asdasdasd"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                fontPath="fonts/OpenSans-Regular.ttf"/>
+
+            <TextView
+                fontPath="fonts/OpenSans-Regular.ttf"
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text="test@test.com"
+                android:textColor="#bbb"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        fontPath="fonts/OpenSans-Regular.ttf"
+        android:id="@+id/middleTitle"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@+id/top"
+        android:textColor="@color/irapptheme_color"
+        android:textSize="18sp"
+        android:background="@color/account_gray"
+        android:text="@string/notif_email"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp" />
+
+    <RelativeLayout
+        android:id="@+id/relFirst"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/middleTitle"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            fontPath="fonts/OpenSans-Regular.ttf"
+            android:id="@+id/titleCommentVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:paddingLeft="15dp"
+            android:layout_centerVertical="true"
+            android:text="@string/comment_video_notif"
+            android:layout_toLeftOf="@+id/switchNotif1"/>
+
+        <Switch
+            android:id="@+id/switchNotif1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            style="@style/IRSwitch"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separator"
+        android:layout_below="@+id/relFirst"
+        android:layout_marginTop="5dp" />
+
+    <RelativeLayout
+        android:id="@+id/relLast"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/separator1"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            fontPath="fonts/OpenSans-Regular.ttf"
+            android:id="@+id/titleLast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="15dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/switchNotif2"
+            android:text="@string/like_video_notif" />
+
+        <Switch
+            android:id="@+id/switchNotif2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            style="@style/IRSwitch"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separator"
+        android:layout_below="@+id/relLast"
+        android:layout_marginTop="5dp" />
+
+</RelativeLayout>

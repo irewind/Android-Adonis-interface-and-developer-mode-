@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:minHeight="48dp">
+    android:minHeight="48dp"
+    tools:ignore="MissingPrefix" >
 
     <TextView
         android:id="@+id/title"
@@ -11,7 +13,9 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:textSize="18sp"
-        android:textColor="@color/account_gray"/>
+        android:textColor="@color/account_gray"
+        fontPath="fonts/OpenSans-Regular.ttf"
+        tools:ignore="MissingPrefix" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -19,5 +23,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_arrow_right"/>
+        android:src="@drawable/ic_arrow_right"
+        fontPath="fonts/OpenSans-Regular.ttf"/>
 </RelativeLayout>

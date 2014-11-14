@@ -1,0 +1,15 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/switch_off_track" android:state_enabled="false"/>
+    <item android:drawable="@drawable/switch_off_track" android:state_pressed="false"/>
+    <item android:drawable="@drawable/switch_off_track" android:state_checked="false"/>
+    <item android:drawable="@drawable/switch_off_track" android:state_selected="false"/>
+    <item android:drawable="@drawable/switch_off_track" android:state_last="false"/>
+    <item android:drawable="@drawable/switch_on_track" android:state_enabled="true"/>
+    <item android:drawable="@drawable/switch_on_track" android:state_pressed="true"/>
+    <item android:drawable="@drawable/switch_on_track" android:state_checked="true"/>
+    <item android:drawable="@drawable/switch_on_track" android:state_selected="true"/>
+    <item android:drawable="@drawable/switch_on_track" android:state_last="true"/>
+    <item android:drawable="@drawable/switch_on_track"/>
+
+</selector>

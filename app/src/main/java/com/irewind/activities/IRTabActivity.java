@@ -26,7 +26,7 @@ import at.markushi.ui.CircleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRTabActivity extends ActionBarActivity implements View.OnClickListener{
+public class IRTabActivity extends IRBaseActivity implements View.OnClickListener{
 
     @InjectView(R.id.circle)
     CircleButton mCircleButton;

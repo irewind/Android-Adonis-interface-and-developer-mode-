@@ -52,4 +52,8 @@
     <string name="current_password">Current Password</string>
     <string name="change_password">Change password</string>
     <string name="new_password">New password</string>
+    <string name="notif_email">Notification emails</string>
+    <string name="comment_video_notif">Someone makes a comment on one of my videos</string>
+    <string name="like_video_notif">Someone likes one of my videos</string>
+    <string name="notifications">Notifications</string>
 </resources>

@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.irewind.fragments.IRAccountFragment">
+    tools:context="com.irewind.fragments.IRAccountFragment"
+    tools:ignore="MissingPrefix">
 
     <RelativeLayout
         android:id="@+id/top"
@@ -34,6 +35,7 @@
                 android:src="@drawable/img_default_picture" />
 
             <TextView
+                fontPath="fonts/OpenSans-Regular.ttf"
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,6 +47,7 @@
                 android:textSize="17sp" />
 
             <TextView
+                fontPath="fonts/OpenSans-Regular.ttf"
                 android:id="@+id/emailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,11 +67,12 @@
         android:layout_below="@+id/top" />
 
     <Button
+        fontPath="fonts/OpenSans-Regular.ttf"
         android:id="@+id/btnLogout"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/logout"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/listViewAccount"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 </RelativeLayout>

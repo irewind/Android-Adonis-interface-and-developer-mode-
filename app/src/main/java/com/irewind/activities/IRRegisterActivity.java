@@ -17,7 +17,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRRegisterActivity extends ActionBarActivity implements View.OnClickListener {
+public class IRRegisterActivity extends IRBaseActivity implements View.OnClickListener {
 
     @InjectView(R.id.login_progress)
     View mProgressView;

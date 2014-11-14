@@ -11,7 +11,7 @@ import com.crashlytics.android.Crashlytics;
 import com.irewind.R;
 
 
-public class IRSplashActivity extends ActionBarActivity {
+public class IRSplashActivity extends IRBaseActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 3000;
     private Context mContext;

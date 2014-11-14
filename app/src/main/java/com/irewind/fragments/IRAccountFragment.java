@@ -104,6 +104,15 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
                         .disallowAddToBackStack()
                         .commit();
                 break;
+            case 2:
+                IRTabActivity.mAccountFragment = IRAccountNotificationFragment.newInstance();
+                FragmentManager fragmentManager3 = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft3 = fragmentManager3.beginTransaction();
+                ft3.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+                ft3.replace(R.id.container, IRTabActivity.mAccountFragment)
+                        .disallowAddToBackStack()
+                        .commit();
+                break;
         }
     }
 
