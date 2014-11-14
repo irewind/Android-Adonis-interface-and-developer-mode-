@@ -60,4 +60,6 @@
     <string name="notifications">Notifications</string>
     <string name="more">Profile</string>
     <string name="terms_link">http://video.irewind.com/api/terms</string>
+    <string name="privacy_policy">http://video.irewind.com/api/privacy</string>
+    <string name="cookie_link">http://video.irewind.com/api/cookies</string>
 </resources>

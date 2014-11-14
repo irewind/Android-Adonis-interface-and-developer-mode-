@@ -99,9 +99,11 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.privacy:
+                mWebView.loadUrl(getString(R.string.privacy_policy));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.cookie:
+                mWebView.loadUrl(getString(R.string.cookie_link));
                 mSlidingUpLayout.expandPanel();
                 break;
             case R.id.closePanel:
