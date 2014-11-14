@@ -42,24 +42,27 @@ public class SessionClient implements SessionRefresher{
 
     private final Object lock = new Object();
 
+    private iRewindConfig config;
+
     private TokenCachingStrategy tokenCachingStrategy;
 
     private SessionService sessionService;
 
-    public SessionClient(Context context) {
-        this(context, null, null);
+    public SessionClient(Context context, iRewindConfig config) {
+        this(context, config, null, null);
     }
 
-    public SessionClient(Context context, TokenCachingStrategy tokenCachingStrategy) {
-        this(context, tokenCachingStrategy, null);
+    public SessionClient(Context context, iRewindConfig config, TokenCachingStrategy tokenCachingStrategy) {
+        this(context, config, tokenCachingStrategy, null);
     }
 
-    public SessionClient(Context context, EventBus eventBus) {
-        this(context, null, eventBus);
+    public SessionClient(Context context, iRewindConfig config, EventBus eventBus) {
+        this(context, config, null, eventBus);
     }
 
-    public SessionClient(Context context, TokenCachingStrategy tokenCachingStrategy, EventBus eventBus) {
+    public SessionClient(Context context, iRewindConfig config, TokenCachingStrategy tokenCachingStrategy, EventBus eventBus) {
         this.context = context;
+        this.config = config;
         this.eventBus = eventBus;
         if (eventBus == null) {
             this.eventBus = new EventBus();
@@ -71,7 +74,7 @@ public class SessionClient implements SessionRefresher{
 
         openActiveSession(context);
 
-        sessionService = ServiceFactory.createSessionService(iRewindConfig.BASE_URL, iRewindConfig.CLIENT_ID, iRewindConfig.CLIENT_SECRET);
+        sessionService = ServiceFactory.createSessionService(config.getBaseURL(), config.getClientID(), config.getClientSecret());
     }
 
     public EventBus getEventBus() {
@@ -271,11 +274,5 @@ public class SessionClient implements SessionRefresher{
             }
         }
         return null;
-    }
-
-
-    public static SessionClient sharedSessionClient(Context context) {
-        SessionClient sessionClient = new SessionClient(context);
-        return sessionClient;
     }
 }
