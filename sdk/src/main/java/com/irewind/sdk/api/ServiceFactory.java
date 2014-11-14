@@ -1,40 +1,28 @@
 package com.irewind.sdk.api;
 
-import com.squareup.okhttp.OkAuthenticator;
+import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 
-import java.io.IOException;
-import java.net.Proxy;
-import java.net.URL;
-import java.util.List;
-
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
 public class ServiceFactory {
 
-    private static final String CLIENT_ID = "web-client";
-    private static final String CLIENT_SECRET = "web-client-secret";
-
-    private ServiceFactory() {}
+    private ServiceFactory() {
+    }
 
     public static SessionService createSessionService(final String baseURL, final String clientId, final String clientSecret) {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setAuthenticator(new OkAuthenticator() {
-            @Override
-            public Credential authenticate(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
-                return Credential.basic(clientId, clientSecret);
-            }
-
-            @Override
-            public Credential authenticateProxy(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
-                return null;
-            }
-        });
-
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(baseURL)
-                .setClient(new OkClient(okHttpClient))
+                .setClient(new OkClient(new OkHttpClient()))
+                .setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestFacade request) {
+                        final String authorizationValue = Credentials.basic(clientId, clientSecret);
+                        request.addHeader("Authorization", authorizationValue);
+                    }
+                })
                 .build();
 
         return adapter.create(SessionService.class);
