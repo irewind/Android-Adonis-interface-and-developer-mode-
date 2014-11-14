@@ -57,3 +57,4 @@ project.properties
 gen-external-apklibs
 com_crashlytics_export_strings.xml
 crashlytics-build.properties
+app/src/main/assets/crashlytics-build.properties
