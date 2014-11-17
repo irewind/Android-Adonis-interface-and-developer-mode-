@@ -63,4 +63,5 @@
     <string name="terms_link">http://video.irewind.com/api/terms</string>
     <string name="privacy_policy">http://video.irewind.com/api/privacy</string>
     <string name="cookie_link">http://video.irewind.com/api/cookies</string>
+    <string name="no_people">No people found</string>
 </resources>

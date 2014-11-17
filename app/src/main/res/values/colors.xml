@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="slide_up_top_color">#999999</color>
+    <color name="text_red">#E91939</color>
+    <color name="text_gray">#A8ABAE</color>
+    <color name="divider_gray">#DEDEE2</color>
 </resources>
