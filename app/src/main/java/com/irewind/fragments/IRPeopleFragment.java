@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.R;
+import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.models.PeopleItem;
 
@@ -24,7 +25,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     @InjectView(R.id.peopleListView)
     PullToRefreshListView mPullToRefreshListView;
@@ -84,6 +85,15 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        IRTabActivity.abBack.setVisibility(View.GONE);
+        IRTabActivity.abTitle.setText(getString(R.string.people));
+        IRTabActivity.abSearch.setVisibility(View.VISIBLE);
+        IRTabActivity.abSearch.setOnClickListener(this);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //TODO On item click
     }
@@ -103,5 +113,13 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, data);
         mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_search:
+                break;
+        }
     }
 }

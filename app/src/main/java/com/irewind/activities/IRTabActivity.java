@@ -2,6 +2,7 @@ package com.irewind.activities;
 
 import android.annotation.TargetApi;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,6 +58,8 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setTranslucentStatus(true);
+            int statusBarHeight = (int) Math.ceil(80 * getResources().getDisplayMetrics().density);
+            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
         }
 
         SystemBarTintManager tintManager = new SystemBarTintManager(this);

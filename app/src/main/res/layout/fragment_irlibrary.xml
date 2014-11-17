@@ -2,11 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#612"
-    tools:context="com.irewind.fragments.IRLibraryFragment">
+    tools:context="com.irewind.fragments.IRLibraryFragment"
+    android:background="@color/background_color">
 
-    <com.jazzyviewpager.JazzyViewPager
-        android:id="@+id/jazzy"
+    <com.handmark.pulltorefresh.library.PullToRefreshGridView
+        android:id="@+id/moviesGridView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:horizontalSpacing="10dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="2"
+        android:layout_margin="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"/>
+
+    <TextView
+        android:id="@+id/emptyTextGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:text="No movies found"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

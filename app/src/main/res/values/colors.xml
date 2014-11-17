@@ -4,4 +4,7 @@
     <color name="text_red">#E91939</color>
     <color name="text_gray">#A8ABAE</color>
     <color name="divider_gray">#DEDEE2</color>
+    <color name="background_color">#E2E2E4</color>
+    <color name="gray_light_grid">#A6A6AF</color>
+    <color name="gray_dark_grid">#5D5D6A</color>
 </resources>

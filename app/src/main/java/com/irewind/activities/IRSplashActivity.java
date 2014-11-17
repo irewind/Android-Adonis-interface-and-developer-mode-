@@ -44,7 +44,7 @@ public class IRSplashActivity extends IRBaseActivity {
             public void run() {
 
                 finish();
-                Intent mainIntent = new Intent(mContext, IRTabActivity.class);
+                Intent mainIntent = new Intent(mContext, IRLoginActivity.class);
                 startActivity(mainIntent);
 
             }
