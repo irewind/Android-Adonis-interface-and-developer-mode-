@@ -72,7 +72,7 @@ public class SessionClient implements SessionRefresher{
             this.tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(context);
         }
 
-        openActiveSession(context);
+        activeSession = openActiveSession(context);
 
         sessionService = ServiceFactory.createSessionService(config.getBaseURL(), config.getClientID(), config.getClientSecret());
     }
@@ -152,7 +152,7 @@ public class SessionClient implements SessionRefresher{
             eventBus.post(new SessionOpenedEvent());
             return session;
         }
-        return null;
+        return session;
     }
 
     /**

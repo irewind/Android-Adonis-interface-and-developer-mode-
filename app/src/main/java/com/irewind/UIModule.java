@@ -1,8 +1,9 @@
 package com.irewind;
 
-import com.facebook.LoginActivity;
 import com.irewind.activities.IRForgotPasswordActivity;
+import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRRegisterActivity;
+import com.irewind.activities.IRSplashActivity;
 import com.irewind.activities.IRTabActivity;
 
 import dagger.Module;
@@ -15,11 +16,14 @@ import dagger.Module;
         complete = false,
 
         injects = {
-                LoginActivity.class,
+                IRSplashActivity.class,
+                IRLoginActivity.class,
                 IRForgotPasswordActivity.class,
                 IRRegisterActivity.class,
                 IRTabActivity.class
-        }
+        },
+
+        library = true
 )
 
 public class UIModule {

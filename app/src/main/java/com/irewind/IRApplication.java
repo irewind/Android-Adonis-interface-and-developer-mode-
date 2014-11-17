@@ -4,8 +4,6 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 
-import com.irewind.sdk.iRewindConfig;
-
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class IRApplication extends Application{

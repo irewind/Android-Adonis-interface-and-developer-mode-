@@ -1,33 +1,33 @@
 package com.irewind.sdk.api;
 
-import com.squareup.okhttp.OkAuthenticator;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.net.Proxy;
-import java.net.URL;
-import java.util.List;
-
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
 public class ServiceFactory {
 
-    private static final String CLIENT_ID = "web-client";
-    private static final String CLIENT_SECRET = "web-client-secret";
-
     private ServiceFactory() {}
 
     public static SessionService createSessionService(final String baseURL, final String clientId, final String clientSecret) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setAuthenticator(new OkAuthenticator() {
+        okHttpClient.setAuthenticator(new Authenticator() {
             @Override
-            public Credential authenticate(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
-                return Credential.basic(clientId, clientSecret);
+            public Request authenticate(Proxy proxy, Response response) throws IOException {
+                String credential = Credentials.basic(clientId, clientSecret);
+                return response.request().newBuilder()
+                        .header("Authorization", credential)
+                        .build();
             }
 
             @Override
-            public Credential authenticateProxy(Proxy proxy, URL url, List<Challenge> challenges) throws IOException {
+            public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
                 return null;
             }
         });

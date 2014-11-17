@@ -12,8 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.SessionClient;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import javax.inject.Inject;
 
 
 public class IRSplashActivity extends IRBaseActivity {
@@ -21,11 +25,17 @@ public class IRSplashActivity extends IRBaseActivity {
     private final int SPLASH_DISPLAY_LENGTH = 3000;
     private Context mContext;
 
+    @Inject
+    SessionClient sessionClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Crashlytics.start(this);
+
+        Injector.inject(this);
+
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irsplash);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -47,9 +57,14 @@ public class IRSplashActivity extends IRBaseActivity {
             public void run() {
 
                 finish();
-                Intent mainIntent = new Intent(mContext, IRTabActivity.class);
-                startActivity(mainIntent);
-
+                if (sessionClient.getActiveSession().isOpened()) {
+                    Intent mainIntent = new Intent(mContext, IRTabActivity.class);
+                    startActivity(mainIntent);
+                }
+                else {
+                    Intent mainIntent = new Intent(mContext, IRLoginActivity.class);
+                    startActivity(mainIntent);
+                }
             }
         }, SPLASH_DISPLAY_LENGTH);
     }

@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -319,7 +318,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     }
 
     @Subscribe
-    public void onSessionOpenedEvent(SessionOpenedEvent event) {
+    public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
@@ -330,7 +329,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     }
 
     @Subscribe
-    public void onSessionOpenFailed(SessionOpenFailed event) {
+    public void onEvent(SessionOpenFailed event) {
         showProgress(false);
 
         mPasswordView.setError(getString(R.string.error_incorrect_password));

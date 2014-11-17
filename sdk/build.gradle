@@ -12,6 +12,10 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            runProguard false
+            // zipAlign false // this is default for debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -21,7 +25,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.squareup.retrofit:retrofit:1.7.1'
+
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'io.tesla.okhttp:okhttp:0.9.1'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.7.1'
 }

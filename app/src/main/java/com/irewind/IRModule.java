@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.iRewindConfig;
-import com.irewind.sdk.model.Session;
 
 import dagger.Module;
 import dagger.Provides;

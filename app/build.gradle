@@ -27,6 +27,10 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            runProguard false
+            // zipAlign false // this is default for debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -73,10 +77,11 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.sothree.slidinguppanel:library:2.0.2'
     compile 'com.github.markushi:circlebutton:1.1'
-    compile project(':sdk')
     compile project(':fb')
     compile 'uk.co.chrisjenx:calligraphy:1.2.0'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+
+    compile project(':sdk')
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
 }

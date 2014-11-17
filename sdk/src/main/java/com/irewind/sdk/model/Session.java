@@ -5,7 +5,6 @@ import android.os.*;
 
 import com.irewind.sdk.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.TokenCachingStrategy;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.SessionRefresher;
 
 import java.io.*;
