@@ -7,6 +7,10 @@ public class UserResponse extends BaseResponse {
     @SerializedName("_embedded")
     private EmbeddedUserResponse embedded;
 
+    public EmbeddedUserResponse getEmbedded() {
+        return embedded;
+    }
+
     @Override
     public String toString() {
         if (super.getError() != null) {
