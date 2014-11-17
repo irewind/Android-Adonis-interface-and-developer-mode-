@@ -63,6 +63,10 @@ public class User {
         return createdDate;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public String getAuthProvider() {
         return authProvider;
     }
@@ -77,6 +81,20 @@ public class User {
 
     public Date getLastLoginDate() {
         return lastLoginDate;
+    }
+
+    public User(long id, String email, String firstname, String lastname, String fullname, Date createdDate, String status, String authProvider, String role, String picture, Date lastLoginDate) {
+        this.id = id;
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.fullname = fullname;
+        this.createdDate = createdDate;
+        this.status = status;
+        this.authProvider = authProvider;
+        this.role = role;
+        this.picture = picture;
+        this.lastLoginDate = lastLoginDate;
     }
 
     @Override

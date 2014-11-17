@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.irewind.sdk.SharedPreferencesTokenCachingStrategy;
-import com.irewind.sdk.TokenCachingStrategy;
-import com.irewind.sdk.api.Events.SessionClosedEvent;
-import com.irewind.sdk.api.Events.SessionOpenFailed;
-import com.irewind.sdk.api.Events.SessionOpenedEvent;
+import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
+import com.irewind.sdk.api.cache.TokenCachingStrategy;
+import com.irewind.sdk.api.event.SessionClosedEvent;
+import com.irewind.sdk.api.event.SessionOpenFailed;
+import com.irewind.sdk.api.event.SessionOpenedEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -72,9 +72,9 @@ public class SessionClient implements SessionRefresher{
             this.tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(context);
         }
 
-        openActiveSession(context);
-
         sessionService = ServiceFactory.createSessionService(config.getBaseURL(), config.getClientID(), config.getClientSecret());
+
+        openActiveSession(context);
     }
 
     public EventBus getEventBus() {

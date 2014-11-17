@@ -1,9 +1,6 @@
 package com.irewind.sdk.model;
 
-import android.os.Bundle;
-
 import com.google.gson.annotations.SerializedName;
-import com.irewind.sdk.TokenCachingStrategy;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -86,27 +83,5 @@ public class AccessToken extends BaseResponse implements Serializable {
 
     public static AccessToken createEmptyToken() {
         return new AccessToken("", null, null, null, Long.MAX_VALUE, new Date());
-    }
-
-    public static AccessToken createFromBundle(Bundle bundle) {
-        return new AccessToken(
-                bundle.getString(TokenCachingStrategy.TYPE_KEY),
-                bundle.getString(TokenCachingStrategy.CURRENT_TOKEN_KEY),
-                bundle.getString(TokenCachingStrategy.REFRESH_TOKEN_KEY),
-                bundle.getString(TokenCachingStrategy.SCOPE_KEY),
-                bundle.getLong(TokenCachingStrategy.EXPIRES_IN_KEY),
-                TokenCachingStrategy.getDate(bundle, TokenCachingStrategy.LAST_REFRESH_DATE_KEY)
-        );
-    }
-
-    public Bundle toBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putString(TokenCachingStrategy.TYPE_KEY, getTokenType());
-        bundle.putString(TokenCachingStrategy.CURRENT_TOKEN_KEY, getCurrentToken());
-        bundle.putString(TokenCachingStrategy.REFRESH_TOKEN_KEY, getRefreshToken());
-        bundle.putString(TokenCachingStrategy.SCOPE_KEY, getScope());
-        bundle.putLong(TokenCachingStrategy.EXPIRES_IN_KEY, getExpiresIn());
-        TokenCachingStrategy.putDate(bundle, TokenCachingStrategy.LAST_REFRESH_DATE_KEY, getLastRefreshDate());
-        return bundle;
     }
 }

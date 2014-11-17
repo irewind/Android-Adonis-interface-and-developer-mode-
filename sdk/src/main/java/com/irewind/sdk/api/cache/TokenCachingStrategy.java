@@ -1,6 +1,9 @@
-package com.irewind.sdk;
+package com.irewind.sdk.api.cache;
 
 import android.os.Bundle;
+
+import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.util.BundleUtil;
 
 import java.util.Date;
 
@@ -57,7 +60,6 @@ public abstract class TokenCachingStrategy {
     */
     public static final String LAST_REFRESH_DATE_KEY = "com.irewind.TokenCachingStrategy.LastRefreshDate";
 
-    private static final long INVALID_BUNDLE_MILLISECONDS = Long.MIN_VALUE;
 
     /**
      * Called during Session construction to get the token state. Typically this
@@ -77,8 +79,7 @@ public abstract class TokenCachingStrategy {
      * bundle beyond the scope of this call, so the caller should keep no
      * references to the bundle to ensure that it is not modified later.
      *
-     * @param bundle
-     *            A Bundle that represents the token state to be saved.
+     * @param bundle A Bundle that represents the token state to be saved.
      */
     public abstract void save(Bundle bundle);
 
@@ -94,10 +95,9 @@ public abstract class TokenCachingStrategy {
      * Returns a boolean indicating whether a Bundle contains properties that
      * could be a valid saved token.
      *
-     * @param bundle
-     *            A Bundle to check for token information.
+     * @param bundle A Bundle to check for token information.
      * @return a boolean indicating whether a Bundle contains properties that
-     *         could be a valid saved token.
+     * could be a valid saved token.
      */
     public static boolean hasTokenInformation(Bundle bundle) {
         if (bundle == null) {
@@ -125,10 +125,8 @@ public abstract class TokenCachingStrategy {
     /**
      * Gets the cached token value from a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the token value was stored.
+     * @param bundle A Bundle in which the token value was stored.
      * @return the cached token value, or null.
-     *
      * @throws NullPointerException if the passed in Bundle is null
      */
     public static String getCurrentToken(Bundle bundle) {
@@ -141,11 +139,8 @@ public abstract class TokenCachingStrategy {
     /**
      * Puts the token value into a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the token value should be stored.
-     * @param value
-     *            The String representing the token value, or null.
-     *
+     * @param bundle A Bundle in which the token value should be stored.
+     * @param value  The String representing the token value, or null.
      * @throws NullPointerException if the passed in Bundle or token value are null
      */
     public static void putCurrentToken(Bundle bundle, String value) {
@@ -158,24 +153,21 @@ public abstract class TokenCachingStrategy {
     /**
      * Gets the cached expiration time from a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the expiration time was stored.
+     * @param bundle A Bundle in which the expiration time was stored.
      * @return the cached expiration time, or null.
      */
     public static long getExpiresIn(Bundle bundle) {
         if (bundle == null) {
             return 0;
         }
-        return bundle.getLong( EXPIRES_IN_KEY);
+        return bundle.getLong(EXPIRES_IN_KEY);
     }
 
     /**
      * Puts the expiration time into a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the expiration time should be stored.
-     * @param value
-     *            The expiration time.
+     * @param bundle A Bundle in which the expiration time should be stored.
+     * @param value  The expiration time.
      */
     public static void putExpiresIn(Bundle bundle, long value) {
         if (bundle == null) {
@@ -187,43 +179,36 @@ public abstract class TokenCachingStrategy {
     /**
      * Gets the cached last refresh date from a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the last refresh date was stored.
+     * @param bundle A Bundle in which the last refresh date was stored.
      * @return the cached last refresh Date, or null.
-     *
      * @throws NullPointerException if the passed in Bundle is null
      */
     public static Date getLastRefreshDate(Bundle bundle) {
         if (bundle == null) {
             return null;
         }
-        return getDate(bundle, LAST_REFRESH_DATE_KEY);
+        return BundleUtil.getDate(bundle, LAST_REFRESH_DATE_KEY);
     }
 
     /**
      * Puts the last refresh date into a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the last refresh date should be stored.
-     * @param value
-     *            The Date representing the last refresh date, or null.
-     *
+     * @param bundle A Bundle in which the last refresh date should be stored.
+     * @param value  The Date representing the last refresh date, or null.
      * @throws NullPointerException if the passed in Bundle or date value are null
      */
     public static void putLastRefreshDate(Bundle bundle, Date value) {
         if (bundle == null || value == null) {
             return;
         }
-        putDate(bundle, LAST_REFRESH_DATE_KEY, value);
+        BundleUtil.putDate(bundle, LAST_REFRESH_DATE_KEY, value);
     }
 
     /**
      * Gets the cached last refresh date from a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the last refresh date was stored.
+     * @param bundle A Bundle in which the last refresh date was stored.
      * @return the cached last refresh date in milliseconds since the epoch.
-     *
      * @throws NullPointerException if the passed in Bundle is null
      */
     public static long getLastRefreshMilliseconds(Bundle bundle) {
@@ -236,12 +221,9 @@ public abstract class TokenCachingStrategy {
     /**
      * Puts the last refresh date into a Bundle.
      *
-     * @param bundle
-     *            A Bundle in which the last refresh date should be stored.
-     * @param value
-     *            The long representing the last refresh date in milliseconds
-     *            since the epoch.
-     *
+     * @param bundle A Bundle in which the last refresh date should be stored.
+     * @param value  The long representing the last refresh date in milliseconds
+     *               since the epoch.
      * @throws NullPointerException if the passed in Bundle is null
      */
     public static void putLastRefreshMilliseconds(Bundle bundle, long value) {
@@ -251,20 +233,25 @@ public abstract class TokenCachingStrategy {
         bundle.putLong(LAST_REFRESH_DATE_KEY, value);
     }
 
-    public static Date getDate(Bundle bundle, String key) {
-        if (bundle == null) {
-            return null;
-        }
-
-        long n = bundle.getLong(key, INVALID_BUNDLE_MILLISECONDS);
-        if (n == INVALID_BUNDLE_MILLISECONDS) {
-            return null;
-        }
-
-        return new Date(n);
+    public static AccessToken createFromBundle(Bundle bundle) {
+        return new AccessToken(
+                bundle.getString(TokenCachingStrategy.TYPE_KEY),
+                bundle.getString(TokenCachingStrategy.CURRENT_TOKEN_KEY),
+                bundle.getString(TokenCachingStrategy.REFRESH_TOKEN_KEY),
+                bundle.getString(TokenCachingStrategy.SCOPE_KEY),
+                bundle.getLong(TokenCachingStrategy.EXPIRES_IN_KEY),
+                BundleUtil.getDate(bundle, TokenCachingStrategy.LAST_REFRESH_DATE_KEY)
+        );
     }
 
-    public static void putDate(Bundle bundle, String key, Date date) {
-        bundle.putLong(key, date.getTime());
+    public static Bundle accessTokenToBundle(AccessToken accessToken) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TokenCachingStrategy.TYPE_KEY, accessToken.getTokenType());
+        bundle.putString(TokenCachingStrategy.CURRENT_TOKEN_KEY, accessToken.getCurrentToken());
+        bundle.putString(TokenCachingStrategy.REFRESH_TOKEN_KEY, accessToken.getRefreshToken());
+        bundle.putString(TokenCachingStrategy.SCOPE_KEY, accessToken.getScope());
+        bundle.putLong(TokenCachingStrategy.EXPIRES_IN_KEY, accessToken.getExpiresIn());
+        BundleUtil.putDate(bundle, TokenCachingStrategy.LAST_REFRESH_DATE_KEY, accessToken.getLastRefreshDate());
+        return bundle;
     }
 }
