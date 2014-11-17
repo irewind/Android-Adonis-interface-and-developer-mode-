@@ -1,17 +1,25 @@
 package com.irewind.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class IRMorePrivacyFragment extends Fragment {
+
+    @InjectView(R.id.webView)
+    WebView mWebView;
 
     public static IRMorePrivacyFragment newInstance() {
         IRMorePrivacyFragment fragment = new IRMorePrivacyFragment();
@@ -32,6 +40,13 @@ public class IRMorePrivacyFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return getActivity().getLayoutInflater().inflate(R.layout.fragment_irprivacy, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        mWebView.loadUrl(getString(R.string.privacy_policy));
     }
 
     @Override

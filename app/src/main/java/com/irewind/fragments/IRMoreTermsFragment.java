@@ -1,17 +1,25 @@
 package com.irewind.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class IRMoreTermsFragment extends Fragment {
+
+    @InjectView(R.id.webView)
+    WebView mWebView;
 
     public static IRMoreTermsFragment newInstance() {
         IRMoreTermsFragment fragment = new IRMoreTermsFragment();
@@ -32,6 +40,13 @@ public class IRMoreTermsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return getActivity().getLayoutInflater().inflate(R.layout.fragment_irmore_terms, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        mWebView.loadUrl(getString(R.string.terms_link));
     }
 
     @Override
