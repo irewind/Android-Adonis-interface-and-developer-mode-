@@ -74,7 +74,7 @@ public class SessionClient implements SessionRefresher{
 
         sessionService = ServiceFactory.createSessionService(config.getBaseURL(), config.getClientID(), config.getClientSecret());
 
-        openActiveSession(context);
+        activeSession = openActiveSession(context);
     }
 
     public EventBus getEventBus() {
