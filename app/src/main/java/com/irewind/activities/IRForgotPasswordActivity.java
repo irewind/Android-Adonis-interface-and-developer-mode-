@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.utils.CheckUtil;
 
@@ -32,6 +33,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irforgot_password);
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         mSubmit.setOnClickListener(this);
     }

@@ -25,6 +25,10 @@ import de.greenrobot.event.EventBus;
                 IRApplication.class
         },
 
+        includes = {
+          UIModule.class
+        },
+
         library = true
 )
 

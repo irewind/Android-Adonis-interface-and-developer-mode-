@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.utils.CheckUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -55,6 +56,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irregister);
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         mTerms.setOnClickListener(this);
         mPrivacy.setOnClickListener(this);

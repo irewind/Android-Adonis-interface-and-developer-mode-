@@ -40,10 +40,17 @@ import com.google.android.gms.common.SignInButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.Events.SessionOpenFailed;
+import com.irewind.sdk.api.Events.SessionOpenedEvent;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -59,7 +66,6 @@ import butterknife.InjectView;
 public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
     private static final String TAG = "Login";
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     @InjectView(R.id.login_form) View mLoginFormView;
@@ -84,12 +90,16 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         }
     };
 
+    @Inject
+    protected SessionClient sessionClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
@@ -150,12 +160,18 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 (session.isOpened() || session.isClosed()) ) {
             onSessionStateChange(session, session.getState(), null);
         }
+
+        sessionClient.getEventBus().register(this);
+
         uiHelper.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        sessionClient.getEventBus().unregister(this);
+
         uiHelper.onPause();
     }
 
@@ -232,10 +248,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -274,9 +286,28 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            sessionClient.openSession(email, password);
         }
+    }
+
+    @Subscribe
+    public void onSessionOpenedEvent(SessionOpenedEvent event) {
+        showProgress(false);
+
+        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Subscribe
+    public void onSessionOpenFailed(SessionOpenFailed event) {
+        showProgress(false);
+
+        mPasswordView.setError(getString(R.string.error_incorrect_password));
+        mPasswordView.requestFocus();
     }
 
     /**
@@ -397,59 +428,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
-                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 }
 
