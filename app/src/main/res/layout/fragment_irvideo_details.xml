@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.irewind.fragments.IRVideoDetailsFragment">
+
+    <RelativeLayout
+        android:id="@+id/playerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <VideoView
+            android:id="@+id/videoView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/videoView1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/seekBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:background="@drawable/gri">
+
+
+                <fragment
+                    android:id="@+id/seek_fragment"
+                    android:name="com.irewind.player.SeekBarV3Fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageViewPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/pause" />
+    </RelativeLayout>
+
+</RelativeLayout>

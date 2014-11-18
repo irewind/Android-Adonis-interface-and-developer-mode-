@@ -98,7 +98,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
                 //TODO set search for people
             }
         };
-        IRTabActivity.searchItem.collapseActionView();
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
     }
 
     @Override

@@ -210,7 +210,8 @@
                     android:layout_marginRight="15dp"
                     android:text="@string/change"
                     android:textColor="@color/change_color"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:background="@android:color/transparent"/>
             </RelativeLayout>
 
         </RelativeLayout>

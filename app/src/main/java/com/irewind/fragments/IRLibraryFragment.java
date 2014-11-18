@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
@@ -107,7 +108,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
                 //TODO set search videos
             }
         };
-        IRTabActivity.searchItem.collapseActionView();
+
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
     }
 
     private void populate(){
@@ -140,6 +143,13 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //TODO on item click
+        IRTabActivity.mLibraryFragment = IRVideoDetailsFragment.newInstance();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+        ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
+                .disallowAddToBackStack()
+                .commit();
     }
 
     @Override

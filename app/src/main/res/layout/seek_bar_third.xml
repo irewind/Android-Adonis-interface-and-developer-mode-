@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/textViewCurent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2:16"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="10"
+        android:orientation="horizontal"
+        android:layout_marginLeft="30dp">
+
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:id="@+id/seek"
+            android:background="@color/rosu" />
+
+        <ImageView
+            android:id="@+id/imageViewCursor"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/player_button" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="@android:color/white" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textViewTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5:00"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp" />
+
+</LinearLayout>
