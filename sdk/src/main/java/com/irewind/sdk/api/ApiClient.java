@@ -14,8 +14,13 @@ import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserListEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsLoadedEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsUpdateFailEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.model.NotificationSettings;
+import com.irewind.sdk.model.NotificationSettingsResponse;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.UserResponse;
@@ -191,8 +196,7 @@ public class ApiClient {
                     eventBus.post(new UserInfoUpdateSuccessEvent());
 
                     getActiveUserByEmail(session, user.getEmail());
-                }
-                else  {
+                } else {
                     eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                 }
             }
@@ -210,8 +214,7 @@ public class ApiClient {
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new PasswordChangeSuccessEvent());
-                }
-                else  {
+                } else {
                     eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.WrongPassword));
                 }
             }
@@ -233,6 +236,101 @@ public class ApiClient {
             @Override
             public void failure(RetrofitError error) {
                 eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    // --- Notification Settings --- //
+
+    public void getUserNotificationSettings(final Session session, final User user) {
+        apiService.userNotificationSettings(authHeader(session), user.getId(), new Callback<NotificationSettingsResponse>() {
+            @Override
+            public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
+                List<NotificationSettings> results = notificationSettingsResponse.getContent();
+                if (results != null && results.size() > 0) {
+                    eventBus.post(new UserNotificationSettingsLoadedEvent(results.get(0)));
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public void toggleCommentNotifications(final Session session, boolean status) {
+        apiService.toggleCommentNotifications(authHeader(session), status, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                if (success) {
+                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                }
+                else {
+                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+            }
+        });
+    }
+
+    public void toggleShareNotifications(final Session session, boolean status) {
+        apiService.toggleShareNotifications(authHeader(session), status, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                if (success) {
+                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                }
+                else {
+                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+            }
+        });
+    }
+
+    public void toggleLikeNotifications(final Session session, boolean status) {
+        apiService.toggleLikeNotifications(authHeader(session), status, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                if (success) {
+                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                }
+                else {
+                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+            }
+        });
+    }
+
+    public void toggleMessageNotifications(final Session session, boolean status) {
+        apiService.toggleMessageNotifications(authHeader(session), status, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                if (success) {
+                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                }
+                else {
+                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
             }
         });
     }
