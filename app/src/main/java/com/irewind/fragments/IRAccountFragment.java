@@ -206,16 +206,6 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         startActivity(intent);
     }
 
-    @Subscribe
-    public void onEvent(UserInfoLoadedEvent event) {
-        updateUserInfo(event.user);
-    }
-
-    @Subscribe
-    public void onEvent(NoActiveUserEvent event) {
-        updateUserInfo(null);
-    }
-
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
@@ -285,4 +275,17 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
 
         dialog = builder.create();
     }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
 }

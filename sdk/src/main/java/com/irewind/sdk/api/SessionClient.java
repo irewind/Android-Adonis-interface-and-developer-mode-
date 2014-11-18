@@ -6,15 +6,17 @@ import android.util.Log;
 
 import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
-import com.irewind.sdk.api.event.AdminAccessTokenFailedEvent;
+import com.irewind.sdk.api.event.AdminAccessTokenFailEvent;
 import com.irewind.sdk.api.event.AdminAccessTokenSuccessEvent;
-import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
+import com.irewind.sdk.api.event.RegisterFailEvent;
+import com.irewind.sdk.api.event.RegisterSuccessEvent;
+import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
-import com.irewind.sdk.api.event.SessionOpenFailed;
+import com.irewind.sdk.api.event.SessionOpenFailedEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.UserRegisterSuccessEvent;
+import com.irewind.sdk.api.event.SocialLoginFailedEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -135,7 +137,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new AdminAccessTokenFailedEvent());
+                eventBus.post(new AdminAccessTokenFailEvent(AdminAccessTokenFailEvent.Reason.BadCredentials));
             }
         });
     }
@@ -154,7 +156,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailed());
+                eventBus.post(new SessionOpenFailedEvent(SessionOpenFailedEvent.Reason.BadCredentials));
             }
         });
     }
@@ -238,7 +240,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailed());
+                eventBus.post(new SessionOpenFailedEvent(SessionOpenFailedEvent.Reason.BadCredentials));
             }
         });
     }
@@ -311,12 +313,12 @@ public class SessionClient implements SessionRefresher {
         sessionService.addUser(email, firstName, lastName, password, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
-                eventBus.post(new UserRegisterSuccessEvent());
+                eventBus.post(new RegisterSuccessEvent());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new RegisterFailEvent(RegisterFailEvent.Reason.UserExists));
             }
         });
     }
@@ -334,7 +336,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new SocialLoginFailedEvent(SocialLoginFailedEvent.Reason.Unknown));
             }
         });
     }
@@ -352,7 +354,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new SocialLoginFailedEvent(SocialLoginFailedEvent.Reason.Unknown));
             }
         });
     }
@@ -366,7 +368,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new ResetPasswordFailedEvent());
+                eventBus.post(new ResetPasswordFailEvent(ResetPasswordFailEvent.Reason.NoUser));
             }
         });
     }

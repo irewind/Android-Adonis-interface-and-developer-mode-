@@ -26,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -37,13 +38,15 @@ import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.plus.model.people.Person;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
-import com.irewind.sdk.api.event.SessionOpenFailed;
+import com.irewind.sdk.api.event.SessionOpenFailedEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.sdk.api.event.SocialLoginFailedEvent;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
@@ -357,33 +360,19 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         });
     }
 
-    @Subscribe
-    public void onEvent(SessionOpenedEvent event) {
-        showProgress(false);
-
-        String email = mEmailView.getText().toString();
-        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
-
-        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
-        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Subscribe
-    public void onEvent(SessionOpenFailed event) {
-        showProgress(false);
-
-        mPasswordView.setError(getString(R.string.error_incorrect_password));
-        mPasswordView.requestFocus();
-    }
-
     @Override
     protected void onPlusClientSignIn() {
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
             Log.d("PLUS_INFO", " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+
+            Person person = getPlusClient().getCurrentPerson();
+            String email = person.getDisplayName();
+            String socialId = person.getId();
+            String firstname = person.getName().getGivenName();
+            String lastname = person.getName().getFamilyName();
+            String pictureUrl = person.getImage().getUrl();
+            sessionClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
         }
@@ -477,6 +466,36 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(SessionOpenedEvent event) {
+        showProgress(false);
+
+        String email = mEmailView.getText().toString();
+        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
+
+        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Subscribe
+    public void onEvent(SessionOpenFailedEvent event) {
+        showProgress(false);
+
+        Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+    }
+
+    @Subscribe
+    public void onEvent(SocialLoginFailedEvent event) {
+        showProgress(false);
+
+        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
     }
 }
 

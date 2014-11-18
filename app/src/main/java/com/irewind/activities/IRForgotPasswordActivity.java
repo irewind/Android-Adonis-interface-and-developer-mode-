@@ -12,13 +12,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
-import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
-import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
+import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -163,6 +163,8 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         });
     }
 
+    // --- Events --- //
+
     @Subscribe
     public void onEvent(ResetPasswordSuccesEvent event) {
         showProgress(false);
@@ -173,7 +175,11 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     }
 
     @Subscribe
-    public void onEvent(ResetPasswordFailedEvent event) {
+    public void onEvent(ResetPasswordFailEvent event) {
         showProgress(false);
+
+        if (event.reason == ResetPasswordFailEvent.Reason.NoUser) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
+        }
     }
 }

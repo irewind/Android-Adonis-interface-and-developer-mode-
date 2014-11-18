@@ -3,10 +3,8 @@ package com.irewind.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -15,15 +13,15 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
-import com.irewind.sdk.api.event.SessionOpenFailed;
-import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.UserRegisterSuccessEvent;
+import com.irewind.sdk.api.event.RegisterFailEvent;
+import com.irewind.sdk.api.event.RegisterSuccessEvent;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -293,10 +291,23 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         }
     }
 
+    // --- Events --- //
+
     @Subscribe
-    public void onEvent(UserRegisterSuccessEvent event) {
+    public void onEvent(RegisterSuccessEvent event) {
         showProgress(false);
 
+        Toast.makeText(getApplicationContext(), getString(R.string.registration_pending_approval), Toast.LENGTH_LONG).show();
+
         onBackPressed();
+    }
+
+    @Subscribe
+    public void onEvent(RegisterFailEvent event) {
+        if (event.reason == RegisterFailEvent.Reason.UserExists) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_account_exists), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
+        }
     }
 }

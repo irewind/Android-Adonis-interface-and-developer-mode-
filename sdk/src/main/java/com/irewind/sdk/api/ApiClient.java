@@ -6,11 +6,12 @@ import android.os.Bundle;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.PasswordChangeFailEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
-import com.irewind.sdk.api.event.UserDeleteEvent;
+import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
+import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.model.AccessToken;
@@ -186,18 +187,18 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserInfoUpdateSuccess());
+                    eventBus.post(new UserInfoUpdateSuccessEvent());
 
                     getActiveUserByEmail(session, user.getEmail());
                 }
                 else  {
-                    eventBus.post(new UserInfoUpdateFailedEvent());
+                    eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
             }
         });
     }
@@ -207,16 +208,16 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserInfoUpdateSuccess());
+                    eventBus.post(new UserInfoUpdateSuccessEvent());
                 }
                 else  {
-                    eventBus.post(new UserInfoUpdateFailedEvent());
+                    eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.WrongPassword));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
             }
         });
     }
@@ -225,7 +226,7 @@ public class ApiClient {
         apiService.deleteAccount(authHeader(session), user.getId(), new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
-                eventBus.post(new UserDeleteEvent());
+                eventBus.post(new UserDeleteSuccessEvent());
             }
 
             @Override

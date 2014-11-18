@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -19,9 +20,9 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.PasswordChangeFailEvent;
+import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -165,26 +166,6 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         apiClient.changeUserPassword(sessionClient.getActiveSession(), apiClient.getActiveUser(), currentPassword, newPassword);
     }
 
-    @Subscribe
-    public void onEvent(UserInfoLoadedEvent event) {
-        updateUserInfo(event.user);
-    }
-
-    @Subscribe
-    public void onEvent(NoActiveUserEvent event) {
-        updateUserInfo(null);
-    }
-
-    @Subscribe
-    public void onEvent(UserInfoUpdateSuccess event) {
-        showProgress(false);
-    }
-
-    @Subscribe
-    public void onEvent(UserInfoUpdateFailedEvent event) {
-        showProgress(false);
-    }
-
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
@@ -198,6 +179,34 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
             emailTextView.setText("");
+        }
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
+    @Subscribe
+    public void onEvent(PasswordChangeSuccessEvent event) {
+        showProgress(false);
+    }
+
+    @Subscribe
+    public void onEvent(PasswordChangeFailEvent event) {
+        showProgress(false);
+
+        if (event.reason == PasswordChangeFailEvent.Reason.WrongPassword) {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_incorrect_current_password), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
         }
     }
 }

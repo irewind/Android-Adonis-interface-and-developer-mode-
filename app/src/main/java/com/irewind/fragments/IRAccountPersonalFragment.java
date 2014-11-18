@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -22,10 +23,11 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
-import com.irewind.sdk.api.event.UserDeleteEvent;
+import com.irewind.sdk.api.event.UserDeleteFailEvent;
+import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
-import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
+import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -182,37 +184,6 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         apiClient.deleteUser(sessionClient.getActiveSession(), apiClient.getActiveUser());
     }
 
-    @Subscribe
-    public void onEvent(UserInfoLoadedEvent event) {
-        updateUserInfo(event.user);
-    }
-
-    @Subscribe
-    public void onEvent(NoActiveUserEvent event) {
-        updateUserInfo(null);
-    }
-
-    @Subscribe
-    public void onEvent(UserInfoUpdateFailedEvent event) {
-        showProgress(false);
-    }
-    
-    @Subscribe
-     public void onEvent(UserInfoUpdateSuccess event) {
-        showProgress(false);
-    }
-
-    @Subscribe
-    public void onEvent(UserDeleteEvent event) {
-        sessionClient.closeSessionAndClearTokenInformation();
-
-        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
-        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
@@ -231,5 +202,43 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
             mFirst.setText("");
             mLast.setText("");
         }
+    }
+
+    // --- Events ---//
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoUpdateFailEvent event) {
+        showProgress(false);
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoUpdateSuccessEvent event) {
+        showProgress(false);
+    }
+
+    @Subscribe
+    public void onEvent(UserDeleteSuccessEvent event) {
+        sessionClient.closeSessionAndClearTokenInformation();
+
+        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Subscribe
+    public void onEvent(UserDeleteFailEvent event) {
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
     }
 }

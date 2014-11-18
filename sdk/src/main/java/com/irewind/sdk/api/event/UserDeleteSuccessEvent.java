@@ -1,5 +1,5 @@
 package com.irewind.sdk.api.event;
 
-public class UserDeleteEvent {
+public class UserDeleteSuccessEvent {
 
 }

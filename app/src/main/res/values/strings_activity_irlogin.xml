@@ -8,8 +8,15 @@
     <string name="action_sign_in_short">Sign In</string>
     <string name="plus_sign_out">Switch Google+ account</string>
     <string name="plus_disconnect">Disconnect from Google+</string>
+    <string name="registration_pending_approval">Registration succeded! An activation email has been sent.</string>
+    <string name="error_account_exists">Account already registered</string>
+    <string name="error_bad_credentials">Bad credentials</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short (minimum length is 6)</string>
     <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_current_password">Current password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_email_account_missing">This email address is not registered</string>
+    <string name="error_unknown">Unknown error</string>
+
 </resources>
