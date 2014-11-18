@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -193,7 +194,12 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         if (dialog == null)
             makePictureChooser();
 
-        dialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.show();
+            }
+        }, 100);
     }
 
     private void attemptLogout() {
