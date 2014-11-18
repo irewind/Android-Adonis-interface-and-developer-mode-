@@ -2,6 +2,7 @@ package com.irewind.sdk.api;
 
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.BaseResponse;
+import com.irewind.sdk.model.ResetPasswordResponse;
 import com.irewind.sdk.model.UserResponse;
 
 import retrofit.Callback;
@@ -76,5 +77,5 @@ public interface SessionService {
     @POST("/reset")
     @FormUrlEncoded
     void resetPassword(@Field("email") String email,
-                       Callback<BaseResponse> cb);
+                       Callback<ResetPasswordResponse> cb);
 }

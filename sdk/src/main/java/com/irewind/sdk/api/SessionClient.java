@@ -21,6 +21,7 @@ import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.BaseResponse;
+import com.irewind.sdk.model.ResetPasswordResponse;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.SessionState;
 
@@ -360,15 +361,20 @@ public class SessionClient implements SessionRefresher {
     }
 
     public void resetPassword(String email) {
-        sessionService.resetPassword(email, new Callback<BaseResponse>() {
+        sessionService.resetPassword(email, new Callback<ResetPasswordResponse>() {
             @Override
-            public void success(BaseResponse o, Response response) {
-                eventBus.post(new ResetPasswordSuccesEvent());
+            public void success(ResetPasswordResponse resetPasswordResponse, Response response) {
+                if (!resetPasswordResponse.isError()) {
+                    eventBus.post(new ResetPasswordSuccesEvent());
+                }
+                else  {
+                    eventBus.post(new ResetPasswordFailEvent(ResetPasswordFailEvent.Reason.NoUser));
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new ResetPasswordFailEvent(ResetPasswordFailEvent.Reason.NoUser));
+                eventBus.post(new ResetPasswordFailEvent(ResetPasswordFailEvent.Reason.Unknown));
             }
         });
     }
