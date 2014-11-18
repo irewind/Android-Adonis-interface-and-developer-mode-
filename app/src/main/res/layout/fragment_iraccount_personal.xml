@@ -104,7 +104,7 @@
                 android:layout_toRightOf="@+id/titleFirst"
                 android:layout_marginLeft="20dp"
                 android:padding="6dp"
-                android:text="asdasdasd"
+                android:text=""
                 android:textSize="12sp"
                 android:lines="1"
                 android:singleLine="true"

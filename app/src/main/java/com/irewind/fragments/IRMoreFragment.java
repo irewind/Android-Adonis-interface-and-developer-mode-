@@ -10,27 +10,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
-import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRAccountAdapter;
 import com.irewind.adapters.IRMoreAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +41,9 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
 
     @Inject
     ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
 
     @InjectView(R.id.listViewMore)
     ListView mAccountListView;
@@ -195,10 +195,15 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void updateUserInfo(User user) {
         if (user != null) {
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                imageLoader.displayImage(user.getPicture(), profileImageView);
+            } else {
+                profileImageView.setImageResource(R.drawable.img_default_picture);
+            }
             nameTextView.setText(user.getFullname());
             emailTextView.setText(user.getEmail());
-        }
-        else {
+        } else {
+            profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
             emailTextView.setText("");
         }

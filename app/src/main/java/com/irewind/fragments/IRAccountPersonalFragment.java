@@ -19,6 +19,7 @@ import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,9 @@ public class IRAccountPersonalFragment extends Fragment {
 
     @Inject
     ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
 
     @InjectView(R.id.profileImageView)
     RoundedImageView profileImageView;
@@ -113,10 +117,17 @@ public class IRAccountPersonalFragment extends Fragment {
 
     private void updateUserInfo(User user) {
         if (user != null) {
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                imageLoader.displayImage(user.getPicture(), profileImageView);
+            }
+            else {
+                profileImageView.setImageResource(R.drawable.img_default_picture);
+            }
             nameTextView.setText(user.getFullname());
             emailTextView.setText(user.getEmail());
         }
         else {
+            profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
             emailTextView.setText("");
         }
