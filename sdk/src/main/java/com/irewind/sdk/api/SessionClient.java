@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
+import com.irewind.sdk.api.event.AdminAccessTokenFailedEvent;
+import com.irewind.sdk.api.event.AdminAccessTokenSuccessEvent;
+import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
 import com.irewind.sdk.api.event.SessionOpenFailed;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
@@ -115,6 +118,20 @@ public class SessionClient implements SessionRefresher{
                 session.setSessionRefresher(this);
             }
         }
+    }
+
+    public void getAdminAccessToken() {
+        sessionService.getAccessToken("tremend@mailinator.com", "tremend.admin", new Callback<AccessToken>() {
+            @Override
+            public void success(AccessToken accessToken, Response response) {
+                eventBus.post(new AdminAccessTokenSuccessEvent(accessToken));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new AdminAccessTokenFailedEvent());
+            }
+        });
     }
 
     public void openSession(String username, String password) {

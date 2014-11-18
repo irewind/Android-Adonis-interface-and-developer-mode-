@@ -1,5 +1,6 @@
 package com.irewind.sdk.api;
 
+import com.irewind.sdk.model.BaseResponse;
 import com.irewind.sdk.model.Tag;
 import com.irewind.sdk.model.UserResponse;
 import com.irewind.sdk.model.Video;
@@ -7,6 +8,7 @@ import com.irewind.sdk.model.Video;
 import retrofit.Callback;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.PATCH;
@@ -18,6 +20,7 @@ public interface ApiService {
     // --- USER --- //
 
     @POST("/registeriOS")
+    @FormUrlEncoded
     void addUser(@Header("Authorization") String authorization,
                  @Field("email") String email,
                  @Field("firstName") String firstName,
@@ -26,6 +29,7 @@ public interface ApiService {
                  Callback<UserResponse> cb);
 
     @POST("/rest/v2/socialMobileLogin")
+    @FormUrlEncoded
     void socialLogin(@Header("Authorization") String authorization,
                      @Field("email") String email,
                      @Field("socialId") String socialId,
@@ -36,6 +40,7 @@ public interface ApiService {
                      Callback<UserResponse> cb);
 
     @POST("/rest/v2/socialMobileLogin?provider=FACEBOOK")
+    @FormUrlEncoded
     void socialLoginFacebook(@Header("Authorization") String authorization,
                              @Field("email") String email,
                              @Field("socialId") String socialId,
@@ -45,6 +50,7 @@ public interface ApiService {
                              Callback<UserResponse> cb);
 
     @POST("/rest/v2/socialMobileLogin?provider=GOOGLE")
+    @FormUrlEncoded
     void socialLoginGoogle(@Header("Authorization") String authorization,
                            @Field("email") String email,
                            @Field("socialId") String socialId,
@@ -54,9 +60,10 @@ public interface ApiService {
                            Callback<UserResponse> cb);
 
     @POST("/reset")
+    @FormUrlEncoded
     void resetPassword(@Header("Authorization") String authorization,
                        @Field("email") String email,
-                       Callback<UserResponse> cb);
+                       Callback<BaseResponse> cb);
 
     @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
@@ -82,11 +89,13 @@ public interface ApiService {
                         Callback<UserResponse> cb);
 
     @DELETE("/user/mobileUnregister")
+    @FormUrlEncoded
     void deleteAccount(@Header("Authorization") String authorization,
-                       @Query("id") String id,
+                       @Field("id") String id,
                        Callback<UserResponse> cb);
 
     @PATCH("/user/save-info")
+    @FormUrlEncoded
     void updateUser(@Header("Authorization") String authorization,
                     @Field("id") long userID,
                     @Field("firstName") String firstName,
@@ -96,6 +105,7 @@ public interface ApiService {
                     Callback<UserResponse> cb);
 
     @PATCH("/user/save-info")
+    @FormUrlEncoded
     void updateUser(@Header("Authorization") String authorization,
                     @Field("id") long userID,
                     @Field("firstName") String firstName,
@@ -162,11 +172,13 @@ public interface ApiService {
                        @Query("pageSize") Integer size);
 
     @PATCH("/rest/video-comment")
+    @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL);
 
     @PATCH("/rest/video-comment")
+    @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
