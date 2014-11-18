@@ -6,10 +6,27 @@ import java.util.List;
 
 public class NotificationSettingsResponse extends BaseResponse {
 
-    @SerializedName("content")
-    private List<NotificationSettings> content;
+    @SerializedName("_embedded")
+    private EmbeddedResponse content;
 
-    public List<NotificationSettings> getContent() {
+    public EmbeddedResponse getContent() {
         return content;
+    }
+
+    public class EmbeddedResponse {
+
+        @SerializedName("user-notification")
+        private List<NotificationSettings> notificationSettings;
+
+        public List<NotificationSettings> getNotificationSettings() {
+            return notificationSettings;
+        }
+
+        @Override
+        public String toString() {
+            return "NotificationSettingsResponse.EmbeddedResponse{" +
+                    "notificationSettings=" + notificationSettings +
+                    '}';
+        }
     }
 }

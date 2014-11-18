@@ -246,9 +246,12 @@ public class ApiClient {
         apiService.userNotificationSettings(authHeader(session), user.getId(), new Callback<NotificationSettingsResponse>() {
             @Override
             public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
-                List<NotificationSettings> results = notificationSettingsResponse.getContent();
-                if (results != null && results.size() > 0) {
-                    eventBus.post(new UserNotificationSettingsLoadedEvent(results.get(0)));
+                NotificationSettingsResponse.EmbeddedResponse content = notificationSettingsResponse.getContent();
+                if (content != null) {
+                    List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
+                    if (results != null && results.size() > 0) {
+                        eventBus.post(new UserNotificationSettingsLoadedEvent(results.get(0)));
+                    }
                 }
             }
 
@@ -284,8 +287,7 @@ public class ApiClient {
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
-                }
-                else {
+                } else {
                     eventBus.post(new UserNotificationSettingsUpdateFailEvent());
                 }
             }
@@ -303,8 +305,7 @@ public class ApiClient {
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
-                }
-                else {
+                } else {
                     eventBus.post(new UserNotificationSettingsUpdateFailEvent());
                 }
             }
@@ -322,8 +323,7 @@ public class ApiClient {
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
-                }
-                else {
+                } else {
                     eventBus.post(new UserNotificationSettingsUpdateFailEvent());
                 }
             }
