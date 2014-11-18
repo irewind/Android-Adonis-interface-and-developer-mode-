@@ -226,11 +226,15 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     @Subscribe
     public void onEvent(UserInfoUpdateFailEvent event) {
         showProgress(false);
+
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
     }
 
     @Subscribe
     public void onEvent(UserInfoUpdateSuccessEvent event) {
         showProgress(false);
+
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.profile_update_succeded), Toast.LENGTH_LONG).show();
     }
 
     @Subscribe

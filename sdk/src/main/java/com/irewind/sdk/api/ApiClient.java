@@ -7,6 +7,7 @@ import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.PasswordChangeFailEvent;
+import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
@@ -208,7 +209,7 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserInfoUpdateSuccessEvent());
+                    eventBus.post(new PasswordChangeSuccessEvent());
                 }
                 else  {
                     eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.WrongPassword));

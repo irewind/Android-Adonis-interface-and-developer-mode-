@@ -10,6 +10,8 @@
     <string name="plus_disconnect">Disconnect from Google+</string>
     <string name="registration_pending_approval">Registration succeded! An activation email has been sent.</string>
     <string name="reset_password_succeded">A reset link has been sent to your email address</string>
+    <string name="change_password_succeded">Password updated!</string>
+    <string name="profile_update_succeded">Profile updated!</string>
     <string name="error_account_exists">Account already registered</string>
     <string name="error_bad_credentials">Bad credentials</string>
     <string name="error_invalid_email">This email address is invalid</string>

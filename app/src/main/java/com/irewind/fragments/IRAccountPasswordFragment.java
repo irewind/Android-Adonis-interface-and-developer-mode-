@@ -204,6 +204,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     @Subscribe
     public void onEvent(PasswordChangeSuccessEvent event) {
         showProgress(false);
+
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.change_password_succeded), Toast.LENGTH_LONG).show();
     }
 
     @Subscribe
