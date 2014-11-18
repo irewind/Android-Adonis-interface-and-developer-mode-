@@ -1,14 +1,15 @@
 package com.irewind.sdk.model;
 
-import android.content.*;
-import android.os.*;
+import android.content.Context;
+import android.os.Bundle;
 
-import com.irewind.sdk.SharedPreferencesTokenCachingStrategy;
-import com.irewind.sdk.TokenCachingStrategy;
 import com.irewind.sdk.api.SessionRefresher;
+import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
+import com.irewind.sdk.api.cache.TokenCachingStrategy;
+import com.irewind.sdk.util.BundleUtil;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -63,12 +64,12 @@ public class Session implements Serializable {
         this(currentContext, null, true);
     }
 
-    public Session(Context context,TokenCachingStrategy tokenCachingStrategy) {
+    public Session(Context context, TokenCachingStrategy tokenCachingStrategy) {
         this(context, tokenCachingStrategy, true);
     }
 
-    public  Session(Context context, TokenCachingStrategy tokenCachingStrategy,
-            boolean loadTokenFromCache) {
+    public Session(Context context, TokenCachingStrategy tokenCachingStrategy,
+                   boolean loadTokenFromCache) {
 
         if (tokenCachingStrategy == null) {
             tokenCachingStrategy = new SharedPreferencesTokenCachingStrategy(context);
@@ -80,18 +81,18 @@ public class Session implements Serializable {
         Bundle tokenState = loadTokenFromCache ? tokenCachingStrategy.load() : null;
         if (TokenCachingStrategy.hasTokenInformation(tokenState)) {
             long expirationTime = tokenState.getLong(TokenCachingStrategy.EXPIRES_IN_KEY);
-            Date lastRefreshDate = TokenCachingStrategy.getDate(tokenState, TokenCachingStrategy.LAST_REFRESH_DATE_KEY);
+            Date lastRefreshDate = BundleUtil.getDate(tokenState, TokenCachingStrategy.LAST_REFRESH_DATE_KEY);
             Date now = new Date();
 
             if (state.isOpened()
-                && (expirationTime == 0) || now.getTime() - lastRefreshDate.getTime() + expirationTime > TOKEN_EXTEND_RETRY_SECONDS * 1000) {
+                    && (expirationTime == 0) || now.getTime() - lastRefreshDate.getTime() + expirationTime > TOKEN_EXTEND_RETRY_SECONDS * 1000) {
                 // If expired clear out the
                 // current token cache.
                 tokenCachingStrategy.clear();
                 this.tokenInfo = AccessToken.createEmptyToken();
             } else {
                 // Otherwise we have a valid token, so use it.
-                this.tokenInfo = AccessToken.createFromBundle(tokenState);
+                this.tokenInfo = TokenCachingStrategy.createFromBundle(tokenState);
                 this.state = SessionState.CREATED_TOKEN_LOADED;
             }
         } else {
@@ -226,7 +227,7 @@ public class Session implements Serializable {
             this.tokenInfo = accessToken;
 
             if (this.tokenCachingStrategy != null) {
-                this.tokenCachingStrategy.save(accessToken.toBundle());
+                this.tokenCachingStrategy.save(TokenCachingStrategy.accessTokenToBundle(accessToken));
             }
 
             state = SessionState.OPENED;
@@ -271,7 +272,7 @@ public class Session implements Serializable {
 
     public void saveTokenToCache(AccessToken newToken) {
         if (newToken != null && tokenCachingStrategy != null) {
-            tokenCachingStrategy.save(newToken.toBundle());
+            tokenCachingStrategy.save(TokenCachingStrategy.accessTokenToBundle(newToken));
         }
     }
 
@@ -301,7 +302,7 @@ public class Session implements Serializable {
         }
         Session other = (Session) otherObj;
 
-        return  areEqual(other.state, state) &&
+        return areEqual(other.state, state) &&
                 areEqual(other.getExpirationTime(), getExpirationTime());
     }
 

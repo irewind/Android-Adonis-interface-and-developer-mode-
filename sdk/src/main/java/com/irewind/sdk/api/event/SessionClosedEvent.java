@@ -1,4 +1,4 @@
-package com.irewind.sdk.api.Events;
+package com.irewind.sdk.api.event;
 
 public class SessionClosedEvent {
 }

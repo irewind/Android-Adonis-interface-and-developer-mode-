@@ -1,12 +1,17 @@
 package com.irewind.sdk.api;
 
-import com.irewind.sdk.api.Events.RestErrorEvent;
-import com.irewind.sdk.api.Events.UserResponseEvent;
-import com.irewind.sdk.model.Session;
-import com.irewind.sdk.model.UserResponse;
-import com.squareup.okhttp.internal.Base64;
+import android.content.Context;
+import android.os.Bundle;
 
-import java.io.UnsupportedEncodingException;
+import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
+import com.irewind.sdk.api.cache.UserCachingStrategy;
+import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.RestErrorEvent;
+import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserResponseEvent;
+import com.irewind.sdk.model.Session;
+import com.irewind.sdk.model.User;
+import com.irewind.sdk.model.UserResponse;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -14,29 +19,99 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class ApiClient {
+    /**
+     * The logging tag used by ApiClient.
+     */
+    public static final String TAG = ApiClient.class.getCanonicalName();
+
+    private static final String USER_BUNDLE_SAVE_KEY = "com.irewind.sdk.User.saveUserKey";
+
+    private Context context;
     private ApiService apiService;
     private EventBus eventBus;
 
-    public ApiClient(final String baseURL) {
-        this(baseURL, null);
+    private User activeUser;
+    private UserCachingStrategy userCachingStrategy;
+    private final Object lock = new Object();
+
+    public ApiClient(Context context, final String baseURL) {
+        this(context, baseURL, null, null);
     }
 
-    public ApiClient(final String baseURL, EventBus eventBus) {
-        apiService = ServiceFactory.createApiService(baseURL);
+    public ApiClient(Context context, final String baseURL, UserCachingStrategy userCachingStrategy) {
+        this(context, baseURL, userCachingStrategy, null);
+    }
+
+    public ApiClient(Context context, final String baseURL, EventBus eventBus) {
+        this(context, baseURL, null, eventBus);
+    }
+
+    public ApiClient(Context context, final String baseURL, UserCachingStrategy userCachingStrategy, EventBus eventBus) {
+        this.context = context;
+
+        this.userCachingStrategy = userCachingStrategy;
+        if (userCachingStrategy == null) {
+            new SharedPreferencesUserCachingStrategy(context);
+        }
+
         this.eventBus = eventBus;
         if (eventBus == null) {
             this.eventBus = new EventBus();
         }
+
+        apiService = ServiceFactory.createApiService(baseURL);
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public User getActiveUser() {
+        synchronized (this.lock) {
+            return activeUser;
+        }
+    }
+
+    public final void setActiveUser(User user) {
+        synchronized (this.lock) {
+            if (user != this.activeUser) {
+                User oldUser = this.activeUser;
+
+//                if (oldUser != null) {
+//                    oldUser.close();
+//                }
+
+                this.activeUser = user;
+
+                userCachingStrategy.save(UserCachingStrategy.userToBundle(this.activeUser));
+            }
+        }
     }
 
     private String authHeader(Session session) {
-        try {
-            String token = session.getAccessToken();
-            byte[] bytes = token.getBytes("ISO-8859-1");
-            String encoded = Base64.encode(bytes);
-            return "Bearer " + encoded;
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError();
+//        try {
+//            String token = session.getAccessToken();
+//            byte[] bytes = token.getBytes("ISO-8859-1");
+//            String encoded = ByteString.of(bytes).base64();
+//            return "Basic " + encoded;
+//        } catch (UnsupportedEncodingException e) {
+//            throw new AssertionError();
+//        }
+        return "Bearer " + session.getAccessToken();
+    }
+
+    public void loadActiveUserInfo() {
+        Bundle userBundle = userCachingStrategy.load();
+        if (userBundle != null) {
+            User user = UserCachingStrategy.createFromBundle(userBundle);
+            setActiveUser(user);
+            eventBus.post(new UserInfoLoadedEvent(user));
+        } else {
+            eventBus.post(new NoActiveUserEvent());
         }
     }
 
@@ -88,6 +163,22 @@ public class ApiClient {
             @Override
             public void success(UserResponse userResponse, Response response) {
                 eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void getActiveUserByEmail(Session session,
+                                     String email) {
+        apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
+            @Override
+            public void success(UserResponse userResponse, Response response) {
+                User user = userResponse.getEmbedded().getUser();
+                setActiveUser(user);
             }
 
             @Override
