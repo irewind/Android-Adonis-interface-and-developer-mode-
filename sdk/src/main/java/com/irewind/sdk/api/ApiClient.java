@@ -8,10 +8,13 @@ import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.UserResponse;
+
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -123,7 +126,10 @@ public class ApiClient {
         apiService.addUser(authHeader(session), email, firstName, lastName, password, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    eventBus.post(new UserResponseEvent(users.get(0)));
+                }
             }
 
             @Override
@@ -142,7 +148,10 @@ public class ApiClient {
         apiService.socialLoginFacebook(authHeader(session), email, socialId, firstName, lastName, pictureURL, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    eventBus.post(new UserResponseEvent(users.get(0)));
+                }
             }
 
             @Override
@@ -162,7 +171,10 @@ public class ApiClient {
         apiService.socialLoginGoogle(authHeader(session), email, socialId, firstName, lastName, pictureURL, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    eventBus.post(new UserResponseEvent(users.get(0)));
+                }
             }
 
             @Override
@@ -177,8 +189,11 @@ public class ApiClient {
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                User user = userResponse.getEmbedded().getUser();
-                setActiveUser(user);
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    User user = users.get(0);
+                    setActiveUser(user);
+                }
             }
 
             @Override
@@ -193,7 +208,10 @@ public class ApiClient {
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    eventBus.post(new UserResponseEvent(users.get(0)));
+                }
             }
 
             @Override
@@ -207,7 +225,10 @@ public class ApiClient {
         apiService.users(authHeader(session), page, 20, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                eventBus.post(new UserResponseEvent(userResponse.getEmbedded().getUser()));
+                List<User> users = userResponse.getEmbedded().getUsers();
+                if (users != null && users.size() > 0) {
+                    eventBus.post(new UserListEvent(users));
+                }
             }
 
             @Override
