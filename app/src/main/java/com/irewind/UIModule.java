@@ -35,11 +35,14 @@ import dagger.Provides;
                 IRLoginActivity.class,
                 IRForgotPasswordActivity.class,
                 IRRegisterActivity.class,
+
                 IRTabActivity.class,
+
                 IRAccountFragment.class,
                 IRAccountPersonalFragment.class,
                 IRAccountPasswordFragment.class,
                 IRAccountNotificationFragment.class,
+
                 IRMoreFragment.class
         },
 
