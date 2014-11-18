@@ -21,7 +21,7 @@ public interface ApiService {
 
     @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
-                  @Query("id") String id,
+                  @Query("id") long id,
                   Callback<UserResponse> cb);
 
     @GET("/rest/user/search/findByEmail")
@@ -37,10 +37,11 @@ public interface ApiService {
 
     @GET("/user/changePassword")
     void changePassword(@Header("Authorization") String authorization,
+                        @Query("id") long id,
                         @Query("oldPassword") String oldPassword,
                         @Query("newPassword") String newPassword,
                         @Query("newPassword2") String newPassword2,
-                        Callback<UserResponse> cb);
+                        Callback<Boolean> cb);
 
     @POST("/user/mobileUnregister")
     @FormUrlEncoded
@@ -54,13 +55,6 @@ public interface ApiService {
                     @Field("id") long userID,
                     @Field("firstName") String firstName,
                     @Field("lastName") String lastName,
-                    Callback<Boolean> cb);
-
-    @POST("/user/save-info")
-    @FormUrlEncoded
-    void updateUser(@Header("Authorization") String authorization,
-                    @Field("id") long userID,
-                    @Field("password") String password,
                     Callback<Boolean> cb);
 
     // --- Videos --- //

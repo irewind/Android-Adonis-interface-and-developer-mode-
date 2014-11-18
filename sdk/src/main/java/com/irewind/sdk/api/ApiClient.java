@@ -9,6 +9,7 @@ import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.UserDeleteEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
@@ -184,9 +185,14 @@ public class ApiClient {
         apiService.updateUser(authHeader(session), user.getId(), firstname, lastname, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
-                eventBus.post(new UserInfoUpdateSuccess());
+                if (success) {
+                    eventBus.post(new UserInfoUpdateSuccess());
 
-                getActiveUserByEmail(session, user.getEmail());
+                    getActiveUserByEmail(session, user.getEmail());
+                }
+                else  {
+                    eventBus.post(new UserInfoUpdateFailedEvent());
+                }
             }
 
             @Override
@@ -196,13 +202,16 @@ public class ApiClient {
         });
     }
 
-    public void updateUser(final Session session, final User user, String password) {
-        apiService.updateUser(authHeader(session), user.getId(), password, new Callback<Boolean>() {
+    public void changeUserPassword(final Session session, final User user, String currentPassword, String newPassword) {
+        apiService.changePassword(authHeader(session), user.getId(), currentPassword, newPassword, newPassword, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
-                eventBus.post(new UserInfoUpdateSuccess());
-
-                getActiveUserByEmail(session, user.getEmail());
+                if (success) {
+                    eventBus.post(new UserInfoUpdateSuccess());
+                }
+                else  {
+                    eventBus.post(new UserInfoUpdateFailedEvent());
+                }
             }
 
             @Override

@@ -24,6 +24,7 @@ import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserDeleteEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
@@ -192,7 +193,12 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     }
 
     @Subscribe
-    public void onEvent(UserInfoUpdateSuccess event) {
+    public void onEvent(UserInfoUpdateFailedEvent event) {
+        showProgress(false);
+    }
+    
+    @Subscribe
+     public void onEvent(UserInfoUpdateSuccess event) {
         showProgress(false);
     }
 

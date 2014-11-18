@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
@@ -15,8 +17,11 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateFailedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,7 +31,10 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRAccountPasswordFragment extends Fragment {
+public class IRAccountPasswordFragment extends Fragment implements View.OnClickListener {
+
+    @Inject
+    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -42,6 +50,15 @@ public class IRAccountPasswordFragment extends Fragment {
 
     @InjectView(R.id.emailTextView)
     TextView emailTextView;
+
+    @InjectView(R.id.editCurrent)
+    EditText editCurrent;
+
+    @InjectView(R.id.editNew)
+    EditText editNew;
+
+    @InjectView(R.id.btnChange)
+    Button btnChange;
 
     public static IRAccountPasswordFragment newInstance() {
         IRAccountPasswordFragment fragment = new IRAccountPasswordFragment();
@@ -71,6 +88,8 @@ public class IRAccountPasswordFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.inject(this, view);
+
+        btnChange.setOnClickListener(this);
     }
 
     @Override
@@ -104,6 +123,48 @@ public class IRAccountPasswordFragment extends Fragment {
         apiClient.getEventBus().unregister(this);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnChange:
+                change();
+                break;
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    public void showProgress(final boolean show) {
+//        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//
+//        mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//        mRegisterForm.animate().setDuration(shortAnimTime).alpha(
+//                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//            }
+//        });
+//
+//        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//        mProgressView.animate().setDuration(shortAnimTime).alpha(
+//                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            }
+//        });
+    }
+
+    public void change() {
+        String currentPassword = editCurrent.getText().toString();
+        String newPassword = editNew.getText().toString();
+
+        showProgress(true);
+        apiClient.changeUserPassword(sessionClient.getActiveSession(), apiClient.getActiveUser(), currentPassword, newPassword);
+    }
+
     @Subscribe
     public void onEvent(UserInfoLoadedEvent event) {
         updateUserInfo(event.user);
@@ -112,6 +173,16 @@ public class IRAccountPasswordFragment extends Fragment {
     @Subscribe
     public void onEvent(NoActiveUserEvent event) {
         updateUserInfo(null);
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoUpdateSuccess event) {
+        showProgress(false);
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoUpdateFailedEvent event) {
+        showProgress(false);
     }
 
     private void updateUserInfo(User user) {
