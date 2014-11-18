@@ -213,7 +213,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFullname());
+            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
             emailTextView.setText(user.getEmail());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);

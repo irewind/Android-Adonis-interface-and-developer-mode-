@@ -198,7 +198,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFullname());
+            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
             emailTextView.setText(user.getEmail());
             mFirst.setText(user.getFirstname());
             mLast.setText(user.getLastname());
