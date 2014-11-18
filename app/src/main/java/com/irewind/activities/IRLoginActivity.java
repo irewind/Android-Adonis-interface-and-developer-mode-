@@ -242,9 +242,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 startActivity(intentRegister);
                 break;
             case R.id.email_sign_in_google:
+                Log.d("CLICK", "google");
                 mPlusSignInButton.performClick();
                 break;
             case R.id.email_sign_in_facebook:
+                Log.d("CLICK", "facebook");
                 mFacebookLogin.performClick();
                 break;
         }
@@ -336,6 +338,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @Override
     protected void onPlusClientSignIn() {
         //Set up sign out and disconnect buttons.
+        if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
+            Log.d("PLUS_INFO", " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+        } else {
+            Log.d("PLUS_INFO", "is null");
+        }
     }
 
     @Override

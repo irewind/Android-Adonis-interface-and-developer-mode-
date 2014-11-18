@@ -1,16 +1,25 @@
 package com.irewind.fragments;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.IntentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -19,9 +28,12 @@ import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
+import com.irewind.utils.Util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +48,10 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     ImageButton mChangePhoto;
 
     private IRAccountAdapter mAccountAdapter;
+    private String realPath;
+    private File sdImageMainDirectory;
+    private Uri mImageCaptureUri;
+    private AlertDialog dialog;
 
     public static IRAccountFragment newInstance() {
         IRAccountFragment fragment = new IRAccountFragment();
@@ -123,15 +139,80 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnLogout:
-                Intent intent = new Intent(getActivity(), IRLoginActivity.class);
-                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                attemptLogout();
                 break;
             case R.id.photo:
-                //TODO CHANGE PHOTO
+                attemptChangePhoto();
                 break;
         }
+    }
+
+    private void attemptChangePhoto(){
+        if (dialog == null)
+            makePictureChooser();
+
+        dialog.show();
+    }
+
+    private void attemptLogout(){
+        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 100) {
+                Uri selectedImage = data.getData();
+                realPath = Util.getPath(getActivity(), selectedImage);
+                //TODO change picture on server;
+            }
+            if (requestCode == 200) {
+                Uri takenImage = mImageCaptureUri;
+                realPath = Util.getPath(getActivity(), takenImage);
+                //TODO change picture on server;
+            }
+            Log.d("PICTURE", realPath == null ?"is null":realPath);
+        }
+    }
+
+    private void makePictureChooser(){
+        final String [] items			= new String [] {"Take from camera", "Select from gallery"};
+        ArrayAdapter<String> adapter	= new ArrayAdapter<String> (getActivity(), android.R.layout.select_dialog_item,items);
+        AlertDialog.Builder builder		= new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Select Image");
+        builder.setAdapter( adapter, new DialogInterface.OnClickListener() {
+            public void onClick( DialogInterface dialog, int item ) { //pick from camera
+                if (item == 0) {
+                    File root = new File(Environment
+                            .getExternalStorageDirectory()
+                            + File.separator + "iRewind" + File.separator);
+                    root.mkdirs();
+                    UUID uuid = UUID.randomUUID();
+
+                    sdImageMainDirectory = new File(root, uuid.toString() + ".jpg");
+
+                    mImageCaptureUri = Uri.fromFile(sdImageMainDirectory);
+
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+                    startActivityForResult(intent, 200);
+                } else { //pick from file
+                    Intent intent = new Intent();
+
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), 100);
+                }
+            }
+        } );
+
+        dialog = builder.create();
     }
 }

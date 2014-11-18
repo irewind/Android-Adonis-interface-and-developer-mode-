@@ -16,6 +16,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
+import com.irewind.common.IOnSearchCallback;
 import com.irewind.models.PeopleItem;
 
 import java.util.ArrayList;
@@ -91,6 +92,12 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         IRTabActivity.abTitle.setText(getString(R.string.people));
         IRTabActivity.abSearch.setVisibility(View.VISIBLE);
         IRTabActivity.abSearch.setOnClickListener(this);
+        IRTabActivity.onSearchCallback = new IOnSearchCallback() {
+            @Override
+            public void execute() {
+                //TODO set search for people
+            }
+        };
     }
 
     @Override
@@ -119,6 +126,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_search:
+                IRTabActivity.searchItem.expandActionView();
                 break;
         }
     }

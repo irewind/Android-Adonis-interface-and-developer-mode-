@@ -1,6 +1,9 @@
 package com.irewind.activities;
 
 import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -9,9 +12,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -22,11 +29,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
+import com.irewind.common.IOnSearchCallback;
 import com.irewind.fragments.IRAccountFragment;
 import com.irewind.fragments.IRLibraryFragment;
 import com.irewind.fragments.IRMoreFragment;
 import com.irewind.fragments.IRPeopleFragment;
 import com.irewind.fragments.IRRewindFunctionalityFragment;
+import com.irewind.utils.Log;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import at.markushi.ui.CircleButton;
@@ -50,6 +59,10 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     public static TextView abTitle;
 
     public static Fragment mLibraryFragment, mPeopleFragment, mAccountFragment, mMoreFragment;
+    private Menu mMenu;
+    public static MenuItem searchItem;
+    public static SearchView searchView;
+    public static IOnSearchCallback onSearchCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +176,58 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        mMenu = menu;
+
+        searchItem = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+
+        searchView.setSearchableInfo(info);
+        searchView.setIconifiedByDefault(true);
+        // Set on click to open a fragment, not a activity
+        final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Do something
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("SEARCH", query);
+                searchView.clearFocus();
+                MenuItemCompat.collapseActionView(searchItem);
+                onSearchCallback.execute();
+                return false;
+            }
+        };
+
+        searchView.setOnQueryTextListener(queryTextListener);
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem arg0) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem arg0) {
+                return true;
+            }
+
+
+        });
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @TargetApi(19)

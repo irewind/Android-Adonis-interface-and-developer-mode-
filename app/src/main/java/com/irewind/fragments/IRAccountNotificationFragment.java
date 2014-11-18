@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 
-public class IRAccountNotificationFragment extends Fragment {
+public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener{
 
     public static IRAccountNotificationFragment newInstance() {
         IRAccountNotificationFragment fragment = new IRAccountNotificationFragment();
@@ -52,5 +52,10 @@ public class IRAccountNotificationFragment extends Fragment {
         });
         IRTabActivity.abTitle.setText(getString(R.string.notifications));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

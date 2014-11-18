@@ -24,6 +24,7 @@ import butterknife.InjectView;
 
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRMovieGridAdapter;
+import com.irewind.common.IOnSearchCallback;
 import com.irewind.models.MovieGridItem;
 import com.jazzyviewpager.JazzyViewPager;
 
@@ -100,6 +101,12 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         IRTabActivity.abTitle.setText(getString(R.string.movies));
         IRTabActivity.abSearch.setVisibility(View.VISIBLE);
         IRTabActivity.abSearch.setOnClickListener(this);
+        IRTabActivity.onSearchCallback = new IOnSearchCallback() {
+            @Override
+            public void execute() {
+                //TODO set search videos
+            }
+        };
     }
 
     private void populate(){
@@ -138,6 +145,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_search:
+                IRTabActivity.searchItem.expandActionView();
                 break;
         }
     }
