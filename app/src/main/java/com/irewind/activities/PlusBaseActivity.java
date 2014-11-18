@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.Scopes;
+import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.PlusClient;
 import com.irewind.R;
 
@@ -76,7 +77,8 @@ public abstract class PlusBaseActivity extends IRBaseActivity
         // Scopes indicate the information about the user your application will be able to access.
         mPlusClient =
                 new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN,
-                        Scopes.PLUS_ME).build();
+                        Scopes.PLUS_ME, Scopes.PROFILE ,"https://www.googleapis.com/auth/userinfo.email").build();
+//        PlusClient plusClient = new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN, ).build();
     }
 
     /**
@@ -241,6 +243,7 @@ public abstract class PlusBaseActivity extends IRBaseActivity
         updateConnectButtonState();
         setProgressBarVisible(false);
         onPlusClientSignIn();
+
     }
 
     /**
