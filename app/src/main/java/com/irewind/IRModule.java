@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.iRewindConfig;
 
@@ -66,5 +67,12 @@ public class IRModule {
     SessionClient provideSessionClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
         SessionClient sessionClient = new SessionClient(context, config, eventBus);
         return sessionClient;
+    }
+
+    @Singleton
+    @Provides
+    SessionClient provideApiClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
+        ApiClient apiClient = new ApiClient(context, config.getBaseURL(), eventBus);
+        return apiClient;
     }
 }
