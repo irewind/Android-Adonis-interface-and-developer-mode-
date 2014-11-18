@@ -24,6 +24,7 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
 
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
@@ -39,6 +40,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRAccountFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
+
+    @Inject
+    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -163,16 +167,22 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnLogout:
-                Intent intent = new Intent(getActivity(), IRLoginActivity.class);
-                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                logout();
                 break;
             case R.id.photo:
                 //TODO CHANGE PHOTO
                 break;
         }
+    }
+
+    public void logout() {
+        sessionClient.closeSessionAndClearTokenInformation();
+
+        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Subscribe
