@@ -6,10 +6,14 @@ import android.os.Bundle;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
+import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
+import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.model.BaseResponse;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.UserResponse;
@@ -96,6 +100,10 @@ public class ApiClient {
     }
 
     private String authHeader(Session session) {
+        return authHeader(session.getTokenInfo());
+    }
+
+    private String authHeader(AccessToken accessToken) {
 //        try {
 //            String token = session.getAccessToken();
 //            byte[] bytes = token.getBytes("ISO-8859-1");
@@ -104,7 +112,7 @@ public class ApiClient {
 //        } catch (UnsupportedEncodingException e) {
 //            throw new AssertionError();
 //        }
-        return "Bearer " + session.getAccessToken();
+        return "Bearer " + accessToken.getCurrentToken();
     }
 
     public void loadActiveUserInfo() {
@@ -180,6 +188,20 @@ public class ApiClient {
             @Override
             public void failure(RetrofitError error) {
                 eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void resetPassword(AccessToken accessToken, String email) {
+        apiService.resetPassword(authHeader(accessToken), email, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse o, Response response) {
+                eventBus.post(new ResetPasswordSuccesEvent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new ResetPasswordFailedEvent());
             }
         });
     }
