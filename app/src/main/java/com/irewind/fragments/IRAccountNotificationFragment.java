@@ -19,8 +19,12 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsLoadedEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsUpdateFailEvent;
+import com.irewind.sdk.api.event.UserNotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,10 +35,13 @@ import javax.inject.Inject;
 
 public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
 
-    @InjectView(R.id.switchNotif1)
-    Switch switchCommentVideo;
-    @InjectView(R.id.switchNotif2)
-    Switch switchLikeVideo;
+    @InjectView(R.id.switchCommentNotifications)
+    Switch switchCommentNotifications;
+    @InjectView(R.id.switchLikeNotifications)
+    Switch switchLikeNotifications;
+
+    @Inject
+    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -51,7 +58,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @InjectView(R.id.emailTextView)
     TextView emailTextView;
 
-    private SharedPreferences sp;
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     public static IRAccountNotificationFragment newInstance() {
@@ -66,8 +73,8 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        editor = sp.edit();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        editor = sharedPreferences.edit();
         Injector.inject(this);
     }
 
@@ -83,10 +90,10 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        switchCommentVideo.setChecked(sp.getBoolean(getString(R.string.notif_comment_video), getResources().getBoolean(R.bool.default_notif_comment_video)));
-        switchLikeVideo.setChecked(sp.getBoolean(getString(R.string.notif_like_video), getResources().getBoolean(R.bool.default_notif_like_video)));
-        switchCommentVideo.setOnCheckedChangeListener(this);
-        switchLikeVideo.setOnCheckedChangeListener(this);
+        switchCommentNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_comment_video), getResources().getBoolean(R.bool.default_notif_comment_video)));
+        switchLikeNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_like_video), getResources().getBoolean(R.bool.default_notif_like_video)));
+        switchCommentNotifications.setOnCheckedChangeListener(this);
+        switchLikeNotifications.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -123,11 +130,11 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.switchNotif1:
-                editor.putBoolean(getString(R.string.notif_comment_video), isChecked);
+            case R.id.switchCommentNotifications:
+                apiClient.toggleCommentNotifications(sessionClient.getActiveSession(), isChecked);
                 break;
-            case R.id.switchNotif2:
-                editor.putBoolean(getString(R.string.notif_like_video), isChecked);
+            case R.id.switchLikeNotifications:
+                apiClient.toggleLikeNotifications(sessionClient.getActiveSession(), isChecked);
                 break;
         }
     }
@@ -155,6 +162,10 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         }
     }
 
+    private void fetchUserNotificationSettings() {
+        apiClient.getUserNotificationSettings(sessionClient.getActiveSession(), apiClient.getActiveUser());
+    }
+
     // --- Events --- //
 
     @Subscribe
@@ -165,5 +176,28 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @Subscribe
     public void onEvent(NoActiveUserEvent event) {
         updateUserInfo(null);
+    }
+
+    @Subscribe
+    public void onEvent(UserNotificationSettingsLoadedEvent event) {
+        editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.isCommentNotification());
+        editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.isLikeNotification());
+
+        switchCommentNotifications.setOnCheckedChangeListener(null);
+        switchLikeNotifications.setOnCheckedChangeListener(null);
+        switchCommentNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_comment_video), getResources().getBoolean(R.bool.default_notif_comment_video)));
+        switchLikeNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_like_video), getResources().getBoolean(R.bool.default_notif_like_video)));
+        switchCommentNotifications.setOnCheckedChangeListener(this);
+        switchLikeNotifications.setOnCheckedChangeListener(this);
+    }
+
+    @Subscribe
+    public void onEvent(UserNotificationSettingsUpdateSuccessEvent event) {
+        fetchUserNotificationSettings();
+    }
+
+    @Subscribe
+    public void onEvent(UserNotificationSettingsUpdateFailEvent event) {
+        fetchUserNotificationSettings();
     }
 }

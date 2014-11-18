@@ -92,10 +92,10 @@
             android:paddingLeft="15dp"
             android:layout_centerVertical="true"
             android:text="@string/comment_video_notif"
-            android:layout_toLeftOf="@+id/switchNotif1"/>
+            android:layout_toLeftOf="@+id/switchCommentNotifications"/>
 
         <Switch
-            android:id="@+id/switchNotif1"
+            android:id="@+id/switchCommentNotifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -129,11 +129,11 @@
             android:layout_marginRight="10dp"
             android:paddingLeft="15dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/switchNotif2"
+            android:layout_toLeftOf="@+id/switchLikeNotifications"
             android:text="@string/like_video_notif" />
 
         <Switch
-            android:id="@+id/switchNotif2"
+            android:id="@+id/switchLikeNotifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
