@@ -102,6 +102,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
         apiClient.getEventBus().register(this);
         apiClient.loadActiveUserInfo();
+        fetchUserNotificationSettings();
 
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
@@ -182,11 +183,12 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     public void onEvent(UserNotificationSettingsLoadedEvent event) {
         editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.isCommentNotification());
         editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.isLikeNotification());
+        editor.commit();
 
         switchCommentNotifications.setOnCheckedChangeListener(null);
         switchLikeNotifications.setOnCheckedChangeListener(null);
-        switchCommentNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_comment_video), getResources().getBoolean(R.bool.default_notif_comment_video)));
-        switchLikeNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_like_video), getResources().getBoolean(R.bool.default_notif_like_video)));
+        switchCommentNotifications.setChecked(event.notificationSettings.isCommentNotification());
+        switchLikeNotifications.setChecked(event.notificationSettings.isLikeNotification());
         switchCommentNotifications.setOnCheckedChangeListener(this);
         switchLikeNotifications.setOnCheckedChangeListener(this);
     }
