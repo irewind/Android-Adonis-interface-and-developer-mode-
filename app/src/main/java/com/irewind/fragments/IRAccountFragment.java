@@ -13,25 +13,43 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.model.User;
 import com.irewind.ui.methods.PagerItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRAccountFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
 
+    @Inject
+    ApiClient apiClient;
+
     @InjectView(R.id.listViewAccount)
     ListView mAccountListView;
     @InjectView(R.id.btnLogout)
     Button mLogout;
+
+    @InjectView(R.id.nameTextView)
+    TextView nameTextView;
+
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     private IRAccountAdapter mAccountAdapter;
 
@@ -47,6 +65,8 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -70,6 +90,19 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.account));
+
+        apiClient.getEventBus().register(this);
+//        User user = apiClient.getActiveUser();
+//        updateUserInfo(user);
+
+        apiClient.loadActiveUserInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
     }
 
     private void setupAdapter(){
@@ -123,5 +156,26 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
+    private void updateUserInfo(User user) {
+        if (user != null) {
+            nameTextView.setText(user.getFullname());
+            emailTextView.setText(user.getEmail());
+        }
+        else {
+            nameTextView.setText("");
+            emailTextView.setText("");
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRRegisterActivity;
 import com.irewind.activities.IRSplashActivity;
 import com.irewind.activities.IRTabActivity;
+import com.irewind.fragments.IRAccountFragment;
 
 import dagger.Module;
 
@@ -20,7 +21,8 @@ import dagger.Module;
                 IRLoginActivity.class,
                 IRForgotPasswordActivity.class,
                 IRRegisterActivity.class,
-                IRTabActivity.class
+                IRTabActivity.class,
+                IRAccountFragment.class
         },
 
         library = true

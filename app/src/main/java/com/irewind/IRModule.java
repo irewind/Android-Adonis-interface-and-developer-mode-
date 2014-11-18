@@ -71,7 +71,7 @@ public class IRModule {
 
     @Singleton
     @Provides
-    SessionClient provideApiClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
+    ApiClient provideApiClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
         ApiClient apiClient = new ApiClient(context, config.getBaseURL(), eventBus);
         return apiClient;
     }

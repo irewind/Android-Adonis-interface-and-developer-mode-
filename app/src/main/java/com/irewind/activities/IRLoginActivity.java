@@ -46,6 +46,7 @@ import java.util.List;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.SessionOpenFailed;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
 import com.irewind.sdk.api.SessionClient;
@@ -96,6 +97,9 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     @Inject
     protected SessionClient sessionClient;
+
+    @Inject
+    protected ApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -320,6 +324,9 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @Subscribe
     public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
+
+        String email = mEmailView.getText().toString();
+        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
