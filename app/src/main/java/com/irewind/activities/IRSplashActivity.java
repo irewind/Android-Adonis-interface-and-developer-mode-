@@ -57,6 +57,7 @@ public class IRSplashActivity extends IRBaseActivity {
             public void run() {
 
                 finish();
+
                 if (sessionClient.getActiveSession().isOpened()) {
                     Intent mainIntent = new Intent(mContext, IRTabActivity.class);
                     startActivity(mainIntent);

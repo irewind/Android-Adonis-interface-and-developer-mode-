@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,11 +22,11 @@ import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
+
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
-import com.irewind.ui.methods.PagerItem;
 import com.irewind.ui.views.RoundedImageView;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     ListView mAccountListView;
     @InjectView(R.id.btnLogout)
     Button mLogout;
+    @InjectView(R.id.photo)
+    ImageButton mChangePhoto;
 
     @InjectView(R.id.profileImageView)
     RoundedImageView profileImageView;
@@ -86,6 +89,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         ButterKnife.inject(this, view);
         setupAdapter();
         mLogout.setOnClickListener(this);
+        mChangePhoto.setOnClickListener(this);
     }
 
     @Override
@@ -153,11 +157,18 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
-        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        switch (v.getId()){
+            case R.id.btnLogout:
+                Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+            case R.id.photo:
+                //TODO CHANGE PHOTO
+                break;
+        }
     }
 
     @Subscribe

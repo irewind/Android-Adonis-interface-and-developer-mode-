@@ -3,6 +3,7 @@ package com.irewind.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -64,6 +65,11 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irregister);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
+            findViewById(R.id.sliding_layout).setPadding(0, statusBarHeight, 0, 0);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setTranslucentStatus(true);
