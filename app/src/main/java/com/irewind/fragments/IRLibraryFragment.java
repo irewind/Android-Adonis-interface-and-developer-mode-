@@ -107,7 +107,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
                 //TODO set search videos
             }
         };
-        IRTabActivity.searchItem.collapseActionView();
     }
 
     private void populate(){
