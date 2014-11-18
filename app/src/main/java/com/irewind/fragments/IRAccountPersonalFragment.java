@@ -1,5 +1,7 @@
 package com.irewind.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,6 +59,11 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
 
     @InjectView(R.id.emailTextView)
     TextView emailTextView;
+
+    @InjectView(R.id.contentView)
+    View contentView;
+    @InjectView(R.id.progressView)
+    View progressView;
 
     @InjectView(R.id.editFirst)
     EditText mFirst;
@@ -146,28 +153,28 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress view and hides the content view.
      */
     public void showProgress(final boolean show) {
-//        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-//
-//        mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
-//        mRegisterForm.animate().setDuration(shortAnimTime).alpha(
-//                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
-//            }
-//        });
-//
-//        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//        mProgressView.animate().setDuration(shortAnimTime).alpha(
-//                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            }
-//        });
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        contentView.setVisibility(show ? View.GONE : View.VISIBLE);
+        contentView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                contentView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     public void change() {
