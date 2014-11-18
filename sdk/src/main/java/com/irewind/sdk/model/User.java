@@ -22,7 +22,7 @@ public class User {
     private String fullname;
 
     @SerializedName("createdDate")
-    private Date createdDate;
+    private long createdDate;
 
     @SerializedName("status")
     private String status;
@@ -37,7 +37,7 @@ public class User {
     private String picture;
 
     @SerializedName("lastLoginDate")
-    private Date lastLoginDate;
+    private long lastLoginDate;
 
     public long getId() {
         return id;
@@ -59,7 +59,7 @@ public class User {
         return fullname;
     }
 
-    public Date getCreatedDate() {
+    public long getCreatedDate() {
         return createdDate;
     }
 
@@ -79,11 +79,11 @@ public class User {
         return picture;
     }
 
-    public Date getLastLoginDate() {
+    public long getLastLoginDate() {
         return lastLoginDate;
     }
 
-    public User(long id, String email, String firstname, String lastname, String fullname, Date createdDate, String status, String authProvider, String role, String picture, Date lastLoginDate) {
+    public User(long id, String email, String firstname, String lastname, String fullname, long createdDate, String status, String authProvider, String role, String picture, long lastLoginDate) {
         this.id = id;
         this.email = email;
         this.firstname = firstname;
