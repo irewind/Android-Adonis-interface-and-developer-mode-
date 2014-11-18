@@ -3,10 +3,8 @@ package com.irewind.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -15,11 +13,20 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.event.RegisterFailEvent;
+import com.irewind.sdk.api.event.RegisterSuccessEvent;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -59,10 +66,19 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     @InjectView(R.id.titleSlide)
     TextView mTitleSlide;
 
+    @Inject
+    SessionClient sessionClient;
+
+    @Inject
+    ApiClient apiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+
+        Injector.inject(this);
+
         setContentView(R.layout.activity_irregister);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -79,6 +95,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         mTerms.setOnClickListener(this);
         mPrivacy.setOnClickListener(this);
@@ -117,8 +134,22 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        sessionClient.getEventBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        sessionClient.getEventBus().unregister(this);
+    }
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.terms:
                 mWebView.loadUrl(getString(R.string.terms_link));
                 mTitleSlide.setText(getString(R.string.term_cond));
@@ -184,11 +215,11 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(firstname)){
+        if (TextUtils.isEmpty(firstname)) {
             mFirst.setError(getString(R.string.error_field_required));
             focusView = mFirst;
             cancel = true;
-        } else if (TextUtils.isEmpty(lastname)){
+        } else if (TextUtils.isEmpty(lastname)) {
             mLast.setError(getString(R.string.error_field_required));
             focusView = mLast;
             cancel = true;
@@ -200,15 +231,15 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             mEmail.setError(getString(R.string.error_invalid_email));
             focusView = mEmail;
             cancel = true;
-        } else if (TextUtils.isEmpty(password)){
+        } else if (TextUtils.isEmpty(password)) {
             mPassword.setError(getString(R.string.error_field_required));
             focusView = mPassword;
             cancel = true;
-        } else if (!CheckUtil.isPasswordValid(password)){
+        } else if (!CheckUtil.isPasswordValid(password)) {
             mPassword.setError(getString(R.string.error_invalid_password));
             focusView = mPassword;
             cancel = true;
-        } else if (!CheckUtil.isPasswordValid(password, confirm)){
+        } else if (!CheckUtil.isPasswordValid(password, confirm)) {
             mConfirm.setError(getString(R.string.error_match));
             focusView = mConfirm;
             cancel = true;
@@ -219,11 +250,9 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-//            showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
+            showProgress(true);
+
+            sessionClient.register(email, firstname, lastname, password);
         }
     }
 
@@ -254,11 +283,31 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
-        if (mSlidingUpLayout.isPanelExpanded()){
+        if (mSlidingUpLayout.isPanelExpanded()) {
             mSlidingUpLayout.setSlidingEnabled(true);
             mSlidingUpLayout.collapsePanel();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(RegisterSuccessEvent event) {
+        showProgress(false);
+
+        Toast.makeText(getApplicationContext(), getString(R.string.registration_pending_approval), Toast.LENGTH_LONG).show();
+
+        onBackPressed();
+    }
+
+    @Subscribe
+    public void onEvent(RegisterFailEvent event) {
+        if (event.reason == RegisterFailEvent.Reason.UserExists) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_account_exists), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':fb', ':PullToRefresh-Library'
+include ':sdk', ':app', ':fb', ':PullToRefresh-Library'

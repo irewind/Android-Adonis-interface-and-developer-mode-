@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,22 +23,43 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.model.User;
+import com.irewind.ui.views.RoundedImageView;
 import com.irewind.utils.Util;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRAccountFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
+public class IRAccountFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+
+    @Inject
+    SessionClient sessionClient;
+
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
 
     @InjectView(R.id.listViewAccount)
     ListView mAccountListView;
@@ -47,6 +67,15 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     Button mLogout;
     @InjectView(R.id.photo)
     ImageButton mChangePhoto;
+
+    @InjectView(R.id.profileImageView)
+    RoundedImageView profileImageView;
+
+    @InjectView(R.id.nameTextView)
+    TextView nameTextView;
+
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     private IRAccountAdapter mAccountAdapter;
     private String realPath;
@@ -66,6 +95,8 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -87,12 +118,23 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onResume() {
         super.onResume();
+
+        apiClient.getEventBus().register(this);
+        apiClient.loadActiveUserInfo();
+
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.account));
     }
 
-    private void setupAdapter(){
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
+    }
+
+    private void setupAdapter() {
         mAccountListView.setOnItemClickListener(this);
         List<String> dataList = new ArrayList<String>();
         dataList.add("Change personal data");
@@ -105,7 +147,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        switch (position){
+        switch (position) {
             case 0:
                 IRTabActivity.mAccountFragment = IRAccountPersonalFragment.newInstance();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -138,7 +180,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnLogout:
                 attemptLogout();
                 break;
@@ -148,7 +190,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-    private void attemptChangePhoto(){
+    private void attemptChangePhoto () {
         if (dialog == null)
             makePictureChooser();
 
@@ -160,7 +202,9 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         }, 100);
     }
 
-    private void attemptLogout(){
+    private void attemptLogout() {
+        sessionClient.closeSessionAndClearTokenInformation();
+
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -168,8 +212,24 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         startActivity(intent);
     }
 
+    private void updateUserInfo(User user) {
+        if (user != null) {
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                imageLoader.displayImage(user.getPicture(), profileImageView);
+            } else {
+                profileImageView.setImageResource(R.drawable.img_default_picture);
+            }
+            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
+            emailTextView.setText(user.getEmail());
+        } else {
+            profileImageView.setImageResource(R.drawable.img_default_picture);
+            nameTextView.setText("");
+            emailTextView.setText("");
+        }
+    }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult ( int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {
@@ -182,18 +242,18 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
                 realPath = Util.getPath(getActivity(), takenImage);
                 //TODO change picture on server;
             }
-            Log.d("PICTURE", realPath == null ?"is null":realPath);
+            Log.d("PICTURE", realPath == null ? "is null" : realPath);
         }
     }
 
-    private void makePictureChooser(){
-        final String [] items			= new String [] {"Take from camera", "Select from gallery"};
-        ArrayAdapter<String> adapter	= new ArrayAdapter<String> (getActivity(), android.R.layout.select_dialog_item,items);
-        AlertDialog.Builder builder		= new AlertDialog.Builder(getActivity());
+    private void makePictureChooser() {
+        final String[] items = new String[]{"Take from camera", "Select from gallery"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_item, items);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Select Image");
-        builder.setAdapter( adapter, new DialogInterface.OnClickListener() {
-            public void onClick( DialogInterface dialog, int item ) { //pick from camera
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) { //pick from camera
                 if (item == 0) {
                     File root = new File(Environment
                             .getExternalStorageDirectory()
@@ -217,8 +277,21 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
                     startActivityForResult(Intent.createChooser(intent, "Complete action using"), 100);
                 }
             }
-        } );
+        });
 
         dialog = builder.create();
     }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
 }

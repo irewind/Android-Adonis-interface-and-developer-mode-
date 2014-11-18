@@ -27,6 +27,10 @@ android {
         versionName "1.0.0.2"
     }
     buildTypes {
+        debug {
+            runProguard false
+            // zipAlign false // this is default for debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -77,4 +81,9 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:1.2.0'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
     compile project(':PullToRefresh-Library')
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+
+    compile project(':sdk')
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
 }

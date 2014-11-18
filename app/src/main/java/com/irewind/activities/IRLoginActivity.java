@@ -2,7 +2,6 @@ package com.irewind.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -10,8 +9,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -40,15 +38,24 @@ import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.android.gms.plus.model.people.Person;
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.event.SessionOpenFailedEvent;
+import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.sdk.api.event.SocialLoginFailedEvent;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -64,20 +71,30 @@ import butterknife.InjectView;
 public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
     private static final String TAG = "Login";
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
-    @InjectView(R.id.login_form) View mLoginFormView;
-    @InjectView(R.id.login_progress) View mProgressView;
-    @InjectView(R.id.email) AutoCompleteTextView mEmailView;
-    @InjectView(R.id.password) EditText mPasswordView;
-    @InjectView(R.id.email_login_form) View mEmailLoginFormView;
-    @InjectView(R.id.plus_sign_in_button) SignInButton mPlusSignInButton;
-    @InjectView(R.id.email_sign_in_button) Button mSignButton;
-    @InjectView(R.id.forgot_password) TextView mForgotPassword;
-    @InjectView(R.id.register) TextView mRegister;
-    @InjectView(R.id.email_sign_in_facebook) Button mSignFacebook;
-    @InjectView(R.id.email_sign_in_google) Button mSignGoogle;
+    @InjectView(R.id.login_form)
+    View mLoginFormView;
+    @InjectView(R.id.login_progress)
+    View mProgressView;
+    @InjectView(R.id.email)
+    AutoCompleteTextView mEmailView;
+    @InjectView(R.id.password)
+    EditText mPasswordView;
+    @InjectView(R.id.email_login_form)
+    View mEmailLoginFormView;
+    @InjectView(R.id.plus_sign_in_button)
+    SignInButton mPlusSignInButton;
+    @InjectView(R.id.email_sign_in_button)
+    Button mSignButton;
+    @InjectView(R.id.forgot_password)
+    TextView mForgotPassword;
+    @InjectView(R.id.register)
+    TextView mRegister;
+    @InjectView(R.id.email_sign_in_facebook)
+    Button mSignFacebook;
+    @InjectView(R.id.email_sign_in_google)
+    Button mSignGoogle;
     @InjectView(R.id.facebook_sign_in_button)
     LoginButton mFacebookLogin;
 
@@ -88,6 +105,12 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             onSessionStateChange(session, state, exception);
         }
     };
+
+    @Inject
+    protected SessionClient sessionClient;
+
+    @Inject
+    protected ApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +129,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
@@ -163,15 +187,21 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         super.onResume();
         Session session = Session.getActiveSession();
         if (session != null &&
-                (session.isOpened() || session.isClosed()) ) {
+                (session.isOpened() || session.isClosed())) {
             onSessionStateChange(session, session.getState(), null);
         }
+
+        sessionClient.getEventBus().register(this);
+
         uiHelper.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        sessionClient.getEventBus().unregister(this);
+
         uiHelper.onPause();
     }
 
@@ -210,7 +240,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                         @Override
                         public void onCompleted(GraphUser user,
                                                 Response response) {
-                            // TODO Auto-generated method stub
                             if (user != null && user.asMap() != null && user.asMap().get("email") != null) {
 
                             } else {
@@ -226,7 +255,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.plus_sign_in_button:
                 signIn();
                 break;
@@ -263,10 +292,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -287,11 +312,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        } else if (TextUtils.isEmpty(password)){
+        } else if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (!CheckUtil.isPasswordValid(password)){
+        } else if (!CheckUtil.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -305,8 +330,8 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            sessionClient.openSession(email, password);
         }
     }
 
@@ -332,7 +357,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             public void onAnimationEnd(Animator animation) {
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
-            });
+        });
     }
 
     @Override
@@ -340,6 +365,14 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
             Log.d("PLUS_INFO", " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+
+            Person person = getPlusClient().getCurrentPerson();
+            String email = person.getDisplayName();
+            String socialId = person.getId();
+            String firstname = person.getName().getGivenName();
+            String lastname = person.getName().getFamilyName();
+            String pictureUrl = person.getImage().getUrl();
+            sessionClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
         }
@@ -435,57 +468,34 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         mEmailView.setAdapter(adapter);
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    // --- Events --- //
 
-        private final String mEmail;
-        private final String mPassword;
+    @Subscribe
+    public void onEvent(SessionOpenedEvent event) {
+        showProgress(false);
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+        String email = mEmailView.getText().toString();
+        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+    @Subscribe
+    public void onEvent(SessionOpenFailedEvent event) {
+        showProgress(false);
 
-            // TODO: register the new account here.
-            return true;
-        }
+        Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+    }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
+    @Subscribe
+    public void onEvent(SocialLoginFailedEvent event) {
+        showProgress(false);
 
-            if (success) {
-                Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
-                intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
     }
 }
 

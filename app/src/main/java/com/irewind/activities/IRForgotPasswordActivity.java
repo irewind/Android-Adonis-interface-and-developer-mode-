@@ -12,15 +12,26 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.event.ResetPasswordFailEvent;
+import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnClickListener {
+
+    @Inject
+    SessionClient sessionClient;
 
     @InjectView(R.id.email)
     EditText mEmail;
@@ -35,6 +46,9 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+
+        Injector.inject(this);
+
         setContentView(R.layout.activity_irforgot_password);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -48,13 +62,28 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
+        Injector.inject(this);
 
         mSubmit.setOnClickListener(this);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        sessionClient.getEventBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        sessionClient.getEventBus().unregister(this);
+    }
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.submit:
                 attemptRecover();
                 break;
@@ -75,9 +104,6 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     }
 
     public void attemptRecover() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
 
         // Reset errors.
         mEmail.setError(null);
@@ -107,11 +133,8 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
-            Intent intent = new Intent(this, IRLoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+
+            sessionClient.resetPassword(email);
         }
     }
 
@@ -138,5 +161,30 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(ResetPasswordSuccesEvent event) {
+        showProgress(false);
+
+        Toast.makeText(getApplicationContext(), getString(R.string.reset_password_succeded), Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, IRLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Subscribe
+    public void onEvent(ResetPasswordFailEvent event) {
+        showProgress(false);
+
+        if (event.reason == ResetPasswordFailEvent.Reason.NoUser) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
+        }
     }
 }

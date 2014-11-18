@@ -12,12 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.model.User;
+import com.irewind.ui.views.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import javax.inject.Inject;
 
 public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
 
@@ -25,6 +35,21 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     Switch switchCommentVideo;
     @InjectView(R.id.switchNotif2)
     Switch switchLikeVideo;
+
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
+
+    @InjectView(R.id.profileImageView)
+    RoundedImageView profileImageView;
+
+    @InjectView(R.id.nameTextView)
+    TextView nameTextView;
+
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -43,6 +68,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         super.onCreate(savedInstanceState);
         sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         editor = sp.edit();
+        Injector.inject(this);
     }
 
     @Override
@@ -66,6 +92,10 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
+
+        apiClient.getEventBus().register(this);
+        apiClient.loadActiveUserInfo();
+
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +122,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
+        switch (buttonView.getId()) {
             case R.id.switchNotif1:
                 editor.putBoolean(getString(R.string.notif_comment_video), isChecked);
                 break;
@@ -100,5 +130,40 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
                 editor.putBoolean(getString(R.string.notif_like_video), isChecked);
                 break;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
+    }
+
+    private void updateUserInfo(User user) {
+        if (user != null) {
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                imageLoader.displayImage(user.getPicture(), profileImageView);
+            } else {
+                profileImageView.setImageResource(R.drawable.img_default_picture);
+            }
+            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
+            emailTextView.setText(user.getEmail());
+        } else {
+            profileImageView.setImageResource(R.drawable.img_default_picture);
+            nameTextView.setText("");
+            emailTextView.setText("");
+        }
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
     }
 }
