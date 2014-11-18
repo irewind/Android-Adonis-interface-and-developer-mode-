@@ -26,6 +26,7 @@ import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.methods.PagerItem;
+import com.irewind.ui.views.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,9 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     ListView mAccountListView;
     @InjectView(R.id.btnLogout)
     Button mLogout;
+
+    @InjectView(R.id.profileImageView)
+    RoundedImageView profileImageView;
 
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
@@ -87,15 +91,13 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onResume() {
         super.onResume();
+
+        apiClient.getEventBus().register(this);
+        apiClient.loadActiveUserInfo();
+
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.account));
-
-        apiClient.getEventBus().register(this);
-//        User user = apiClient.getActiveUser();
-//        updateUserInfo(user);
-
-        apiClient.loadActiveUserInfo();
     }
 
     @Override

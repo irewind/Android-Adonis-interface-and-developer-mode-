@@ -29,7 +29,7 @@
 
 
                 <com.irewind.ui.views.RoundedImageView
-                    android:id="@+id/roundedImageView"
+                    android:id="@+id/profileImageView"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_centerHorizontal="true"
@@ -43,10 +43,10 @@
                     android:id="@+id/nameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/roundedImageView"
+                    android:layout_below="@+id/profileImageView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
-                    android:text="asdasdasd"
+                    android:text=""
                     android:textColor="@android:color/white"
                     android:textSize="17sp" />
 
@@ -58,7 +58,7 @@
                     android:layout_below="@+id/nameTextView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
-                    android:text="test@test.com"
+                    android:text=""
                     android:textColor="#bbb"
                     android:textSize="15sp" />
             </RelativeLayout>

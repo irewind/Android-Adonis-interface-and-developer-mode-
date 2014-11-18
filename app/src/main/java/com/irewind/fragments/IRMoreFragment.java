@@ -17,23 +17,45 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
 import com.irewind.adapters.IRMoreAdapter;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.model.User;
+import com.irewind.ui.views.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    @Inject
+    ApiClient apiClient;
+
     @InjectView(R.id.listViewMore)
     ListView mAccountListView;
+
+    @InjectView(R.id.profileImageView)
+    RoundedImageView profileImageView;
+
+    @InjectView(R.id.nameTextView)
+    TextView nameTextView;
+
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     private IRMoreAdapter mMoreAdapter;
 
@@ -49,6 +71,7 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.inject(this);
     }
 
     @Override
@@ -68,9 +91,20 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onResume() {
         super.onResume();
+
+        apiClient.getEventBus().register(this);
+        apiClient.loadActiveUserInfo();
+
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.more));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
     }
 
     private void setupAdapter() {
@@ -146,6 +180,27 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
             return s;
         } else {
             return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(UserInfoLoadedEvent event) {
+        updateUserInfo(event.user);
+    }
+
+    @Subscribe
+    public void onEvent(NoActiveUserEvent event) {
+        updateUserInfo(null);
+    }
+
+    private void updateUserInfo(User user) {
+        if (user != null) {
+            nameTextView.setText(user.getFullname());
+            emailTextView.setText(user.getEmail());
+        }
+        else {
+            nameTextView.setText("");
+            emailTextView.setText("");
         }
     }
 }
