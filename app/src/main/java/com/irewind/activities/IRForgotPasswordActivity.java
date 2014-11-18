@@ -169,6 +169,8 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     public void onEvent(ResetPasswordSuccesEvent event) {
         showProgress(false);
 
+        Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
+
         Intent intent = new Intent(this, IRLoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
