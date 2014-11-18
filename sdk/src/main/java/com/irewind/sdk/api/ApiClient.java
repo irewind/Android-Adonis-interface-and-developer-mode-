@@ -51,7 +51,7 @@ public class ApiClient {
 
         this.userCachingStrategy = userCachingStrategy;
         if (userCachingStrategy == null) {
-            new SharedPreferencesUserCachingStrategy(context);
+            this.userCachingStrategy = new SharedPreferencesUserCachingStrategy(context);
         }
 
         this.eventBus = eventBus;
