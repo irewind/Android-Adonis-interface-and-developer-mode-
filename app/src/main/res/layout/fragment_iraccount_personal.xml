@@ -149,7 +149,7 @@
                 android:layout_toRightOf="@+id/titleLast"
                 android:layout_marginLeft="20dp"
                 android:padding="6dp"
-                android:text="asdasdasd"
+                android:text=""
                 android:lines="1"
                 android:singleLine="true"
                 android:inputType="textPersonName"
@@ -184,8 +184,9 @@
                 android:textColor="@drawable/ir_text_color_change"
                 android:background="@drawable/btn_red" />
 
-            <TextView
+            <Button
                 fontPath="fonts/OpenSans-Regular.ttf"
+                android:id="@+id/btnChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"

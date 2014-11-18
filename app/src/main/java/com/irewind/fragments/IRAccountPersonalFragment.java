@@ -1,22 +1,30 @@
 package com.irewind.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.UserDeleteEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,7 +35,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class IRAccountPersonalFragment extends Fragment {
+public class IRAccountPersonalFragment extends Fragment implements View.OnClickListener {
+
+    @Inject
+    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -43,6 +54,17 @@ public class IRAccountPersonalFragment extends Fragment {
 
     @InjectView(R.id.emailTextView)
     TextView emailTextView;
+
+    @InjectView(R.id.editFirst)
+    EditText mFirst;
+    @InjectView(R.id.editLast)
+    EditText mLast;
+
+    @InjectView(R.id.btnDelete)
+    Button btnDelete;
+
+    @InjectView(R.id.btnChange)
+    Button btnChange;
 
     public static IRAccountPersonalFragment newInstance() {
         IRAccountPersonalFragment fragment = new IRAccountPersonalFragment();
@@ -72,6 +94,9 @@ public class IRAccountPersonalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.inject(this, view);
+
+        btnChange.setOnClickListener(this);
+        btnDelete.setOnClickListener(this);
     }
 
     @Override
@@ -105,6 +130,57 @@ public class IRAccountPersonalFragment extends Fragment {
         apiClient.getEventBus().unregister(this);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnChange:
+                change();
+                break;
+            case R.id.btnDelete:
+                delete();
+                break;
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    public void showProgress(final boolean show) {
+//        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//
+//        mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//        mRegisterForm.animate().setDuration(shortAnimTime).alpha(
+//                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                mRegisterForm.setVisibility(show ? View.GONE : View.VISIBLE);
+//            }
+//        });
+//
+//        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//        mProgressView.animate().setDuration(shortAnimTime).alpha(
+//                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            }
+//        });
+    }
+
+    public void change() {
+        String firstname = mFirst.getText().toString();
+        String lastname = mLast.getText().toString();
+
+        showProgress(true);
+        apiClient.updateUser(sessionClient.getActiveSession(), apiClient.getActiveUser(), firstname, lastname);
+    }
+
+    public void delete() {
+        showProgress(true);
+
+        apiClient.deleteUser(sessionClient.getActiveSession(), apiClient.getActiveUser());
+    }
+
     @Subscribe
     public void onEvent(UserInfoLoadedEvent event) {
         updateUserInfo(event.user);
@@ -115,21 +191,39 @@ public class IRAccountPersonalFragment extends Fragment {
         updateUserInfo(null);
     }
 
+    @Subscribe
+    public void onEvent(UserInfoUpdateSuccess event) {
+        showProgress(false);
+    }
+
+    @Subscribe
+    public void onEvent(UserDeleteEvent event) {
+        sessionClient.closeSessionAndClearTokenInformation();
+
+        Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
                 imageLoader.displayImage(user.getPicture(), profileImageView);
-            }
-            else {
+            } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFullname());
             emailTextView.setText(user.getEmail());
-        }
-        else {
+            mFirst.setText(user.getFirstname());
+            mLast.setText(user.getLastname());
+        } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
             emailTextView.setText("");
+            mFirst.setText("");
+            mLast.setText("");
         }
     }
 }

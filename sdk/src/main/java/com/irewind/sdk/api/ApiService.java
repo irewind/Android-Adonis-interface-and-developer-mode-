@@ -42,30 +42,26 @@ public interface ApiService {
                         @Query("newPassword2") String newPassword2,
                         Callback<UserResponse> cb);
 
-    @DELETE("/user/mobileUnregister")
+    @POST("/user/mobileUnregister")
     @FormUrlEncoded
     void deleteAccount(@Header("Authorization") String authorization,
-                       @Field("id") String id,
-                       Callback<UserResponse> cb);
+                       @Field("id") long id,
+                       Callback<Boolean> cb);
 
-    @PATCH("/user/save-info")
+    @POST("/user/save-info")
     @FormUrlEncoded
     void updateUser(@Header("Authorization") String authorization,
                     @Field("id") long userID,
                     @Field("firstName") String firstName,
                     @Field("lastName") String lastName,
-                    @Field("email") String email,
+                    Callback<Boolean> cb);
+
+    @POST("/user/save-info")
+    @FormUrlEncoded
+    void updateUser(@Header("Authorization") String authorization,
+                    @Field("id") long userID,
                     @Field("password") String password,
-                    Callback<UserResponse> cb);
-
-    @PATCH("/user/save-info")
-    @FormUrlEncoded
-    void updateUser(@Header("Authorization") String authorization,
-                    @Field("id") long userID,
-                    @Field("firstName") String firstName,
-                    @Field("lastName") String lastName,
-                    @Field("email") String email,
-                    Callback<UserResponse> cb);
+                    Callback<Boolean> cb);
 
     // --- Videos --- //
 

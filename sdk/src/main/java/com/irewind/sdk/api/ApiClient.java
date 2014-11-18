@@ -7,7 +7,9 @@ import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
+import com.irewind.sdk.api.event.UserDeleteEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccess;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.model.AccessToken;
@@ -92,6 +94,8 @@ public class ApiClient {
                 this.activeUser = user;
 
                 userCachingStrategy.save(UserCachingStrategy.userToBundle(this.activeUser));
+
+                eventBus.post(new UserInfoLoadedEvent(user));
             }
         }
     }
@@ -117,7 +121,6 @@ public class ApiClient {
         if (userBundle != null) {
             User user = UserCachingStrategy.createFromBundle(userBundle);
             setActiveUser(user);
-            eventBus.post(new UserInfoLoadedEvent(user));
         } else {
             eventBus.post(new NoActiveUserEvent());
         }
@@ -168,6 +171,52 @@ public class ApiClient {
                 if (users != null && users.size() > 0) {
                     eventBus.post(new UserListEvent(users));
                 }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void updateUser(final Session session, final User user, String firstname, String lastname) {
+        apiService.updateUser(authHeader(session), user.getId(), firstname, lastname, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                eventBus.post(new UserInfoUpdateSuccess());
+
+                getActiveUserByEmail(session, user.getEmail());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void updateUser(final Session session, final User user, String password) {
+        apiService.updateUser(authHeader(session), user.getId(), password, new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                eventBus.post(new UserInfoUpdateSuccess());
+
+                getActiveUserByEmail(session, user.getEmail());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void deleteUser(final Session session, final User user) {
+        apiService.deleteAccount(authHeader(session), user.getId(), new Callback<Boolean>() {
+            @Override
+            public void success(Boolean success, Response response) {
+                eventBus.post(new UserDeleteEvent());
             }
 
             @Override

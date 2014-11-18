@@ -14,6 +14,7 @@ import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
 import com.irewind.sdk.api.event.SessionOpenFailed;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.sdk.api.event.UserRegisterSuccessEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -310,7 +311,7 @@ public class SessionClient implements SessionRefresher {
         sessionService.addUser(email, firstName, lastName, password, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
-                openSession(email, password);
+                eventBus.post(new UserRegisterSuccessEvent());
             }
 
             @Override

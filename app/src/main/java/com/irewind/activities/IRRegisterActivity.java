@@ -23,6 +23,7 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.SessionOpenFailed;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.sdk.api.event.UserRegisterSuccessEvent;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -293,21 +294,9 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     }
 
     @Subscribe
-    public void onEvent(SessionOpenedEvent event) {
+    public void onEvent(UserRegisterSuccessEvent event) {
         showProgress(false);
 
-        String email = mEmail.getText().toString();
-        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
-
-        Intent intent = new Intent(IRRegisterActivity.this, IRTabActivity.class);
-        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Subscribe
-    public void onEvent(SessionOpenFailed event) {
-        showProgress(false);
+        onBackPressed();
     }
 }
