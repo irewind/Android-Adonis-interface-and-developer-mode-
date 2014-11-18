@@ -2,7 +2,6 @@ package com.irewind.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -39,21 +37,20 @@ import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.SessionOpenFailed;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -73,17 +70,28 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     private static final String TAG = "Login";
 
     // UI references.
-    @InjectView(R.id.login_form) View mLoginFormView;
-    @InjectView(R.id.login_progress) View mProgressView;
-    @InjectView(R.id.email) AutoCompleteTextView mEmailView;
-    @InjectView(R.id.password) EditText mPasswordView;
-    @InjectView(R.id.email_login_form) View mEmailLoginFormView;
-    @InjectView(R.id.plus_sign_in_button) SignInButton mPlusSignInButton;
-    @InjectView(R.id.email_sign_in_button) Button mSignButton;
-    @InjectView(R.id.forgot_password) TextView mForgotPassword;
-    @InjectView(R.id.register) TextView mRegister;
-    @InjectView(R.id.email_sign_in_facebook) Button mSignFacebook;
-    @InjectView(R.id.email_sign_in_google) Button mSignGoogle;
+    @InjectView(R.id.login_form)
+    View mLoginFormView;
+    @InjectView(R.id.login_progress)
+    View mProgressView;
+    @InjectView(R.id.email)
+    AutoCompleteTextView mEmailView;
+    @InjectView(R.id.password)
+    EditText mPasswordView;
+    @InjectView(R.id.email_login_form)
+    View mEmailLoginFormView;
+    @InjectView(R.id.plus_sign_in_button)
+    SignInButton mPlusSignInButton;
+    @InjectView(R.id.email_sign_in_button)
+    Button mSignButton;
+    @InjectView(R.id.forgot_password)
+    TextView mForgotPassword;
+    @InjectView(R.id.register)
+    TextView mRegister;
+    @InjectView(R.id.email_sign_in_facebook)
+    Button mSignFacebook;
+    @InjectView(R.id.email_sign_in_google)
+    Button mSignGoogle;
     @InjectView(R.id.facebook_sign_in_button)
     LoginButton mFacebookLogin;
 
@@ -176,7 +184,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         super.onResume();
         Session session = Session.getActiveSession();
         if (session != null &&
-                (session.isOpened() || session.isClosed()) ) {
+                (session.isOpened() || session.isClosed())) {
             onSessionStateChange(session, session.getState(), null);
         }
 
@@ -229,7 +237,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                         @Override
                         public void onCompleted(GraphUser user,
                                                 Response response) {
-                            // TODO Auto-generated method stub
                             if (user != null && user.asMap() != null && user.asMap().get("email") != null) {
 
                             } else {
@@ -245,7 +252,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.plus_sign_in_button:
                 signIn();
                 break;
@@ -300,11 +307,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        } else if (TextUtils.isEmpty(password)){
+        } else if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (!CheckUtil.isPasswordValid(password)){
+        } else if (!CheckUtil.isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -321,28 +328,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
             sessionClient.openSession(email, password);
         }
-    }
-
-    @Subscribe
-    public void onEvent(SessionOpenedEvent event) {
-        showProgress(false);
-
-        String email = mEmailView.getText().toString();
-        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
-
-        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
-        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Subscribe
-    public void onEvent(SessionOpenFailed event) {
-        showProgress(false);
-
-        mPasswordView.setError(getString(R.string.error_incorrect_password));
-        mPasswordView.requestFocus();
     }
 
     /**
@@ -367,7 +352,29 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             public void onAnimationEnd(Animator animation) {
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
-            });
+        });
+    }
+
+    @Subscribe
+    public void onEvent(SessionOpenedEvent event) {
+        showProgress(false);
+
+        String email = mEmailView.getText().toString();
+        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
+
+        Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
+        intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Subscribe
+    public void onEvent(SessionOpenFailed event) {
+        showProgress(false);
+
+        mPasswordView.setError(getString(R.string.error_incorrect_password));
+        mPasswordView.requestFocus();
     }
 
     @Override

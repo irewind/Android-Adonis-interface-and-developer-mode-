@@ -19,52 +19,6 @@ public interface ApiService {
 
     // --- USER --- //
 
-    @POST("/registeriOS")
-    @FormUrlEncoded
-    void addUser(@Header("Authorization") String authorization,
-                 @Field("email") String email,
-                 @Field("firstName") String firstName,
-                 @Field("lastName") String lastName,
-                 @Field("password") String password,
-                 Callback<UserResponse> cb);
-
-    @POST("/rest/v2/socialMobileLogin")
-    @FormUrlEncoded
-    void socialLogin(@Header("Authorization") String authorization,
-                     @Field("email") String email,
-                     @Field("socialId") String socialId,
-                     @Field("provider") String socialIdProvider,
-                     @Field("firstName") String firstName,
-                     @Field("lastName") String lastName,
-                     @Field("pictureUrl") String pictureURL,
-                     Callback<UserResponse> cb);
-
-    @POST("/rest/v2/socialMobileLogin?provider=FACEBOOK")
-    @FormUrlEncoded
-    void socialLoginFacebook(@Header("Authorization") String authorization,
-                             @Field("email") String email,
-                             @Field("socialId") String socialId,
-                             @Field("firstName") String firstName,
-                             @Field("lastName") String lastName,
-                             @Field("pictureUrl") String pictureURL,
-                             Callback<UserResponse> cb);
-
-    @POST("/rest/v2/socialMobileLogin?provider=GOOGLE")
-    @FormUrlEncoded
-    void socialLoginGoogle(@Header("Authorization") String authorization,
-                           @Field("email") String email,
-                           @Field("socialId") String socialId,
-                           @Field("firstName") String firstName,
-                           @Field("lastName") String lastName,
-                           @Field("pictureUrl") String pictureURL,
-                           Callback<UserResponse> cb);
-
-    @POST("/reset")
-    @FormUrlEncoded
-    void resetPassword(@Header("Authorization") String authorization,
-                       @Field("email") String email,
-                       Callback<BaseResponse> cb);
-
     @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
                   @Query("id") String id,

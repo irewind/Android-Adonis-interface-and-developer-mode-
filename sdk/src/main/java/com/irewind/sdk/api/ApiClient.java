@@ -6,14 +6,11 @@ import android.os.Bundle;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
-import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
-import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.model.AccessToken;
-import com.irewind.sdk.model.BaseResponse;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.UserResponse;
@@ -124,86 +121,6 @@ public class ApiClient {
         } else {
             eventBus.post(new NoActiveUserEvent());
         }
-    }
-
-    public void register(Session session,
-                         String email,
-                         String firstName,
-                         String lastName,
-                         String password) {
-        apiService.addUser(authHeader(session), email, firstName, lastName, password, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
-                if (users != null && users.size() > 0) {
-                    eventBus.post(new UserResponseEvent(users.get(0)));
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
-            }
-        });
-    }
-
-    public void loginFACEBOOK(Session session,
-                              String email,
-                              String socialId,
-                              String firstName,
-                              String lastName,
-                              String pictureURL) {
-        apiService.socialLoginFacebook(authHeader(session), email, socialId, firstName, lastName, pictureURL, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
-                if (users != null && users.size() > 0) {
-                    eventBus.post(new UserResponseEvent(users.get(0)));
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
-            }
-        });
-    }
-
-    public void loginGOOGLE(Session session,
-                            String email,
-                            String socialId,
-                            String socialIdProvider,
-                            String firstName,
-                            String lastName,
-                            String pictureURL) {
-        apiService.socialLoginGoogle(authHeader(session), email, socialId, firstName, lastName, pictureURL, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
-                if (users != null && users.size() > 0) {
-                    eventBus.post(new UserResponseEvent(users.get(0)));
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
-            }
-        });
-    }
-
-    public void resetPassword(AccessToken accessToken, String email) {
-        apiService.resetPassword(authHeader(accessToken), email, new Callback<BaseResponse>() {
-            @Override
-            public void success(BaseResponse o, Response response) {
-                eventBus.post(new ResetPasswordSuccesEvent());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new ResetPasswordFailedEvent());
-            }
-        });
     }
 
     public void getActiveUserByEmail(Session session,

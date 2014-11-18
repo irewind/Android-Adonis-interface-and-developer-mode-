@@ -1,6 +1,8 @@
 package com.irewind.sdk.api;
 
 import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.model.BaseResponse;
+import com.irewind.sdk.model.UserResponse;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -34,4 +36,45 @@ public interface SessionService {
     @POST("/oauth/token?grant_type=password&username="+DEFAULT_USERNAME+"&password="+DEFAUL_PASSWORD)
     @FormUrlEncoded
     void getAccessToken(Callback<AccessToken> callback);
+
+    @POST("/registeriOS")
+    @FormUrlEncoded
+    void addUser(@Field("email") String email,
+                 @Field("firstName") String firstName,
+                 @Field("lastName") String lastName,
+                 @Field("password") String password,
+                 Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/socialMobileLogin")
+    @FormUrlEncoded
+    void socialLogin(@Field("email") String email,
+                     @Field("socialId") String socialId,
+                     @Field("provider") String socialIdProvider,
+                     @Field("firstName") String firstName,
+                     @Field("lastName") String lastName,
+                     @Field("pictureUrl") String pictureURL,
+                     Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/socialMobileLogin?provider=FACEBOOK")
+    @FormUrlEncoded
+    void socialLoginFacebook(@Field("email") String email,
+                             @Field("socialId") String socialId,
+                             @Field("firstName") String firstName,
+                             @Field("lastName") String lastName,
+                             @Field("pictureUrl") String pictureURL,
+                             Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/socialMobileLogin?provider=GOOGLE")
+    @FormUrlEncoded
+    void socialLoginGoogle(@Field("email") String email,
+                           @Field("socialId") String socialId,
+                           @Field("firstName") String firstName,
+                           @Field("lastName") String lastName,
+                           @Field("pictureUrl") String pictureURL,
+                           Callback<BaseResponse> cb);
+
+    @POST("/reset")
+    @FormUrlEncoded
+    void resetPassword(@Field("email") String email,
+                       Callback<BaseResponse> cb);
 }

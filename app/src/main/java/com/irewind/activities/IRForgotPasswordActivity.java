@@ -18,8 +18,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
-import com.irewind.sdk.api.event.AdminAccessTokenFailedEvent;
-import com.irewind.sdk.api.event.AdminAccessTokenSuccessEvent;
 import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.utils.CheckUtil;
@@ -34,9 +32,6 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
 
     @Inject
     SessionClient sessionClient;
-
-    @Inject
-    ApiClient apiClient;
 
     @InjectView(R.id.email)
     EditText mEmail;
@@ -88,7 +83,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.submit:
                 attemptRecover();
                 break;
@@ -139,7 +134,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
             // perform the user login attempt.
             showProgress(true);
 
-            sessionClient.getAdminAccessToken();
+            sessionClient.resetPassword(email);
         }
     }
 
@@ -166,16 +161,6 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
-    }
-
-    @Subscribe
-    public void onEvent(AdminAccessTokenSuccessEvent event) {
-        apiClient.resetPassword(event.accessToken, mEmail.getText().toString());
-    }
-
-    @Subscribe
-    public void onEvent(AdminAccessTokenFailedEvent event) {
-    
     }
 
     @Subscribe

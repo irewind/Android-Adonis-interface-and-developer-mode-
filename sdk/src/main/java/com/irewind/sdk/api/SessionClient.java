@@ -8,6 +8,8 @@ import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
 import com.irewind.sdk.api.event.AdminAccessTokenFailedEvent;
 import com.irewind.sdk.api.event.AdminAccessTokenSuccessEvent;
+import com.irewind.sdk.api.event.ResetPasswordFailedEvent;
+import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
 import com.irewind.sdk.api.event.SessionOpenFailed;
@@ -15,6 +17,7 @@ import com.irewind.sdk.api.event.SessionOpenedEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.model.BaseResponse;
 import com.irewind.sdk.model.Session;
 import com.irewind.sdk.model.SessionState;
 
@@ -30,7 +33,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SessionClient implements SessionRefresher{
+public class SessionClient implements SessionRefresher {
 
     /**
      * The logging tag used by SessionClient.
@@ -120,8 +123,10 @@ public class SessionClient implements SessionRefresher{
         }
     }
 
+    private static final String adminUsername = "tremend@mailinator.com";
+    private static final String adminSecret = "tremend.admin";
     public void getAdminAccessToken() {
-        sessionService.getAccessToken("tremend@mailinator.com", "tremend.admin", new Callback<AccessToken>() {
+        sessionService.getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
                 eventBus.post(new AdminAccessTokenSuccessEvent(accessToken));
@@ -132,6 +137,10 @@ public class SessionClient implements SessionRefresher{
                 eventBus.post(new AdminAccessTokenFailedEvent());
             }
         });
+    }
+
+    private void openAdminSession() {
+        openSession(adminUsername, adminSecret);
     }
 
     public void openSession(String username, String password) {
@@ -268,8 +277,8 @@ public class SessionClient implements SessionRefresher{
      * onCreate method when a Session has previously been saved into a Bundle via saveState to preserve a Session
      * across Activity lifecycle events.
      *
-     * @param context         the Activity or Service creating the Session, must not be null
-     * @param bundle          the bundle to restore the Session from
+     * @param context the Activity or Service creating the Session, must not be null
+     * @param bundle  the bundle to restore the Session from
      * @return the restored Session, or null
      */
     public final Session restoreSession(
@@ -291,5 +300,73 @@ public class SessionClient implements SessionRefresher{
             }
         }
         return null;
+    }
+
+
+    public void register(final String email,
+                         String firstName,
+                         String lastName,
+                         final String password) {
+        sessionService.addUser(email, firstName, lastName, password, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                openSession(email, password);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void loginFACEBOOK(String email,
+                              String socialId,
+                              String firstName,
+                              String lastName,
+                              String pictureURL) {
+        sessionService.socialLoginFacebook(email, socialId, firstName, lastName, pictureURL, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                openAdminSession();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void loginGOOGLE(String email,
+                            String socialId,
+                            String firstName,
+                            String lastName,
+                            String pictureURL) {
+        sessionService.socialLoginGoogle(email, socialId, firstName, lastName, pictureURL, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                openAdminSession();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new RestErrorEvent(error));
+            }
+        });
+    }
+
+    public void resetPassword(String email) {
+        sessionService.resetPassword(email, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse o, Response response) {
+                eventBus.post(new ResetPasswordSuccesEvent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new ResetPasswordFailedEvent());
+            }
+        });
     }
 }
