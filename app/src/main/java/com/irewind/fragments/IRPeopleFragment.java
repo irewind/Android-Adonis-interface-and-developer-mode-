@@ -11,17 +11,22 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.common.IOnSearchCallback;
-import com.irewind.models.PeopleItem;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.UserListEvent;
+import com.irewind.sdk.model.User;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +41,12 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     private ListView mListView;
     private IRPeopleAdapter mAdapter;
 
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
+
     public static IRPeopleFragment newInstance() {
         IRPeopleFragment fragment = new IRPeopleFragment();
         return fragment;
@@ -48,6 +59,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -81,8 +94,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         });
         mListView.setOnItemClickListener(this);
         mListView.setEmptyView(emptyText);
-
-        populate();
     }
 
     @Override
@@ -100,6 +111,16 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         };
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
+
+        apiClient.getEventBus().register(this);
+        apiClient.getUsers(0, 100);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
     }
 
     @Override
@@ -107,29 +128,20 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         //TODO On item click
     }
 
-    private void populate(){ //TODO Remove this
-        List<PeopleItem> data = new ArrayList<PeopleItem>();
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-        data.add(new PeopleItem(0, "", "", Calendar.getInstance().getTime(), 10));
-
-        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, data);
-        mListView.setAdapter(mAdapter);
-    }
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_search:
                 IRTabActivity.searchItem.expandActionView();
                 break;
         }
+    }
+
+    @Subscribe
+    public void onEvent(UserListEvent event) {
+        List<User> users = event.users;
+
+        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, imageLoader, users);
+        mListView.setAdapter(mAdapter);
     }
 }

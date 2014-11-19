@@ -43,7 +43,6 @@ import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
 import com.irewind.sdk.api.event.SocialLoginFailEvent;
@@ -105,9 +104,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             onSessionStateChange(session, state, exception);
         }
     };
-
-    @Inject
-    protected SessionClient sessionClient;
 
     @Inject
     protected ApiClient apiClient;
@@ -191,7 +187,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             onSessionStateChange(session, session.getState(), null);
         }
 
-        sessionClient.getEventBus().register(this);
+        apiClient.getEventBus().register(this);
 
         uiHelper.onResume();
     }
@@ -200,7 +196,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     protected void onPause() {
         super.onPause();
 
-        sessionClient.getEventBus().unregister(this);
+        apiClient.getEventBus().unregister(this);
 
         uiHelper.onPause();
     }
@@ -331,7 +327,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             // perform the user login attempt.
             showProgress(true);
 
-            sessionClient.openSession(email, password);
+            apiClient.openSession(email, password);
         }
     }
 
@@ -372,7 +368,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             String firstname = person.getName().getGivenName();
             String lastname = person.getName().getFamilyName();
             String pictureUrl = person.getImage().getUrl();
-            sessionClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+            apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
         }
@@ -475,7 +471,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         showProgress(false);
 
         String email = mEmailView.getText().toString();
-        apiClient.getActiveUserByEmail(sessionClient.getActiveSession(), email);
+        apiClient.getActiveUserByEmail(email);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);

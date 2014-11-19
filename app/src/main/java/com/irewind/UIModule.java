@@ -11,7 +11,11 @@ import com.irewind.fragments.IRAccountFragment;
 import com.irewind.fragments.IRAccountNotificationFragment;
 import com.irewind.fragments.IRAccountPasswordFragment;
 import com.irewind.fragments.IRAccountPersonalFragment;
+import com.irewind.fragments.IRLibraryFragment;
 import com.irewind.fragments.IRMoreFragment;
+import com.irewind.fragments.IRPeopleFragment;
+import com.irewind.fragments.IRRewindFunctionalityFragment;
+import com.irewind.fragments.IRVideoDetailsFragment;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -36,6 +40,13 @@ import dagger.Provides;
                 IRRegisterActivity.class,
 
                 IRTabActivity.class,
+
+                IRLibraryFragment.class,
+                IRVideoDetailsFragment.class,
+
+                IRPeopleFragment.class,
+
+                IRRewindFunctionalityFragment.class,
 
                 IRAccountFragment.class,
                 IRAccountPersonalFragment.class,

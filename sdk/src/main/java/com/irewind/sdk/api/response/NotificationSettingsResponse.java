@@ -1,6 +1,7 @@
-package com.irewind.sdk.model;
+package com.irewind.sdk.api.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.irewind.sdk.model.NotificationSettings;
 
 import java.util.List;
 

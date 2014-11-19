@@ -3,7 +3,6 @@ package com.irewind;
 import android.content.Context;
 
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.iRewindConfig;
 
 import javax.inject.Singleton;
@@ -45,15 +44,8 @@ public class IRModule {
 
     @Singleton
     @Provides
-    SessionClient provideSessionClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
-        SessionClient sessionClient = new SessionClient(context, config, eventBus);
-        return sessionClient;
-    }
-
-    @Singleton
-    @Provides
     ApiClient provideApiClient(final Context context, final iRewindConfig config, final EventBus eventBus) {
-        ApiClient apiClient = new ApiClient(context, config.getBaseURL(), eventBus);
+        ApiClient apiClient = new ApiClient(context, config, eventBus);
         return apiClient;
     }
 }

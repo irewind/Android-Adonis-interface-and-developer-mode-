@@ -1,14 +1,14 @@
 package com.irewind.sdk.api;
 
-import com.irewind.sdk.model.BaseResponse;
-import com.irewind.sdk.model.NotificationSettingsResponse;
-import com.irewind.sdk.model.Tag;
-import com.irewind.sdk.model.UserResponse;
-import com.irewind.sdk.model.Video;
-import com.squareup.okhttp.Call;
+import com.irewind.sdk.api.response.CommentListResponse;
+import com.irewind.sdk.api.response.NotificationSettingsResponse;
+import com.irewind.sdk.api.response.TagListResponse;
+import com.irewind.sdk.api.response.UserListResponse;
+import com.irewind.sdk.api.response.UserResponse;
+import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoResponse;
 
 import retrofit.Callback;
-import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -23,20 +23,20 @@ public interface ApiService {
     // --- USER --- //
 
     @GET("/rest/user/")
+    void users(@Header("Authorization") String authorization,
+               @Query("page") Integer page,
+               @Query("size") Integer size,
+               Callback<UserListResponse> cb);
+
+    @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
-                  @Query("id") long id,
+                  @Path("idKeyword") long id,
                   Callback<UserResponse> cb);
 
     @GET("/rest/user/search/findByEmail")
     void userByEmail(@Header("Authorization") String authorization,
                      @Query("email") String email,
                      Callback<UserResponse> cb);
-
-    @GET("/rest/user/search/getAllActiveUsersOrderedByLastLoginDate")
-    void users(@Header("Authorization") String authorization,
-               @Query("page") Integer page,
-               @Query("size") Integer size,
-               Callback<UserResponse> cb);
 
     @GET("/user/changePassword")
     void changePassword(@Header("Authorization") String authorization,
@@ -62,25 +62,36 @@ public interface ApiService {
 
     // --- Videos --- //
 
+    @GET("/rest/video/")
+    void videoInfo(@Header("Authorization") String authorization,
+                   @Query("id") long videoID,
+                   Callback<VideoResponse> cb);
+
+    @GET("/rest/video/search/findVideosWithPagination")
+    void getVideos(@Header("Authorization") String authorization,
+                   @Query("pageNo") Integer page,
+                   @Query("pageSize") Integer size,
+                   Callback<VideoListResponse> cb);
+
     @GET("/rest/video/search/findVideosWithPagination")
     void videosForUser(@Header("Authorization") String authorization,
                        @Query("user") long userID,
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
-                       Callback<Video> cb);
+                       Callback<VideoListResponse> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
     void relatedVideos(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
-                       Callback<Video> cb);
+                       Callback<VideoListResponse> cb);
 
     @GET("/rest/v2/search-videos")
     void searchVideos(@Header("Authorization") String authorization,
                       @Query("pageNo") Integer page,
                       @Query("pageSize") Integer size,
-                      Callback<Video> cb);
+                      Callback<VideoListResponse> cb);
 
     // --- Tags --- //
 
@@ -89,15 +100,14 @@ public interface ApiService {
                       @Query("video") long videoID,
                       @Query("pageNo") Integer page,
                       @Query("pageSize") Integer size,
-                      Callback<Tag> cb);
+                      Callback<TagListResponse> cb);
 
-    // --- Permissions --- // TODO
+    // --- Permissions --- //
 
     @GET("/rest/v2/get-video-access/?permission=VIEW")
     void videoPermissionView(@Header("Authorization") String authorization,
                              @Query("videoId") long videoID,
                              Callback cb);
-
 
     // --- Notifications --- //
 
@@ -136,18 +146,21 @@ public interface ApiService {
     void videoComments(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
-                       @Query("pageSize") Integer size);
-
-    @PATCH("/rest/video-comment")
-    @FormUrlEncoded
-    void postVideoComment(@Header("Authorization") String authorization,
-                          @Field("content") String content,
-                          @Field("video") String videoURL);
+                       @Query("pageSize") Integer size,
+                       Callback<CommentListResponse> cb);
 
     @PATCH("/rest/video-comment")
     @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
-                          @Field("parentVideoComment") String parentVideoCommentID);
+                          Callback<Boolean> cb);
+
+    @PATCH("/rest/video-comment")
+    @FormUrlEncoded
+    void postVideoComment(@Header("Authorization") String authorization,
+                          @Field("content") String content,
+                          @Field("video") String videoURL,
+                          @Field("parentVideoComment") String parentVideoCommentID,
+                          Callback<Boolean> cb);
 }
