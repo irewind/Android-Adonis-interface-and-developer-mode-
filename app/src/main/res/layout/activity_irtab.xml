@@ -41,7 +41,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_gravity="bottom"
-                android:src="@drawable/btn_tab_video"
+                android:src="@drawable/btn_tab_library"
                 android:scaleType="fitCenter"
                 android:padding="6dp"
                 android:background="@color/irapptheme_color" />
