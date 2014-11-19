@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/playerLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="180dp">
 
         <VideoView
             android:id="@+id/videoView1"
@@ -47,5 +47,43 @@
             android:layout_centerVertical="true"
             android:src="@drawable/pause" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/playerLayout">
+
+        <Button
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/about"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/related"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/related"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/comments"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <com.irewind.ui.views.NonSwipeableViewPager
+        android:id="@+id/jazzyVideo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
 
 </RelativeLayout>

@@ -68,4 +68,7 @@
     <string name="movies">Movies</string>
     <string name="people">People</string>
     <string name="no_account">Don\'t have an account?</string>
+    <string name="about">About</string>
+    <string name="related">Related</string>
+    <string name="comments">Comments</string>
 </resources>

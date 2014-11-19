@@ -10,10 +10,12 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,7 +23,10 @@ import android.widget.VideoView;
 
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
+import com.irewind.adapters.IRMoviePagerAdapter;
 import com.irewind.player.SeekBarV3Fragment;
+import com.irewind.ui.views.NonSwipeableViewPager;
+import com.jazzyviewpager.JazzyViewPager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,6 +39,14 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     ImageView playPause;
     @InjectView(R.id.seekBarLayout)
     LinearLayout layoutBottom;
+    @InjectView(R.id.jazzyVideo)
+    NonSwipeableViewPager mJazzyViewPager;
+    @InjectView(R.id.about)
+    Button btnAbout;
+    @InjectView(R.id.related)
+    Button btnRelated;
+    @InjectView(R.id.comments)
+    Button btnComments;
 
     private SeekBarV3Fragment seekBar;
     private int fadeTime = 3000;
@@ -44,7 +57,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
         @Override
         public void onTick(long millisUntilFinished) {
-            if (videoView!= null) {
+            if (videoView != null) {
                 seekBar.setTime(videoView.getCurrentPosition(), videoView.getDuration());
                 if (fadeTime > 0) {
                     fadeTime -= 500;
@@ -89,6 +102,10 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
+        btnAbout.setOnClickListener(this);
+        btnRelated.setOnClickListener(this);
+        btnComments.setOnClickListener(this);
+
         seekBar = (SeekBarV3Fragment) getChildFragmentManager().findFragmentById(R.id.seek_fragment);
         seekBar.setOnSeekBarEventListener(new SeekBarV3Fragment.onSeekBarEvent() {
 
@@ -116,6 +133,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 return true;
             }
         });
+
+        setupJazziness(JazzyViewPager.TransitionEffect.Standard);
 
         playPause.setOnClickListener(this);
         ct.start();
@@ -175,14 +194,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     @SuppressLint("NewApi")
     public void hide() {
 
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        // this.setTheme(android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         try {
-//            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) layoutTop.getLayoutParams();
-//            params1.width = layoutTop.getWidth();
-//            layoutTop.setLayoutParams(params1);
-
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
             params2.width = layoutBottom.getWidth();
             layoutBottom.setLayoutParams(params2);
@@ -224,10 +236,6 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int pixels = (int) (-layoutBottom.getHeight() * (animation.getAnimatedFraction()));
-//
-//                    RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) layoutTop.getLayoutParams();
-//                    params1.setMargins(0, pixels, 0, 0);
-//                    layoutTop.setLayoutParams(params1);
 
                     LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
                     params2.setMargins(0, -pixels, 0, 0);
@@ -252,11 +260,6 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-
-//                    RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) layoutTop.getLayoutParams();
-//                    params1.setMargins(0, -layoutTop.getHeight(), 0, 0);
-//                    layoutTop.setLayoutParams(params1);
-
                     LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
                     params2.setMargins(0, layoutBottom.getHeight(), 0, 0);
                     layoutBottom.setLayoutParams(params2);
@@ -277,7 +280,6 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     }
 
     public void show() {
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         ObjectAnimator animation = ObjectAnimator.ofFloat(playPause, "alpha", 1f);
         animation.setDuration(500);
 
@@ -286,10 +288,6 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int pixels = (int) (-layoutBottom.getHeight() * (1 - animation.getAnimatedFraction()));
-
-//                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) layoutTop.getLayoutParams();
-//                params1.setMargins(0, pixels, 0, 0);
-//                layoutTop.setLayoutParams(params1);
 
                 LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
                 params2.setMargins(0, -pixels, 0, 0);
@@ -314,11 +312,6 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
             @Override
             public void onAnimationEnd(Animator animation) {
-
-//                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) layoutTop.getLayoutParams();
-//                params1.setMargins(0, 0, 0, 0);
-//                layoutTop.setLayoutParams(params1);
-
                 LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
                 params2.setMargins(0, 0, 0, 0);
                 layoutBottom.setLayoutParams(params2);
@@ -344,9 +337,15 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         }
     }
 
+    private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
+        mJazzyViewPager.setTransitionEffect(effect);
+        mJazzyViewPager.setAdapter(new IRMoviePagerAdapter(getChildFragmentManager(), mJazzyViewPager));
+        mJazzyViewPager.setPageMargin(0);
+    }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.imageViewPlay:
                 if (fadeTime > 0) {
                     isPlaying = !isPlaying;
@@ -367,6 +366,21 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                     }
                 } else {
                     hideShow();
+                }
+                break;
+            case R.id.about:
+                if (mJazzyViewPager.getCurrentItem() != 0) {
+                    mJazzyViewPager.setCurrentItem(0, false);
+                }
+                break;
+            case R.id.related:
+                if (mJazzyViewPager.getCurrentItem() != 1) {
+                    mJazzyViewPager.setCurrentItem(1, false);
+                }
+                break;
+            case R.id.comments:
+                if (mJazzyViewPager.getCurrentItem() != 2) {
+                    mJazzyViewPager.setCurrentItem(2, false);
                 }
                 break;
         }
