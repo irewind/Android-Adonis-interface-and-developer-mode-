@@ -8,18 +8,35 @@ import java.util.List;
 
 public class UserListResponse extends BaseResponse {
 
-    @SerializedName("content")
-    private List<User> content;
+    @SerializedName("_embedded")
+    private EmbeddedResponse embeddedResponse;
 
     @SerializedName("page")
     private PageInfo pageInfo;
 
-    public List<User> getContent() {
-        return content;
+    public EmbeddedResponse getEmbeddedResponse() {
+        return embeddedResponse;
     }
 
     public PageInfo getPageInfo() {
         return pageInfo;
+    }
+
+    public class EmbeddedResponse {
+
+        @SerializedName("user")
+        private List<User> users;
+
+        public List<User> getUsers() {
+            return users;
+        }
+
+        @Override
+        public String toString() {
+            return "UserListResponse.EmbeddedResponse{" +
+                    "users=" + users +
+                    '}';
+        }
     }
 
     @Override
@@ -31,7 +48,7 @@ public class UserListResponse extends BaseResponse {
                     '}';
         }
         return "UserListResponse{" +
-                "content=" + content +
+                "embeddedResponse=" + embeddedResponse +
                 ", pageInfo=" + pageInfo +
                 '}';
     }
