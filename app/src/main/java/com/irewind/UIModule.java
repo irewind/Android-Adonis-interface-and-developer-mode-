@@ -2,7 +2,6 @@ package com.irewind;
 
 import android.content.Context;
 
-import com.facebook.internal.ImageDownloader;
 import com.irewind.activities.IRForgotPasswordActivity;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRRegisterActivity;

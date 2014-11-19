@@ -71,4 +71,6 @@
     <string name="about">About</string>
     <string name="related">Related</string>
     <string name="comments">Comments</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="dummy_text">Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</string>
 </resources>

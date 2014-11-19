@@ -135,6 +135,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         });
 
         setupJazziness(JazzyViewPager.TransitionEffect.Standard);
+        setupButtons(0);
 
         playPause.setOnClickListener(this);
         ct.start();
@@ -341,6 +342,22 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         mJazzyViewPager.setTransitionEffect(effect);
         mJazzyViewPager.setAdapter(new IRMoviePagerAdapter(getChildFragmentManager(), mJazzyViewPager));
         mJazzyViewPager.setPageMargin(0);
+        mJazzyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                setupButtons(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
     @Override
@@ -382,6 +399,26 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 if (mJazzyViewPager.getCurrentItem() != 2) {
                     mJazzyViewPager.setCurrentItem(2, false);
                 }
+                break;
+        }
+    }
+
+    private void setupButtons(int position){
+        switch (position){
+            case 0:
+                btnAbout.setSelected(true);
+                btnRelated.setSelected(false);
+                btnComments.setSelected(false);
+                break;
+            case 1:
+                btnAbout.setSelected(false);
+                btnRelated.setSelected(true);
+                btnComments.setSelected(false);
+                break;
+            case 2:
+                btnAbout.setSelected(false);
+                btnRelated.setSelected(false);
+                btnComments.setSelected(true);
                 break;
         }
     }

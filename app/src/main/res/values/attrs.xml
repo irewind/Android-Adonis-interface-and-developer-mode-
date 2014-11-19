@@ -21,4 +21,11 @@
     </declare-styleable>
 
     <attr name="fontPath" format="string" />
+
+    <attr name="tagViewStyle" format="reference" />
+    <declare-styleable name="TagView">
+        <attr name="tagCornerRadius" format="dimension" />
+        <attr name="tagPadding" format="dimension" />
+        <attr name="tagUppercase" format="boolean" />
+    </declare-styleable>
 </resources>

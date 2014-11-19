@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.irewind.fragments.IRVideoDetailsFragment">
+    tools:context="com.irewind.fragments.IRVideoDetailsFragment"
+    android:background="@color/gray_light_video">
 
     <RelativeLayout
         android:id="@+id/playerLayout"
@@ -58,26 +59,32 @@
         <Button
             android:id="@+id/about"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/about"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:background="@drawable/btn_tab_video"/>
 
         <Button
             android:id="@+id/related"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/related"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:background="@drawable/btn_tab_video"/>
 
         <Button
             android:id="@+id/comments"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="@string/comments"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:background="@drawable/btn_tab_video"/>
     </LinearLayout>
 
     <com.irewind.ui.views.NonSwipeableViewPager
