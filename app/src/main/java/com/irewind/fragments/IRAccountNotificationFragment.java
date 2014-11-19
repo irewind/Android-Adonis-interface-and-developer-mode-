@@ -19,7 +19,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
 import com.irewind.sdk.api.event.NotificationSettingsUpdateFailEvent;
@@ -29,19 +28,17 @@ import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import javax.inject.Inject;
 
-public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     @InjectView(R.id.switchCommentNotifications)
     Switch switchCommentNotifications;
     @InjectView(R.id.switchLikeNotifications)
     Switch switchLikeNotifications;
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -123,7 +120,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
         }
     }
@@ -132,10 +129,10 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switchCommentNotifications:
-                apiClient.toggleCommentNotifications(sessionClient.getActiveSession(), isChecked);
+                apiClient.toggleCommentNotifications(isChecked);
                 break;
             case R.id.switchLikeNotifications:
-                apiClient.toggleLikeNotifications(sessionClient.getActiveSession(), isChecked);
+                apiClient.toggleLikeNotifications(isChecked);
                 break;
         }
     }
@@ -164,7 +161,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     }
 
     private void fetchUserNotificationSettings() {
-        apiClient.getUserNotificationSettings(sessionClient.getActiveSession(), apiClient.getActiveUser());
+        apiClient.getUserNotificationSettings(apiClient.getActiveUser());
     }
 
     // --- Events --- //
