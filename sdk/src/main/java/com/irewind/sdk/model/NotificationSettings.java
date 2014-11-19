@@ -23,19 +23,30 @@ public class NotificationSettings {
         return id;
     }
 
-    public boolean isShareNotification() {
+    public boolean shareNotificationEnabled() {
         return shareNotification;
     }
 
-    public boolean isCommentNotification() {
+    public boolean commentNotificationEnabled() {
         return commentNotification;
     }
 
-    public boolean isLikeNotification() {
+    public boolean likeNotificationEnabled() {
         return likeNotification;
     }
 
-    public boolean isMsgNotification() {
+    public boolean msgNotificationEnabled() {
         return msgNotification;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationSettings{" +
+                "id=" + id +
+                ", shareNotification=" + shareNotification +
+                ", commentNotification=" + commentNotification +
+                ", likeNotification=" + likeNotification +
+                ", msgNotification=" + msgNotification +
+                '}';
     }
 }

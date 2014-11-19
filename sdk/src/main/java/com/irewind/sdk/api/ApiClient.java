@@ -6,6 +6,10 @@ import android.os.Bundle;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.NotificationSettingsListFailedEvent;
+import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
+import com.irewind.sdk.api.event.NotificationSettingsUpdateFailEvent;
+import com.irewind.sdk.api.event.NotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.api.event.PasswordChangeFailEvent;
 import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
 import com.irewind.sdk.api.event.RestErrorEvent;
@@ -14,16 +18,20 @@ import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserListEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsLoadedEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsUpdateFailEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsUpdateSuccessEvent;
+import com.irewind.sdk.api.event.UserListFailEvent;
 import com.irewind.sdk.api.event.UserResponseEvent;
+import com.irewind.sdk.api.event.VideoInfoEvent;
+import com.irewind.sdk.api.event.VideoInfoFailEvent;
+import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.response.UserListResponse;
+import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoResponse;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.NotificationSettings;
-import com.irewind.sdk.model.NotificationSettingsResponse;
-import com.irewind.sdk.model.Session;
+import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.model.User;
-import com.irewind.sdk.model.UserResponse;
+import com.irewind.sdk.api.response.UserResponse;
+import com.irewind.sdk.model.Video;
 
 import java.util.List;
 
@@ -171,19 +179,19 @@ public class ApiClient {
         });
     }
 
-    public void getUsers(Session session, Integer page) {
-        apiService.users(authHeader(session), page, 20, new Callback<UserResponse>() {
+    public void getUsers(Session session, final int page, int perPage) {
+        apiService.users(authHeader(session), page, perPage, new Callback<UserListResponse>() {
             @Override
-            public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
+            public void success(UserListResponse userListResponse, Response response) {
+                List<User> users = userListResponse.getContent();
                 if (users != null && users.size() > 0) {
-                    eventBus.post(new UserListEvent(users));
+                    eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                eventBus.post(new UserListFailEvent(error, page));
             }
         });
     }
@@ -250,14 +258,14 @@ public class ApiClient {
                 if (content != null) {
                     List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
                     if (results != null && results.size() > 0) {
-                        eventBus.post(new UserNotificationSettingsLoadedEvent(results.get(0)));
+                        eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
                     }
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                eventBus.post(new NotificationSettingsListFailedEvent(error));
             }
         });
     }
@@ -267,16 +275,16 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                    eventBus.post(new NotificationSettingsUpdateSuccessEvent());
                 }
                 else {
-                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                eventBus.post(new NotificationSettingsUpdateFailEvent());
             }
         });
     }
@@ -286,15 +294,15 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                    eventBus.post(new NotificationSettingsUpdateSuccessEvent());
                 } else {
-                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                eventBus.post(new NotificationSettingsUpdateFailEvent());
             }
         });
     }
@@ -304,15 +312,15 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                    eventBus.post(new NotificationSettingsUpdateSuccessEvent());
                 } else {
-                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                eventBus.post(new NotificationSettingsUpdateFailEvent());
             }
         });
     }
@@ -322,15 +330,48 @@ public class ApiClient {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
-                    eventBus.post(new UserNotificationSettingsUpdateSuccessEvent());
+                    eventBus.post(new NotificationSettingsUpdateSuccessEvent());
                 } else {
-                    eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new UserNotificationSettingsUpdateFailEvent());
+                eventBus.post(new NotificationSettingsUpdateFailEvent());
+            }
+        });
+    }
+
+    // --- Videos --- //
+
+    void getVideoInfo(Session session, long videoID) {
+        apiService.videoInfo(authHeader(session), videoID, new Callback<VideoResponse>() {
+            @Override
+            public void success(VideoResponse videoResponse, Response response) {
+                eventBus.post(new VideoInfoEvent(videoResponse));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new VideoInfoFailEvent(error));
+            }
+        });
+    }
+
+    void listVideos(Session session, int page, int perPage) {
+        apiService.getVideos(authHeader(session), page, perPage, new Callback<VideoListResponse>() {
+            @Override
+            public void success(VideoListResponse videoListResponse, Response response) {
+                List<Video> videos = videoListResponse.getContent();
+                if (videos != null && videos.size() > 0) {
+                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
     }

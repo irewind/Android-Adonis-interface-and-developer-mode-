@@ -2,10 +2,10 @@ package com.irewind.sdk.api.event;
 
 import com.irewind.sdk.model.NotificationSettings;
 
-public class UserNotificationSettingsLoadedEvent {
+public class NotificationSettingsListSuccessEvent {
     public NotificationSettings notificationSettings;
 
-    public UserNotificationSettingsLoadedEvent(NotificationSettings settings) {
+    public NotificationSettingsListSuccessEvent(NotificationSettings settings) {
         notificationSettings = settings;
     }
 }
