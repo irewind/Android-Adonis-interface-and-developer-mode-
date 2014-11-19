@@ -511,9 +511,12 @@ public class ApiClient implements SessionRefresher{
         apiService.users(authHeader(session), page, perPage, new Callback<UserListResponse>() {
             @Override
             public void success(UserListResponse userListResponse, Response response) {
-                List<User> users = userListResponse.getContent();
-                if (users != null && users.size() > 0) {
-                    eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
+                UserListResponse.EmbeddedResponse embeddedUserResponse = userListResponse.getEmbeddedResponse();
+                if (embeddedUserResponse != null) {
+                    List<User> users = embeddedUserResponse.getUsers();
+                    if (users != null && users.size() > 0) {
+                        eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
+                    }
                 }
             }
 
