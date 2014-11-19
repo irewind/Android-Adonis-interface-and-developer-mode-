@@ -468,8 +468,8 @@ public class ApiClient implements SessionRefresher{
         }
     }
 
-    public void getActiveUserByEmail(Session session,
-                                     String email) {
+    public void getActiveUserByEmail(String email) {
+        Session session = getActiveSession();
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
@@ -487,8 +487,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void getUserByEmail(Session session,
-                               String email) {
+    public void getUserByEmail(String email) {
+        Session session = getActiveSession();
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
@@ -505,7 +505,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void getUsers(Session session, final int page, int perPage) {
+    public void getUsers(final int page, int perPage) {
+        Session session = getActiveSession();
         apiService.users(authHeader(session), page, perPage, new Callback<UserListResponse>() {
             @Override
             public void success(UserListResponse userListResponse, Response response) {
@@ -522,14 +523,15 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void updateUser(final Session session, final User user, String firstname, String lastname) {
+    public void updateUser(final User user, String firstname, String lastname) {
+        Session session = getActiveSession();
         apiService.updateUser(authHeader(session), user.getId(), firstname, lastname, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new UserInfoUpdateSuccessEvent());
 
-                    getActiveUserByEmail(session, user.getEmail());
+                    getActiveUserByEmail(user.getEmail());
                 } else {
                     eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                 }
@@ -542,7 +544,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void changeUserPassword(final Session session, final User user, String currentPassword, String newPassword) {
+    public void changeUserPassword(final User user, String currentPassword, String newPassword) {
+        Session session = getActiveSession();
         apiService.changePassword(authHeader(session), user.getId(), currentPassword, newPassword, newPassword, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -560,7 +563,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void deleteUser(final Session session, final User user) {
+    public void deleteUser(final User user) {
+        Session session = getActiveSession();
         apiService.deleteAccount(authHeader(session), user.getId(), new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -576,7 +580,8 @@ public class ApiClient implements SessionRefresher{
 
     // --- Notification Settings --- //
 
-    public void getUserNotificationSettings(final Session session, final User user) {
+    public void getUserNotificationSettings(final User user) {
+        Session session = getActiveSession();
         apiService.userNotificationSettings(authHeader(session), user.getId(), new Callback<NotificationSettingsResponse>() {
             @Override
             public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
@@ -596,7 +601,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void toggleCommentNotifications(final Session session, boolean status) {
+    public void toggleCommentNotifications(boolean status) {
+        Session session = getActiveSession();
         apiService.toggleCommentNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -615,7 +621,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void toggleShareNotifications(final Session session, boolean status) {
+    public void toggleShareNotifications(boolean status) {
+        Session session = getActiveSession();
         apiService.toggleShareNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -633,7 +640,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void toggleLikeNotifications(final Session session, boolean status) {
+    public void toggleLikeNotifications(boolean status) {
+        Session session = getActiveSession();
         apiService.toggleLikeNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -651,7 +659,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    public void toggleMessageNotifications(final Session session, boolean status) {
+    public void toggleMessageNotifications(boolean status) {
+        Session session = getActiveSession();
         apiService.toggleMessageNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -671,7 +680,8 @@ public class ApiClient implements SessionRefresher{
 
     // --- Videos --- //
 
-    void getVideoInfo(Session session, long videoID) {
+    void getVideoInfo(long videoID) {
+        Session session = getActiveSession();
         apiService.videoInfo(authHeader(session), videoID, new Callback<VideoResponse>() {
             @Override
             public void success(VideoResponse videoResponse, Response response) {
@@ -685,7 +695,8 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    void listVideos(Session session, int page, int perPage) {
+    void listVideos(int page, int perPage) {
+        Session session = getActiveSession();
         apiService.getVideos(authHeader(session), page, perPage, new Callback<VideoListResponse>() {
             @Override
             public void success(VideoListResponse videoListResponse, Response response) {
