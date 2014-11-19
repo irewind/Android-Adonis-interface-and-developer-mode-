@@ -9,9 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.irewind.R;
-import com.irewind.models.PeopleItem;
 import com.irewind.models.RelatedItem;
-import com.irewind.ui.views.RoundedImageView;
 
 import java.util.List;
 

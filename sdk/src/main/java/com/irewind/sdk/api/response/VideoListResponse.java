@@ -7,18 +7,35 @@ import com.irewind.sdk.model.Video;
 import java.util.List;
 
 public class VideoListResponse extends BaseResponse {
-    @SerializedName("content")
-    private List<Video> content;
+    @SerializedName("_embedded")
+    private EmbeddedResponse embeddedResponse;
 
     @SerializedName("page")
     private PageInfo pageInfo;
 
-    public List<Video> getContent() {
-        return content;
+    public EmbeddedResponse getEmbeddedResponse() {
+        return embeddedResponse;
     }
 
     public PageInfo getPageInfo() {
         return pageInfo;
+    }
+
+    public class EmbeddedResponse {
+
+        @SerializedName("video")
+        private List<Video> videos;
+
+        public List<Video> getVideos() {
+            return videos;
+        }
+
+        @Override
+        public String toString() {
+            return "EmbeddedResponse.EmbeddedResponse{" +
+                    "videos=" + videos +
+                    '}';
+        }
     }
 
     @Override
@@ -30,7 +47,7 @@ public class VideoListResponse extends BaseResponse {
                     '}';
         }
         return "VideoListResponse{" +
-                "content=" + content +
+                "embeddedResponse=" + embeddedResponse +
                 ", pageInfo=" + pageInfo +
                 '}';
     }

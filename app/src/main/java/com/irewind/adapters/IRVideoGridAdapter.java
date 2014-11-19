@@ -9,31 +9,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.irewind.R;
-import com.irewind.models.MovieGridItem;
+import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.EllipsingTextView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
-public class IRMovieGridAdapter extends BaseAdapter {
+public class IRVideoGridAdapter extends BaseAdapter {
 
-    private List<MovieGridItem> dataList;
+    private List<Video> videos;
     private Context mContext;
     private int mResourceid;
+    private ImageLoader imageLoader;
 
-    public IRMovieGridAdapter(Context context, int resourceId, List<MovieGridItem> dataList) {
-        this.dataList = dataList;
+    public IRVideoGridAdapter(Context context, int resourceId, ImageLoader imageLoader, List<Video> videos) {
+        this.videos = videos;
         this.mContext = context;
         this.mResourceid = resourceId;
+        this.imageLoader = imageLoader;
     }
 
     @Override
     public int getCount() {
-        return dataList.size();
+        return videos.size();
     }
 
     @Override
-    public MovieGridItem getItem(int position) {
-        return dataList.get(position);
+    public Video getItem(int position) {
+        return videos.get(position);
     }
 
     @Override
@@ -61,9 +64,18 @@ public class IRMovieGridAdapter extends BaseAdapter {
             holder = (GalleryHolder) v.getTag();
         }
 
-        MovieGridItem info = dataList.get(position);
+        Video video = videos.get(position);
 
-        holder.title.setText(info.getTitle());
+        if (video.getThumbnail() != null && video.getThumbnail().length() > 0) {
+            imageLoader.displayImage(video.getThumbnail(), holder.image);
+        }
+        else {
+            holder.image.setImageResource(R.drawable.ic_launcher);
+        }
+
+        holder.title.setText(video.getTitle() != null ? video.getTitle() : "");
+
+        holder.username.setText(video.getAuthorName() != null ? video.getAuthorName() : "");
 
         return v;
     }

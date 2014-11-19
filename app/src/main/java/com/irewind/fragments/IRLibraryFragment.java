@@ -3,36 +3,34 @@ package com.irewind.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRTabActivity;
+import com.irewind.adapters.IRVideoGridAdapter;
+import com.irewind.common.IOnSearchCallback;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.model.Video;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRMovieGridAdapter;
-import com.irewind.common.IOnSearchCallback;
-import com.irewind.models.MovieGridItem;
-import com.jazzyviewpager.JazzyViewPager;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class IRLibraryFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -42,7 +40,13 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     TextView emptyText;
 
     private GridView mGridView;
-    private IRMovieGridAdapter mAdapter;
+    private IRVideoGridAdapter mAdapter;
+
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
@@ -94,8 +98,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mGridView = mPullToRefreshGridView.getRefreshableView();
         mGridView.setEmptyView(emptyText);
         mGridView.setOnItemClickListener(this);
-
-        populate();
     }
 
     @Override
@@ -114,33 +116,16 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
+
+        apiClient.getEventBus().register(this);
+        apiClient.listVideos(0, 100);
     }
 
-    private void populate(){
-        //TODO remove this
-        List<MovieGridItem> movieList = new ArrayList<MovieGridItem>();
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
+    @Override
+    public void onPause() {
+        super.onPause();
 
-
-        mAdapter = new IRMovieGridAdapter(getActivity(), R.layout.cell_movie_grid, movieList);
-        mGridView.setAdapter(mAdapter);
-
+        apiClient.getEventBus().unregister(this);
     }
 
     @Override
@@ -157,10 +142,18 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_search:
                 IRTabActivity.searchItem.expandActionView();
                 break;
         }
+    }
+
+    @Subscribe
+    public void onEvent(VideoListEvent event) {
+        List<Video> videos = event.videos;
+
+        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid, imageLoader, videos);
+        mGridView.setAdapter(mAdapter);
     }
 }

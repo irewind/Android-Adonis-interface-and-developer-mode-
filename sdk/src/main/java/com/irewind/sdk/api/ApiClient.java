@@ -38,17 +38,17 @@ import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.BaseResponse;
+import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
 import com.irewind.sdk.api.response.UserListResponse;
+import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.NotificationSettings;
-import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.model.User;
-import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.model.Video;
 
 import java.io.ByteArrayInputStream;
@@ -64,7 +64,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ApiClient implements SessionRefresher{
+public class ApiClient implements SessionRefresher {
     /**
      * The logging tag used by ApiClient.
      */
@@ -90,18 +90,14 @@ public class ApiClient implements SessionRefresher{
     private UserCachingStrategy userCachingStrategy;
 
     public ApiClient(Context context, iRewindConfig config) {
-        this(context, config, null, null);
-    }
-
-    public ApiClient(Context context, iRewindConfig config, UserCachingStrategy userCachingStrategy) {
-        this(context, config, userCachingStrategy, null);
+        this(context, config, null, null, null);
     }
 
     public ApiClient(Context context, iRewindConfig config, EventBus eventBus) {
-        this(context, config, null, eventBus);
+        this(context, config, null, null, eventBus);
     }
 
-    public ApiClient(Context context, iRewindConfig config, UserCachingStrategy userCachingStrategy, EventBus eventBus) {
+    public ApiClient(Context context, iRewindConfig config, TokenCachingStrategy tokenCachingStrategy, UserCachingStrategy userCachingStrategy, EventBus eventBus) {
         this.context = context;
         this.config = config;
 
@@ -169,6 +165,7 @@ public class ApiClient implements SessionRefresher{
 
     private static final String adminUsername = "tremend@mailinator.com";
     private static final String adminSecret = "tremend.admin";
+
     public void getAdminAccessToken() {
         sessionService.getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
@@ -406,8 +403,7 @@ public class ApiClient implements SessionRefresher{
             public void success(ResetPasswordResponse resetPasswordResponse, Response response) {
                 if (!resetPasswordResponse.isError()) {
                     eventBus.post(new ResetPasswordSuccesEvent());
-                }
-                else  {
+                } else {
                     eventBus.post(new ResetPasswordFailEvent(ResetPasswordFailEvent.Reason.NoUser));
                 }
             }
@@ -479,6 +475,9 @@ public class ApiClient implements SessionRefresher{
                     User user = users.get(0);
                     setActiveUser(user);
                 }
+                else {
+                    eventBus.post(new UserInfoLoadedEvent(null));
+                }
             }
 
             @Override
@@ -514,9 +513,10 @@ public class ApiClient implements SessionRefresher{
                 UserListResponse.EmbeddedResponse embeddedUserResponse = userListResponse.getEmbeddedResponse();
                 if (embeddedUserResponse != null) {
                     List<User> users = embeddedUserResponse.getUsers();
-                    if (users != null && users.size() > 0) {
-                        eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
-                    }
+                    eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
+                }
+                else {
+                    eventBus.post(new UserListEvent(null, userListResponse.getPageInfo()));
                 }
             }
 
@@ -592,9 +592,10 @@ public class ApiClient implements SessionRefresher{
                 NotificationSettingsResponse.EmbeddedResponse content = notificationSettingsResponse.getContent();
                 if (content != null) {
                     List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
-                    if (results != null && results.size() > 0) {
-                        eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
-                    }
+                    eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
+                }
+                else {
+                    eventBus.post(new NotificationSettingsListSuccessEvent(null));
                 }
             }
 
@@ -612,8 +613,7 @@ public class ApiClient implements SessionRefresher{
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new NotificationSettingsUpdateSuccessEvent());
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
@@ -684,7 +684,7 @@ public class ApiClient implements SessionRefresher{
 
     // --- Videos --- //
 
-    void getVideoInfo(long videoID) {
+    public void getVideoInfo(long videoID) {
         Session session = getActiveSession();
         apiService.videoInfo(authHeader(session), videoID, new Callback<VideoResponse>() {
             @Override
@@ -699,20 +699,23 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    void listVideos(final int page, int perPage) {
+    public void listVideos(final int page, int perPage) {
         Session session = getActiveSession();
         apiService.getVideos(authHeader(session), page, perPage, new Callback<VideoListResponse>() {
             @Override
             public void success(VideoListResponse videoListResponse, Response response) {
-                List<Video> videos = videoListResponse.getContent();
-                if (videos != null && videos.size() > 0) {
+                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
+                if (embeddedResponse != null) {
+                    List<Video> videos = embeddedResponse.getVideos();
                     eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                 eventBus.post(new VideoListFailEvent(error, page));
+                eventBus.post(new VideoListFailEvent(error, page));
             }
         });
     }

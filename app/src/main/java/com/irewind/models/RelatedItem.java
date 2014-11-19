@@ -2,9 +2,6 @@ package com.irewind.models;
 
 import java.util.Date;
 
-/**
- * Created by tzmst on 11/17/2014.
- */
 public class RelatedItem {
 
     private int id;
