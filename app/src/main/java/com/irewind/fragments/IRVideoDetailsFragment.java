@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRMoviePagerAdapter;
@@ -88,6 +89,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override

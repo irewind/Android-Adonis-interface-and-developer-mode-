@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
+import com.irewind.Injector;
 import com.irewind.R;
 
 import butterknife.ButterKnife;
@@ -55,6 +56,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override

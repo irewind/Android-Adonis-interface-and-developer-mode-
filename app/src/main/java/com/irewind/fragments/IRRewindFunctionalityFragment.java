@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.irewind.Injector;
 import com.irewind.R;
 
 public class IRRewindFunctionalityFragment extends Fragment {
@@ -22,6 +23,8 @@ public class IRRewindFunctionalityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
