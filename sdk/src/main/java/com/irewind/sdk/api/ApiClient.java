@@ -36,6 +36,7 @@ import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
 import com.irewind.sdk.api.response.UserListResponse;
@@ -695,7 +696,7 @@ public class ApiClient implements SessionRefresher{
         });
     }
 
-    void listVideos(int page, int perPage) {
+    void listVideos(final int page, int perPage) {
         Session session = getActiveSession();
         apiService.getVideos(authHeader(session), page, perPage, new Callback<VideoListResponse>() {
             @Override
@@ -708,7 +709,7 @@ public class ApiClient implements SessionRefresher{
 
             @Override
             public void failure(RetrofitError error) {
-
+                 eventBus.post(new VideoListFailEvent(error, page));
             }
         });
     }
