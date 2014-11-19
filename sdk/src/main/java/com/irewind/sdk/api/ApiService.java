@@ -1,9 +1,11 @@
 package com.irewind.sdk.api;
 
 import com.irewind.sdk.model.BaseResponse;
+import com.irewind.sdk.model.NotificationSettingsResponse;
 import com.irewind.sdk.model.Tag;
 import com.irewind.sdk.model.UserResponse;
 import com.irewind.sdk.model.Video;
+import com.squareup.okhttp.Call;
 
 import retrofit.Callback;
 import retrofit.http.DELETE;
@@ -13,6 +15,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface ApiService {
@@ -98,14 +101,34 @@ public interface ApiService {
 
     // --- Notifications --- //
 
-    public final static String NOTIFICATION_TYPE_COMMENT = "comment";
-    public final static String NOTIFICATION_TYPE_LIKE = "like";
+    @GET("/rest/user-notification/search/findByUser")
+    void userNotificationSettings(@Header("Authorization") String authorization,
+                                  @Query("user") long userID,
+                                  Callback<NotificationSettingsResponse> cb);
 
-    @GET("/user/updateUserNotification")
-    void updateUserNotification(@Header("Authorization") String authorization,
-                                @Query("notificationType") String notificationType,
-                                @Query("status") boolean status,
-                                Callback cb);
+    @POST("/user/updateUserNotification?notificationType=comment")
+    @FormUrlEncoded
+    void toggleCommentNotifications(@Header("Authorization") String authorization,
+                                    @Field("status") boolean status,
+                                    Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=share")
+    @FormUrlEncoded
+    void toggleShareNotifications(@Header("Authorization") String authorization,
+                                  @Field("status") boolean status,
+                                  Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=like")
+    @FormUrlEncoded
+    void toggleLikeNotifications(@Header("Authorization") String authorization,
+                                 @Field("status") boolean status,
+                                 Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=msg")
+    @FormUrlEncoded
+    void toggleMessageNotifications(@Header("Authorization") String authorization,
+                                    @Field("status") boolean status,
+                                    Callback<Boolean> cb);
 
     // --- Comments --- //
 

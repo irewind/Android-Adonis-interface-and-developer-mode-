@@ -1,13 +1,14 @@
 package com.irewind.sdk.api.event;
 
-public class SocialLoginFailedEvent {
+public class SessionOpenFailEvent {
     public enum Reason {
-        Unknown
+        Unknown,
+        BadCredentials
     }
 
     public Reason reason;
 
-    public SocialLoginFailedEvent(Reason reason) {
+    public SessionOpenFailEvent(Reason reason) {
         this.reason = reason;
     }
 }

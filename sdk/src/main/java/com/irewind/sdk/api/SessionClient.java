@@ -12,11 +12,10 @@ import com.irewind.sdk.api.event.RegisterFailEvent;
 import com.irewind.sdk.api.event.RegisterSuccessEvent;
 import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
-import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
-import com.irewind.sdk.api.event.SessionOpenFailedEvent;
+import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.SocialLoginFailedEvent;
+import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -157,7 +156,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailedEvent(SessionOpenFailedEvent.Reason.BadCredentials));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials));
             }
         });
     }
@@ -241,7 +240,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailedEvent(SessionOpenFailedEvent.Reason.BadCredentials));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials));
             }
         });
     }
@@ -337,7 +336,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SocialLoginFailedEvent(SocialLoginFailedEvent.Reason.Unknown));
+                eventBus.post(new SocialLoginFailEvent(SocialLoginFailEvent.Reason.Unknown));
             }
         });
     }
@@ -355,7 +354,7 @@ public class SessionClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SocialLoginFailedEvent(SocialLoginFailedEvent.Reason.Unknown));
+                eventBus.post(new SocialLoginFailEvent(SocialLoginFailEvent.Reason.Unknown));
             }
         });
     }

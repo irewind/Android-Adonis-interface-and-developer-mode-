@@ -44,9 +44,9 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.SessionClient;
-import com.irewind.sdk.api.event.SessionOpenFailedEvent;
+import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.SocialLoginFailedEvent;
+import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
@@ -485,14 +485,14 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     }
 
     @Subscribe
-    public void onEvent(SessionOpenFailedEvent event) {
+    public void onEvent(SessionOpenFailEvent event) {
         showProgress(false);
 
         Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
     }
 
     @Subscribe
-    public void onEvent(SocialLoginFailedEvent event) {
+    public void onEvent(SocialLoginFailEvent event) {
         showProgress(false);
 
         Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
