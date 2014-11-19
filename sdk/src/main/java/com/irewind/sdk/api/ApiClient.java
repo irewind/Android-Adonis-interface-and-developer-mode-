@@ -108,8 +108,6 @@ public class ApiClient implements SessionRefresher {
 
         sessionService = ServiceFactory.createSessionService(config.getBaseURL(), config.getClientID(), config.getClientSecret());
 
-        activeSession = openActiveSession(context);
-
         this.userCachingStrategy = userCachingStrategy;
         if (userCachingStrategy == null) {
             this.userCachingStrategy = new SharedPreferencesUserCachingStrategy(context);
@@ -121,6 +119,8 @@ public class ApiClient implements SessionRefresher {
         }
 
         apiService = ServiceFactory.createApiService(config.getBaseURL());
+
+        activeSession = openActiveSession(context);
     }
 
     public EventBus getEventBus() {
