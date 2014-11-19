@@ -15,13 +15,14 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface ApiService {
 
     // --- USER --- //
 
-    @GET("/rest/user/search/getAllActiveUsersOrderedByLastLoginDate")
+    @GET("/rest/user/")
     void users(@Header("Authorization") String authorization,
                @Query("page") Integer page,
                @Query("size") Integer size,
@@ -29,7 +30,7 @@ public interface ApiService {
 
     @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
-                  @Query("id") long id,
+                  @Path("idKeyword") long id,
                   Callback<UserResponse> cb);
 
     @GET("/rest/user/search/findByEmail")
