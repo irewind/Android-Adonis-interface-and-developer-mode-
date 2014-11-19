@@ -19,10 +19,8 @@ import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
-import com.irewind.sdk.model.BaseResponse;
-import com.irewind.sdk.model.ResetPasswordResponse;
-import com.irewind.sdk.model.Session;
-import com.irewind.sdk.model.SessionState;
+import com.irewind.sdk.api.response.BaseResponse;
+import com.irewind.sdk.api.response.ResetPasswordResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

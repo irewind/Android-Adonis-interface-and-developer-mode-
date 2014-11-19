@@ -1,11 +1,11 @@
-package com.irewind.sdk.model;
+package com.irewind.sdk.api;
 
 import android.content.Context;
 import android.os.Bundle;
 
-import com.irewind.sdk.api.SessionRefresher;
 import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
+import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.util.BundleUtil;
 
 import java.io.Serializable;

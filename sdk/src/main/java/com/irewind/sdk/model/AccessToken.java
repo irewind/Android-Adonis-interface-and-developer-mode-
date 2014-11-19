@@ -1,6 +1,7 @@
 package com.irewind.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.irewind.sdk.api.response.BaseResponse;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -61,7 +62,6 @@ public class AccessToken extends BaseResponse implements Serializable {
                     ", errorDescription='" + super.getErrorDescription() + '\'' +
                     '}';
         }
-
         return "AccessToken{" +
                 "currentToken='" + currentToken + '\'' +
                 ", tokenType='" + tokenType + '\'' +
