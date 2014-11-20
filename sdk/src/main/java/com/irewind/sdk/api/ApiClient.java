@@ -38,8 +38,10 @@ import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.BaseResponse;
+import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
+import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
@@ -776,6 +778,108 @@ public class ApiClient implements SessionRefresher {
                 } else {
                     eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
                 }
+            }
+        };
+
+        task.execute();
+
+        return task;
+    }
+
+    public SafeAsyncTask<VideoListResponse> listRelatedVideos(final long videoId, final int page, final int perPage) {
+        final Session session = getActiveSession();
+
+        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+            @Override
+            public VideoListResponse call() throws Exception {
+                return apiService.relatedVideos(authHeader(session), videoId, page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(VideoListResponse videoListResponse) {
+                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
+                if (embeddedResponse != null) {
+                    List<Video> videos = embeddedResponse.getVideos();
+                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
+                }
+            }
+        };
+
+        task.execute();
+
+        return task;
+    }
+
+    public SafeAsyncTask<VideoListResponse> listVideosForUser(final long userId, final int page, final int perPage) {
+        final Session session = getActiveSession();
+
+        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+            @Override
+            public VideoListResponse call() throws Exception {
+                return apiService.videosForUser(authHeader(session), userId, page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(VideoListResponse videoListResponse) {
+                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
+                if (embeddedResponse != null) {
+                    List<Video> videos = embeddedResponse.getVideos();
+                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
+                }
+            }
+        };
+
+        task.execute();
+
+        return task;
+    }
+
+    public void listVideoTags(long videoId) {
+        Session session = getActiveSession();
+        apiService.tagsForVideo(authHeader(session), videoId, 0, 1000, new Callback<TagListResponse>() {
+            @Override
+            public void success(TagListResponse tagListResponse, Response response) {
+                eventBus.post(new TagListResponse());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public SafeAsyncTask<CommentListResponse> listVideoComments(final long videoId, final int page, final int perPage) {
+        final Session session = getActiveSession();
+
+        SafeAsyncTask<CommentListResponse> task = new SafeAsyncTask<CommentListResponse>() {
+            @Override
+            public CommentListResponse call() throws Exception {
+                return apiService.videoComments(authHeader(session), videoId, page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(CommentListResponse commentListResponse) {
+                eventBus.post(commentListResponse);
             }
         };
 

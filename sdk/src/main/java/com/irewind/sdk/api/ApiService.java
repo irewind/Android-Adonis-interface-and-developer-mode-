@@ -183,13 +183,13 @@ public interface ApiService {
 
     // --- Comments --- //
 
-    @GET("/rest/v2/video-comment/list")
+    @GET("/rest/video-comment/search/findByVideo")
     CommentListResponse videoComments(@Header("Authorization") String authorization,
                                       @Query("videoId") long videoID,
                                       @Query("pageNo") Integer page,
                                       @Query("pageSize") Integer size);
 
-    @GET("/rest/v2/video-comment/list")
+    @GET("/rest/video-comment/search/findByVideo")
     void videoComments(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
