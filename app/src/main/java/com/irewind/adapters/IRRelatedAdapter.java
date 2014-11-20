@@ -1,6 +1,7 @@
 package com.irewind.adapters;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.irewind.sdk.model.Video;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,6 +80,8 @@ public class IRRelatedAdapter extends ArrayAdapter<Video> {
 
         holder.views.setText("" + video.getViews());
         holder.likes.setText("" + video.getLikes());
+
+        holder.date.setText(DateUtils.getRelativeTimeSpanString(video.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
 
         return convertView;
     }

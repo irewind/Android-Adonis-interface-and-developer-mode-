@@ -1,6 +1,7 @@
 package com.irewind.adapters;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.irewind.ui.views.EllipsingTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class IRVideoGridAdapter extends BaseAdapter {
@@ -76,6 +78,8 @@ public class IRVideoGridAdapter extends BaseAdapter {
         holder.title.setText(video.getTitle() != null ? video.getTitle() : "");
 
         holder.username.setText(video.getAuthorName() != null ? video.getAuthorName() : "");
+
+        holder.date.setText(DateUtils.getRelativeTimeSpanString(video.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
 
         return v;
     }
