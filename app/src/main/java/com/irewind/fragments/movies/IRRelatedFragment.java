@@ -15,6 +15,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.R;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.models.RelatedItem;
+import com.irewind.sdk.model.Video;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +33,8 @@ public class IRRelatedFragment extends Fragment {
 
     private ListView mListView;
     private IRRelatedAdapter mAdapter;
+
+    public Video video;
 
     public static IRRelatedFragment newInstance() {
         IRRelatedFragment fragment = new IRRelatedFragment();

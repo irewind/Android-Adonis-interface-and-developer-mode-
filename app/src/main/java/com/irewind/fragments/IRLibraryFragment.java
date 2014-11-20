@@ -150,8 +150,13 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO on item click
-        IRTabActivity.mLibraryFragment = IRVideoDetailsFragment.newInstance();
+
+        Video video = mAdapter.getItem(position);
+
+        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
+        fragment.video = video;
+
+        IRTabActivity.mLibraryFragment = fragment;
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);

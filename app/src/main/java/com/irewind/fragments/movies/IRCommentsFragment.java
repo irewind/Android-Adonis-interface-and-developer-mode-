@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.irewind.R;
+import com.irewind.sdk.model.Video;
 
 
 public class IRCommentsFragment extends Fragment {
+
+    public Video video;
 
     public static IRCommentsFragment newInstance() {
         IRCommentsFragment fragment = new IRCommentsFragment();

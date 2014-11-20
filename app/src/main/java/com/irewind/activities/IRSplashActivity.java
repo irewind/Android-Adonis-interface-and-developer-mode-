@@ -30,7 +30,7 @@ public class IRSplashActivity extends IRBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Crashlytics.start(this);
+//        Crashlytics.start(this);
 
         Injector.inject(this);
 
