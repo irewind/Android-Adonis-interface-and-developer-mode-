@@ -3,35 +3,38 @@ package com.irewind.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
+import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRTabActivity;
+import com.irewind.adapters.IRVideoGridAdapter;
+import com.irewind.common.IOnSearchCallback;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
+import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.model.PageInfo;
+import com.irewind.sdk.model.Video;
+import com.irewind.sdk.util.SafeAsyncTask;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRMovieGridAdapter;
-import com.irewind.common.IOnSearchCallback;
-import com.irewind.models.MovieGridItem;
-import com.jazzyviewpager.JazzyViewPager;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class IRLibraryFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -41,7 +44,20 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     TextView emptyText;
 
     private GridView mGridView;
-    private IRMovieGridAdapter mAdapter;
+    private IRVideoGridAdapter mAdapter;
+
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
+
+    private int lastPageListed = 0;
+    private int numberOfPagesAvailable = 0;
+
+    private SafeAsyncTask<VideoListResponse> listTask;
+
+    private String searchQuery = "";
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
@@ -55,6 +71,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -77,14 +95,17 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-                mPullToRefreshGridView.onRefreshComplete(); //TODO Move to onPostExecute;
+
+                fetch(0);
             }
         });
 
         mPullToRefreshGridView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
-                //TODO add elements;
+                if (lastPageListed + 1 < numberOfPagesAvailable) {
+                    fetch(lastPageListed + 1);
+                }
             }
         });
 
@@ -92,7 +113,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mGridView.setEmptyView(emptyText);
         mGridView.setOnItemClickListener(this);
 
-        populate();
+        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid, imageLoader);
+        mGridView.setAdapter(mAdapter);
     }
 
     @Override
@@ -104,46 +126,37 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         IRTabActivity.abSearch.setOnClickListener(this);
         IRTabActivity.onSearchCallback = new IOnSearchCallback() {
             @Override
-            public void execute() {
-                //TODO set search videos
+            public void execute(String query) {
+                searchQuery = query;
+                fetch(0);
             }
         };
 
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
+
+        apiClient.getEventBus().register(this);
+        fetch(0);
     }
 
-    private void populate(){
-        //TODO remove this
-        List<MovieGridItem> movieList = new ArrayList<MovieGridItem>();
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
-        movieList.add(new MovieGridItem(0, "", "", "Edit la Freeride Transilvania 12-15 martie 2014 traversare locatie hello lorem ipsum tralalalalalalal sau nu", Calendar.getInstance().getTime()));
+    @Override
+    public void onPause() {
+        super.onPause();
 
+        apiClient.getEventBus().unregister(this);
 
-        mAdapter = new IRMovieGridAdapter(getActivity(), R.layout.cell_movie_grid, movieList);
-        mGridView.setAdapter(mAdapter);
-
+        cancelTask();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO on item click
-        IRTabActivity.mLibraryFragment = IRVideoDetailsFragment.newInstance();
+
+        Video video = mAdapter.getItem(position);
+
+        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
+        fragment.video = video;
+
+        IRTabActivity.mLibraryFragment = fragment;
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
@@ -154,10 +167,58 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_search:
                 IRTabActivity.searchItem.expandActionView();
                 break;
+        }
+    }
+
+    void fetch(int page) {
+        cancelTask();
+
+        if (searchQuery != null && searchQuery.length() > 0) {
+            listTask = apiClient.searchVideos(searchQuery, page, 20);
+        }
+        else {
+            listTask = apiClient.listVideos(page, 20);
+        }
+    }
+
+    void cancelTask() {
+        if (listTask != null) {
+            listTask.cancel(true);
+        }
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(VideoListEvent event) {
+        List<Video> videos = event.videos;
+        PageInfo pageInfo = event.pageInfo;
+
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setVideos(videos);
+
+            if (mPullToRefreshGridView.isRefreshing()) {
+                mPullToRefreshGridView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendVideos(videos);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        listTask = null;
+
+        if (mPullToRefreshGridView.isRefreshing()) {
+            mPullToRefreshGridView.onRefreshComplete();
         }
     }
 }

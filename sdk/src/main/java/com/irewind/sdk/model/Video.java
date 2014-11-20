@@ -2,12 +2,10 @@ package com.irewind.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
-public class Video extends BaseResponse {
+public class Video {
 
     @SerializedName("videoId")
-    private long videoId;
+    private long id;
 
     @SerializedName("title")
     private String title;
@@ -16,7 +14,7 @@ public class Video extends BaseResponse {
     private String description;
 
     @SerializedName("createdDate")
-    private Date createdDate;
+    private long createdDate;
 
     @SerializedName("views")
     private Integer views;
@@ -48,8 +46,8 @@ public class Video extends BaseResponse {
     @SerializedName("publicToken")
     private String publicToken;
 
-    public long getVideoId() {
-        return videoId;
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -60,7 +58,7 @@ public class Video extends BaseResponse {
         return description;
     }
 
-    public Date getCreatedDate() {
+    public long getCreatedDate() {
         return createdDate;
     }
 
@@ -106,15 +104,8 @@ public class Video extends BaseResponse {
 
     @Override
     public String toString() {
-        if (super.getError() != null) {
-            return "Video{" +
-                    "error='" + super.getError() + '\'' +
-                    ", errorDescription='" + super.getErrorDescription() + '\'' +
-                    '}';
-        }
-
         return "Video{" +
-                "videoId='" + videoId + '\'' +
+                "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", createdDate=" + createdDate +

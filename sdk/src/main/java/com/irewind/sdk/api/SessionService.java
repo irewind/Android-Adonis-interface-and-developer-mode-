@@ -1,9 +1,8 @@
 package com.irewind.sdk.api;
 
 import com.irewind.sdk.model.AccessToken;
-import com.irewind.sdk.model.BaseResponse;
-import com.irewind.sdk.model.ResetPasswordResponse;
-import com.irewind.sdk.model.UserResponse;
+import com.irewind.sdk.api.response.BaseResponse;
+import com.irewind.sdk.api.response.ResetPasswordResponse;
 
 import retrofit.Callback;
 import retrofit.http.Field;

@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * <p>
- * A base class for implementations of a {@link com.irewind.sdk.model.Session Session} token cache.
+ * A base class for implementations of a {@link com.irewind.sdk.api.Session Session} token cache.
  * </p>
  * <p>
  * The Session constructor optionally takes a TokenCachingStrategy, from which it will
@@ -85,7 +85,7 @@ public abstract class TokenCachingStrategy {
 
     /**
      * Called when a Session learns its token is no longer valid or during a
-     * call to {@link com.irewind.sdk.model.Session#closeAndClearTokenInformation
+     * call to {@link com.irewind.sdk.api.Session#closeAndClearTokenInformation
      * closeAndClearTokenInformation} to clear the durable state associated with
      * the token.
      */

@@ -13,10 +13,9 @@ import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.R;
-import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.adapters.IRRelatedAdapter;
-import com.irewind.models.PeopleItem;
 import com.irewind.models.RelatedItem;
+import com.irewind.sdk.model.Video;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +33,8 @@ public class IRRelatedFragment extends Fragment {
 
     private ListView mListView;
     private IRRelatedAdapter mAdapter;
+
+    public Video video;
 
     public static IRRelatedFragment newInstance() {
         IRRelatedFragment fragment = new IRRelatedFragment();
@@ -86,7 +87,7 @@ public class IRRelatedFragment extends Fragment {
         populate();
     }
 
-    private void populate(){ //TODO Remove this
+    private void populate() { //TODO Remove this
         List<RelatedItem> data = new ArrayList<RelatedItem>();
         data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
         data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));

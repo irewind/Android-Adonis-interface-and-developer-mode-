@@ -1,4 +1,4 @@
-package com.irewind.sdk.model;
+package com.irewind.sdk.api;
 
 /**
  * <p>

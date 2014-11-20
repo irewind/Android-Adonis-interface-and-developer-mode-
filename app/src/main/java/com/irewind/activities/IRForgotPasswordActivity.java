@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
-import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
 import com.irewind.utils.CheckUtil;
@@ -31,7 +31,7 @@ import butterknife.InjectView;
 public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnClickListener {
 
     @Inject
-    SessionClient sessionClient;
+    ApiClient apiClient;
 
     @InjectView(R.id.email)
     EditText mEmail;
@@ -71,14 +71,14 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     protected void onResume() {
         super.onResume();
 
-        sessionClient.getEventBus().register(this);
+        apiClient.getEventBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        sessionClient.getEventBus().unregister(this);
+        apiClient.getEventBus().unregister(this);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
             // perform the user login attempt.
             showProgress(true);
 
-            sessionClient.resetPassword(email);
+            apiClient.resetPassword(email);
         }
     }
 
@@ -182,8 +182,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
 
         if (event.reason == ResetPasswordFailEvent.Reason.NoUser) {
             Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
         }
     }

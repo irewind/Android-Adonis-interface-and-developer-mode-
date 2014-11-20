@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
+import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.TagView;
 
 import butterknife.ButterKnife;
@@ -37,6 +38,10 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     ImageButton settings;
     @InjectView(R.id.textDescription)
     TextView txtDescription; //Description of the text;
+    @InjectView(R.id.username)
+    TextView txtAuthorName;
+
+    public Video video;
 
     public static IRAboutFragment newInstance() {
         IRAboutFragment fragment = new IRAboutFragment();
@@ -68,7 +73,12 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         downVote.setOnClickListener(this);
         settings.setOnClickListener(this);
 
-        populateTag();
+        txtTitle.setText(video.getTitle());
+        txtDescription.setText(video.getDescription());
+        txtViews.setText("" + video.getViews());
+        txtUpVote.setText("" + video.getLikes());
+        txtDownVote.setText("" + video.getDislikes());
+        txtAuthorName.setText(video.getAuthorName());
     }
 
     private void populateTag(){

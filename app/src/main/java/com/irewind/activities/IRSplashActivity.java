@@ -1,20 +1,18 @@
 package com.irewind.activities;
 
 import android.annotation.TargetApi;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.irewind.Injector;
 import com.irewind.R;
-import com.irewind.sdk.api.SessionClient;
+import com.irewind.sdk.api.ApiClient;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import javax.inject.Inject;
@@ -26,13 +24,13 @@ public class IRSplashActivity extends IRBaseActivity {
     private Context mContext;
 
     @Inject
-    SessionClient sessionClient;
+    ApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Crashlytics.start(this);
+//        Crashlytics.start(this);
 
         Injector.inject(this);
 
@@ -58,11 +56,10 @@ public class IRSplashActivity extends IRBaseActivity {
 
                 finish();
 
-                if (sessionClient.getActiveSession().isOpened()) {
+                if (apiClient.getActiveSession().isOpened()) {
                     Intent mainIntent = new Intent(mContext, IRTabActivity.class);
                     startActivity(mainIntent);
-                }
-                else {
+                } else {
                     Intent mainIntent = new Intent(mContext, IRLoginActivity.class);
                     startActivity(mainIntent);
                 }
@@ -71,7 +68,7 @@ public class IRSplashActivity extends IRBaseActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
 //        super.onBackPressed();
     }
 

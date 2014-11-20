@@ -19,29 +19,26 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
+import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
+import com.irewind.sdk.api.event.NotificationSettingsUpdateFailEvent;
+import com.irewind.sdk.api.event.NotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsLoadedEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsUpdateFailEvent;
-import com.irewind.sdk.api.event.UserNotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import javax.inject.Inject;
 
-public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     @InjectView(R.id.switchCommentNotifications)
     Switch switchCommentNotifications;
     @InjectView(R.id.switchLikeNotifications)
     Switch switchLikeNotifications;
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -123,7 +120,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
         }
     }
@@ -132,10 +129,10 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switchCommentNotifications:
-                apiClient.toggleCommentNotifications(sessionClient.getActiveSession(), isChecked);
+                apiClient.toggleCommentNotifications(isChecked);
                 break;
             case R.id.switchLikeNotifications:
-                apiClient.toggleLikeNotifications(sessionClient.getActiveSession(), isChecked);
+                apiClient.toggleLikeNotifications(isChecked);
                 break;
         }
     }
@@ -164,7 +161,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     }
 
     private void fetchUserNotificationSettings() {
-        apiClient.getUserNotificationSettings(sessionClient.getActiveSession(), apiClient.getActiveUser());
+        apiClient.getUserNotificationSettings(apiClient.getActiveUser());
     }
 
     // --- Events --- //
@@ -180,26 +177,26 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     }
 
     @Subscribe
-    public void onEvent(UserNotificationSettingsLoadedEvent event) {
-        editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.isCommentNotification());
-        editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.isLikeNotification());
+    public void onEvent(NotificationSettingsListSuccessEvent event) {
+        editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.commentNotificationEnabled());
+        editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.likeNotificationEnabled());
         editor.commit();
 
         switchCommentNotifications.setOnCheckedChangeListener(null);
         switchLikeNotifications.setOnCheckedChangeListener(null);
-        switchCommentNotifications.setChecked(event.notificationSettings.isCommentNotification());
-        switchLikeNotifications.setChecked(event.notificationSettings.isLikeNotification());
+        switchCommentNotifications.setChecked(event.notificationSettings.commentNotificationEnabled());
+        switchLikeNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());
         switchCommentNotifications.setOnCheckedChangeListener(this);
         switchLikeNotifications.setOnCheckedChangeListener(this);
     }
 
     @Subscribe
-    public void onEvent(UserNotificationSettingsUpdateSuccessEvent event) {
+    public void onEvent(NotificationSettingsUpdateSuccessEvent event) {
         fetchUserNotificationSettings();
     }
 
     @Subscribe
-    public void onEvent(UserNotificationSettingsUpdateFailEvent event) {
+    public void onEvent(NotificationSettingsUpdateFailEvent event) {
         fetchUserNotificationSettings();
     }
 }

@@ -7,15 +7,18 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.irewind.fragments.movies.IRAboutFragment;
 import com.irewind.fragments.movies.IRCommentsFragment;
 import com.irewind.fragments.movies.IRRelatedFragment;
+import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
 
-public class IRMoviePagerAdapter extends FragmentPagerAdapter {
+public class IRVideoPagerAdapter extends FragmentPagerAdapter {
 
     private NonSwipeableViewPager mJazzyViewPager;
+    private Video video;
 
-    public IRMoviePagerAdapter(FragmentManager fm, NonSwipeableViewPager jazzy) {
+    public IRVideoPagerAdapter(FragmentManager fm, NonSwipeableViewPager jazzy, Video video) {
         super(fm);
         this.mJazzyViewPager = jazzy;
+        this.video = video;
     }
 
     @Override
@@ -24,15 +27,19 @@ public class IRMoviePagerAdapter extends FragmentPagerAdapter {
         switch (pos) {
             case 0:
                 fragment = IRAboutFragment.newInstance();
+                ((IRAboutFragment)fragment).video = video;
                 break;
             case 1:
                 fragment = IRRelatedFragment.newInstance();
+                ((IRRelatedFragment)fragment).video = video;
                 break;
             case 2:
                 fragment = IRCommentsFragment.newInstance();
+                ((IRCommentsFragment)fragment).video = video;
                 break;
             default:
                 fragment = IRAboutFragment.newInstance();
+                ((IRAboutFragment)fragment).video = video;
                 break;
         }
         mJazzyViewPager.setObjectForPosition(fragment, pos);

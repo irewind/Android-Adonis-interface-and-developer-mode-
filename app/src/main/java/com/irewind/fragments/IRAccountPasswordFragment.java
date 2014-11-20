@@ -20,7 +20,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.PasswordChangeFailEvent;
 import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
@@ -35,9 +34,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRAccountPasswordFragment extends Fragment implements View.OnClickListener {
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -170,7 +166,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         String newPassword = editNew.getText().toString();
 
         showProgress(true);
-        apiClient.changeUserPassword(sessionClient.getActiveSession(), apiClient.getActiveUser(), currentPassword, newPassword);
+        apiClient.changeUserPassword(apiClient.getActiveUser(), currentPassword, newPassword);
     }
 
     private void updateUserInfo(User user) {

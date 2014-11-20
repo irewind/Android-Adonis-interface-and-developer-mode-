@@ -32,7 +32,6 @@ import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRAccountAdapter;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
@@ -51,9 +50,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class IRAccountFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -190,7 +186,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-    private void attemptChangePhoto () {
+    private void attemptChangePhoto() {
         if (dialog == null)
             makePictureChooser();
 
@@ -203,7 +199,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     private void attemptLogout() {
-        sessionClient.closeSessionAndClearTokenInformation();
+        apiClient.closeSessionAndClearTokenInformation();
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
@@ -229,7 +225,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public void onActivityResult ( int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {

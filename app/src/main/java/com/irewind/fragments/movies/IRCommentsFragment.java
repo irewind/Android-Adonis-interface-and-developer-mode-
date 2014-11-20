@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.R;
+
 import com.irewind.adapters.IRCommentsAdapter;
 import com.irewind.models.CommentItem;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.irewind.sdk.model.Video;
 
 
 public class IRCommentsFragment extends Fragment {
@@ -30,6 +32,7 @@ public class IRCommentsFragment extends Fragment {
 
     private ListView mListView;
     private IRCommentsAdapter mAdapter;
+    public Video video;
 
     public static IRCommentsFragment newInstance() {
         IRCommentsFragment fragment = new IRCommentsFragment();

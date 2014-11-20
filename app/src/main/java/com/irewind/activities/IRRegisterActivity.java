@@ -19,7 +19,6 @@ import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.RegisterFailEvent;
 import com.irewind.sdk.api.event.RegisterSuccessEvent;
 import com.irewind.utils.CheckUtil;
@@ -65,9 +64,6 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     TextView mLogin;
     @InjectView(R.id.titleSlide)
     TextView mTitleSlide;
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -137,14 +133,14 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     protected void onResume() {
         super.onResume();
 
-        sessionClient.getEventBus().register(this);
+        apiClient.getEventBus().register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        sessionClient.getEventBus().unregister(this);
+        apiClient.getEventBus().unregister(this);
     }
 
     @Override
@@ -252,7 +248,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         } else {
             showProgress(true);
 
-            sessionClient.register(email, firstname, lastname, password);
+            apiClient.register(email, firstname, lastname, password);
         }
     }
 

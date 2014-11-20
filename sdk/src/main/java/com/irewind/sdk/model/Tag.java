@@ -2,7 +2,7 @@ package com.irewind.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Tag extends BaseResponse {
+public class Tag {
 
     @SerializedName("tagId")
     private long tagId;
@@ -20,12 +20,7 @@ public class Tag extends BaseResponse {
 
     @Override
     public String toString() {
-        if (super.getError() != null) {
-            return "Tag{" +
-                    "error='" + super.getError() + '\'' +
-                    ", errorDescription='" + super.getErrorDescription() + '\'' +
-                    '}';
-        }
+
         return "Tag{" +
                 "tagId=" + tagId +
                 ", tagName='" + tagName + '\'' +

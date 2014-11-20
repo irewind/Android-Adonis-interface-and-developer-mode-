@@ -21,10 +21,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRMoviePagerAdapter;
+import com.irewind.adapters.IRVideoPagerAdapter;
 import com.irewind.player.SeekBarV3Fragment;
+import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
 import com.jazzyviewpager.JazzyViewPager;
 
@@ -52,6 +54,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     private int fadeTime = 3000;
     boolean isPlaying = true;
     boolean autoPause;
+
+    Video video;
 
     CountDownTimer ct = new CountDownTimer(20000000, 500) {
 
@@ -88,6 +92,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -120,8 +126,19 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
             }
         });
-        videoView.setVideoURI(Uri.parse("https://vps.irewind.com/video-processor-secured/services/resource/63-1288351581"));
-//        http://ns.tremend.ro/web/irewind/video/395-76528852.mp4
+
+        String videoURI = video.getMp4HighResolutionURL();
+        if (videoURI == null || videoURI.length() == 0) {
+            videoURI = video.getOggHighResolutionURL();
+        }
+        if (videoURI == null || videoURI.length() == 0) {
+            videoURI = video.getOggLowResolutionURL();
+        }
+
+        if (videoURI != null && videoURI.length() > 0) {
+            videoView.setVideoURI(Uri.parse(videoURI));
+        }
+
         videoView.start();
 
         videoView.setOnTouchListener(new View.OnTouchListener() {
@@ -340,7 +357,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
     private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
         mJazzyViewPager.setTransitionEffect(effect);
-        mJazzyViewPager.setAdapter(new IRMoviePagerAdapter(getChildFragmentManager(), mJazzyViewPager));
+        mJazzyViewPager.setAdapter(new IRVideoPagerAdapter(getChildFragmentManager(), mJazzyViewPager, video));
         mJazzyViewPager.setPageMargin(0);
         mJazzyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

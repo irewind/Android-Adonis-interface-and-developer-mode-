@@ -23,7 +23,6 @@ import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
-import com.irewind.sdk.api.SessionClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserDeleteFailEvent;
 import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
@@ -41,9 +40,6 @@ import butterknife.InjectView;
 
 
 public class IRAccountPersonalFragment extends Fragment implements View.OnClickListener {
-
-    @Inject
-    SessionClient sessionClient;
 
     @Inject
     ApiClient apiClient;
@@ -182,13 +178,13 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         String lastname = mLast.getText().toString();
 
         showProgress(true);
-        apiClient.updateUser(sessionClient.getActiveSession(), apiClient.getActiveUser(), firstname, lastname);
+        apiClient.updateUser(apiClient.getActiveUser(), firstname, lastname);
     }
 
     public void delete() {
         showProgress(true);
 
-        apiClient.deleteUser(sessionClient.getActiveSession(), apiClient.getActiveUser());
+        apiClient.deleteUser(apiClient.getActiveUser());
     }
 
     private void updateUserInfo(User user) {
@@ -239,7 +235,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
 
     @Subscribe
     public void onEvent(UserDeleteSuccessEvent event) {
-        sessionClient.closeSessionAndClearTokenInformation();
+        apiClient.closeSessionAndClearTokenInformation();
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
