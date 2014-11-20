@@ -13,6 +13,7 @@ import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +25,11 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
     private ImageLoader imageLoader;
     private DateFormat dateFormat;
 
-    public IRPeopleAdapter(Context context, int resource, ImageLoader imageLoader, List<User> users) {
+    public IRPeopleAdapter(Context context, int resource, ImageLoader imageLoader) {
         super(context, resource);
         mContext = context;
         layout = resource;
         this.imageLoader = imageLoader;
-        this.users = users;
 
         dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
     }
@@ -41,7 +41,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
 
     @Override
     public int getCount() {
-        return users.size();
+        return users != null ? users.size() : 0;
     }
 
     @Override
@@ -105,5 +105,20 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
     private class UserHolder {
         TextView name, videos, date;
         RoundedImageView picture;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+        notifyDataSetChanged();
+    }
+
+    public void appendUsers(List<User> users) {
+        if (this.users == null) {
+            this.users = new ArrayList<User>(users);
+        }
+        else {
+            this.users.addAll(users);
+        }
+        notifyDataSetChanged();
     }
 }

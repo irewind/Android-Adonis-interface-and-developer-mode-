@@ -10,7 +10,7 @@ public class UserListEvent {
 
     public PageInfo pageInfo;
 
-    public UserListEvent(List<User> users, PageInfo info) {
+    public UserListEvent(List<User> users, PageInfo pageInfo) {
         this.users = users;
         this.pageInfo = pageInfo;
     }

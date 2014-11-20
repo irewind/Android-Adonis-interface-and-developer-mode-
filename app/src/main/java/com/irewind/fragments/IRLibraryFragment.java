@@ -94,7 +94,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
-                fetchVideos(0);
+                fetch(0);
             }
         });
 
@@ -102,7 +102,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             @Override
             public void onLastItemVisible() {
                 if (lastPageListed + 1 < numberOfPagesAvailable) {
-                    fetchVideos(lastPageListed + 1);
+                    fetch(lastPageListed + 1);
                 }
             }
         });
@@ -133,7 +133,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             IRTabActivity.searchItem.collapseActionView();
 
         apiClient.getEventBus().register(this);
-        fetchVideos(0);
+        fetch(0);
     }
 
     @Override
@@ -142,10 +142,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         apiClient.getEventBus().unregister(this);
 
-        if (listTask != null) {
-            listTask.cancel(true);
-            listTask = null;
-        }
+        cancelTask();
     }
 
     @Override
@@ -169,8 +166,16 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-    void fetchVideos(int page) {
+    void fetch(int page) {
+        cancelTask();
         listTask = apiClient.listVideos(page, 20);
+    }
+
+    void cancelTask() {
+        if (listTask != null) {
+            listTask.cancel(true);
+        }
+        listTask = null;
     }
 
     @Subscribe

@@ -21,7 +21,11 @@ import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.common.IOnSearchCallback;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.UserListEvent;
+import com.irewind.sdk.api.event.UserListFailEvent;
+import com.irewind.sdk.api.response.UserListResponse;
+import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
+import com.irewind.sdk.util.SafeAsyncTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -46,6 +50,11 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Inject
     ImageLoader imageLoader;
+
+    int lastPageListed = 0;
+    int numberOfPagesAvailable = 0;
+
+    private SafeAsyncTask<UserListResponse> listTask;
 
     public static IRPeopleFragment newInstance() {
         IRPeopleFragment fragment = new IRPeopleFragment();
@@ -83,17 +92,23 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-                mPullToRefreshListView.onRefreshComplete(); //TODO Move this line in onPostExecute if AsyncTask
+
+                fetch(0);
             }
         });
         mPullToRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
-                //TODO on last item;
+                if (lastPageListed + 1 < numberOfPagesAvailable) {
+                    fetch(lastPageListed + 1);
+                }
             }
         });
         mListView.setOnItemClickListener(this);
         mListView.setEmptyView(emptyText);
+
+        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, imageLoader);
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -113,7 +128,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
             IRTabActivity.searchItem.collapseActionView();
 
         apiClient.getEventBus().register(this);
-        apiClient.listUsers(0, 100);
+        fetch(0);
     }
 
     @Override
@@ -121,6 +136,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
+
+        cancelTask();
     }
 
     @Override
@@ -137,11 +154,46 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         }
     }
 
+    void fetch(int page) {
+        cancelTask();
+        listTask = apiClient.listUsers(page, 20);
+    }
+
+    void cancelTask() {
+        if (listTask != null) {
+            listTask.cancel(true);
+        }
+        listTask = null;
+    }
+
     @Subscribe
     public void onEvent(UserListEvent event) {
         List<User> users = event.users;
 
-        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, imageLoader, users);
-        mListView.setAdapter(mAdapter);
+        PageInfo pageInfo = event.pageInfo;
+
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setUsers(users);
+
+            if (mPullToRefreshListView.isRefreshing()) {
+                mPullToRefreshListView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendUsers(users);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(UserListFailEvent event) {
+        listTask = null;
+
+        if (mPullToRefreshListView.isRefreshing()) {
+            mPullToRefreshListView.onRefreshComplete();
+        }
     }
 }
