@@ -360,10 +360,10 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     protected void onPlusClientSignIn() {
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
-            Log.d("PLUS_INFO", " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+            Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
 
             Person person = getPlusClient().getCurrentPerson();
-            String email = person.getDisplayName();
+            String email = getPlusClient().getAccountName();
             String socialId = person.getId();
             String firstname = person.getName().getGivenName();
             String lastname = person.getName().getFamilyName();
