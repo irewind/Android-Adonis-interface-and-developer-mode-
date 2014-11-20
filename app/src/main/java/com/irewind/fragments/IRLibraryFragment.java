@@ -135,6 +135,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
 
+        searchQuery = "";
+        
         apiClient.getEventBus().register(this);
         fetch(0);
     }

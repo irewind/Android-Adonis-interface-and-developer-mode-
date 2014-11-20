@@ -130,6 +130,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
 
+        searchQuery = "";
+
         apiClient.getEventBus().register(this);
         fetch(0);
     }
