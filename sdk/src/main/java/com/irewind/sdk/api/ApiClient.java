@@ -728,7 +728,7 @@ public class ApiClient implements SessionRefresher {
         SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
             @Override
             public VideoListResponse call() throws Exception {
-                return apiService.getVideos(authHeader(session), page, perPage);
+                return apiService.listVideos(authHeader(session), page, perPage);
             }
 
             @Override

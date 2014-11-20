@@ -33,13 +33,13 @@ public interface ApiService {
                @Query("size") Integer size,
                Callback<UserListResponse> cb);
 
-    @GET("/rest/user/searchByName")
+    @GET("/rest/user/search/searchUsers")
     UserListResponse searchUsers(@Header("Authorization") String authorization,
                                  @Query("searchTerm") String query,
                                  @Query("page") Integer page,
                                  @Query("size") Integer size);
 
-    @GET("/rest/user/searchByName")
+    @GET("/rest/user/search/searchUsers")
     void searchUsers(@Header("Authorization") String authorization,
                      @Query("searchTerm") String query,
                      @Query("page") Integer page,
@@ -86,15 +86,27 @@ public interface ApiService {
                    Callback<VideoResponse> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
-    VideoListResponse getVideos(@Header("Authorization") String authorization,
-                                @Query("pageNo") Integer page,
-                                @Query("pageSize") Integer size);
+    VideoListResponse listVideos(@Header("Authorization") String authorization,
+                                 @Query("pageNo") Integer page,
+                                 @Query("pageSize") Integer size);
 
     @GET("/rest/video/search/findVideosWithPagination")
-    void getVideos(@Header("Authorization") String authorization,
-                   @Query("pageNo") Integer page,
-                   @Query("pageSize") Integer size,
-                   Callback<VideoListResponse> cb);
+    void listVideos(@Header("Authorization") String authorization,
+                    @Query("pageNo") Integer page,
+                    @Query("pageSize") Integer size,
+                    Callback<VideoListResponse> cb);
+
+    @GET("/rest/video/search/findVideosWithPaginationAndSearchTerm")
+    VideoListResponse searchVideos(@Header("Authorization") String authorization,
+                                   @Query("searchTerm") String query,
+                                   @Query("pageNo") Integer page,
+                                   @Query("pageSize") Integer size);
+
+    @GET("/rest/video/search/findVideosWithPaginationAndSearchTerm")
+    void searchVideos(@Header("Authorization") String authorization,
+                      @Query("pageNo") Integer page,
+                      @Query("pageSize") Integer size,
+                      Callback<VideoListResponse> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
@@ -121,18 +133,6 @@ public interface ApiService {
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
                        Callback<VideoListResponse> cb);
-
-    @GET("/rest/v2/search-videos")
-    VideoListResponse searchVideos(@Header("Authorization") String authorization,
-                                   @Query("searchTerm") String query,
-                                   @Query("pageNo") Integer page,
-                                   @Query("pageSize") Integer size);
-
-    @GET("/rest/v2/search-videos")
-    void searchVideos(@Header("Authorization") String authorization,
-                      @Query("pageNo") Integer page,
-                      @Query("pageSize") Integer size,
-                      Callback<VideoListResponse> cb);
 
     // --- Tags --- //
 
