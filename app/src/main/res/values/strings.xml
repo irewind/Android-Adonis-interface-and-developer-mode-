@@ -80,5 +80,8 @@
     <string name="add_another">Add another</string>
     <string name="add_another_underline"><u>Add another</u></string>
     <string name="title_activity_ircomment">IRCommentActivity</string>
+    <string name="post">Post</string>
+    <string name="post_comment">Post a comment</string>
+    <string name="comment_hint">Write your comment...</string>
 
 </resources>

@@ -15,7 +15,6 @@ public class IRCommentActivity extends IRBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         setContentView(R.layout.activity_ircomment);

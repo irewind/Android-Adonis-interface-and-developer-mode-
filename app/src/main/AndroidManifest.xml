@@ -63,10 +63,11 @@
             android:name="com.irewind.activities.IRCommentActivity"
             android:label="@string/title_activity_ircomment"
             android:screenOrientation="portrait"
-            android:theme="@style/IRAppTheme.Dialog"/>
+            android:theme="@style/IRAppTheme.Dialog"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"/>
         <activity
             android:name="com.facebook.LoginActivity"
-            android:label="@string/title_facebook_login"></activity>
+            android:label="@string/title_facebook_login"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

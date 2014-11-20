@@ -1,6 +1,7 @@
 package com.irewind.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
+import com.irewind.activities.IRCommentActivity;
 import com.irewind.models.CommentItem;
 import com.irewind.models.RelatedItem;
 import com.irewind.ui.views.RoundedImageView;
@@ -98,7 +100,8 @@ public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
 
         @Override
         public void onClick(View v) {
-            //TODO add comments
+            Intent addComment = new Intent(mContext, IRCommentActivity.class);
+            mContext.startActivity(addComment);
         }
     }
 

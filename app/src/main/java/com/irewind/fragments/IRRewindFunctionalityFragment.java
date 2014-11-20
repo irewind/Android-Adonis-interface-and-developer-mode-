@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRTabActivity;
 
 public class IRRewindFunctionalityFragment extends Fragment {
 
@@ -34,4 +35,12 @@ public class IRRewindFunctionalityFragment extends Fragment {
         return getActivity().getLayoutInflater().inflate(R.layout.fragment_irrewind_functionality, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        IRTabActivity.abTitle.setText(getString(R.string.app_name));
+        IRTabActivity.abBack.setVisibility(View.GONE);
+        IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
+    }
 }
