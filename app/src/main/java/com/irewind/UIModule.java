@@ -71,12 +71,11 @@ public class UIModule {
     @Provides
     public ImageLoaderConfiguration provideImageLoaderConfig(Context context) {
         return new ImageLoaderConfiguration.Builder(context)
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                .diskCacheSize(50 * 1024 * 1024) // 50 Mb
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .writeDebugLogs() // Remove for release app
+                .memoryCacheExtraOptions(480, 800)
+                .diskCacheExtraOptions(480, 800, null)
+                .threadPriority(Thread.NORM_PRIORITY - 1)
+//                .denyCacheImageMultipleSizesInMemory()
+                .diskCacheSize(150 * 1024 * 1024) // 150 Mb
                 .build();
     }
 
