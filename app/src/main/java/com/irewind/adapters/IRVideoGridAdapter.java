@@ -13,6 +13,7 @@ import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.EllipsingTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IRVideoGridAdapter extends BaseAdapter {
@@ -22,8 +23,7 @@ public class IRVideoGridAdapter extends BaseAdapter {
     private int mResourceid;
     private ImageLoader imageLoader;
 
-    public IRVideoGridAdapter(Context context, int resourceId, ImageLoader imageLoader, List<Video> videos) {
-        this.videos = videos;
+    public IRVideoGridAdapter(Context context, int resourceId, ImageLoader imageLoader) {
         this.mContext = context;
         this.mResourceid = resourceId;
         this.imageLoader = imageLoader;
@@ -31,7 +31,7 @@ public class IRVideoGridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return videos.size();
+        return videos != null ? videos.size() : 0;
     }
 
     @Override
@@ -84,5 +84,20 @@ public class IRVideoGridAdapter extends BaseAdapter {
         ImageView image;
         TextView username, date;
         EllipsingTextView title;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+        notifyDataSetChanged();
+    }
+
+    public void appendVideos(List<Video> videos) {
+        if (this.videos == null) {
+            this.videos = new ArrayList<Video>(videos);
+        }
+        else {
+            this.videos.addAll(videos);
+        }
+        notifyDataSetChanged();
     }
 }

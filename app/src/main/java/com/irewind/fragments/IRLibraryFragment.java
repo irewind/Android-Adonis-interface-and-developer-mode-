@@ -22,7 +22,11 @@ import com.irewind.adapters.IRVideoGridAdapter;
 import com.irewind.common.IOnSearchCallback;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
+import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
+import com.irewind.sdk.util.SafeAsyncTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -47,6 +51,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Inject
     ImageLoader imageLoader;
+
+    int lastPageListed = 0;
+    int numberOfPagesAvailable = 0;
+
+    private SafeAsyncTask<VideoListResponse> listTask;
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
@@ -84,20 +93,26 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-                mPullToRefreshGridView.onRefreshComplete(); //TODO Move to onPostExecute;
+
+                fetchVideos(0);
             }
         });
 
         mPullToRefreshGridView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
-                //TODO add elements;
+                if (lastPageListed + 1 < numberOfPagesAvailable) {
+                    fetchVideos(lastPageListed + 1);
+                }
             }
         });
 
         mGridView = mPullToRefreshGridView.getRefreshableView();
         mGridView.setEmptyView(emptyText);
         mGridView.setOnItemClickListener(this);
+
+        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid, imageLoader);
+        mGridView.setAdapter(mAdapter);
     }
 
     @Override
@@ -118,7 +133,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             IRTabActivity.searchItem.collapseActionView();
 
         apiClient.getEventBus().register(this);
-        apiClient.listVideos(0, 100);
+        fetchVideos(0);
     }
 
     @Override
@@ -126,6 +141,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
+
+        if (listTask != null) {
+            listTask.cancel(true);
+            listTask = null;
+        }
     }
 
     @Override
@@ -149,11 +169,37 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
+    void fetchVideos(int page) {
+        listTask = apiClient.listVideos(page, 1);
+    }
+
     @Subscribe
     public void onEvent(VideoListEvent event) {
         List<Video> videos = event.videos;
+        PageInfo pageInfo = event.pageInfo;
 
-        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid, imageLoader, videos);
-        mGridView.setAdapter(mAdapter);
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setVideos(videos);
+
+            if (mPullToRefreshGridView.isRefreshing()) {
+                mPullToRefreshGridView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendVideos(videos);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        listTask = null;
+
+        if (mPullToRefreshGridView.isRefreshing()) {
+            mPullToRefreshGridView.onRefreshComplete();
+        }
     }
 }
