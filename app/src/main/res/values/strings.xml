@@ -79,4 +79,6 @@
     <string name="save">Save</string>
     <string name="add_another">Add another</string>
     <string name="add_another_underline"><u>Add another</u></string>
+    <string name="title_activity_ircomment">IRCommentActivity</string>
+
 </resources>

@@ -19,10 +19,10 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
+        android:name="com.irewind.IRApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".IRApplication"
         android:theme="@style/IRAppTheme.Splash">
         <activity
             android:name="com.irewind.activities.IRSplashActivity"
@@ -58,11 +58,15 @@
             android:label="@string/title_activity_irtab"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.irewind.activities.IRCommentActivity"
+            android:label="@string/title_activity_ircomment"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Dialog"/>
         <activity
             android:name="com.facebook.LoginActivity"
-            android:label="@string/title_facebook_login" >
-        </activity>
+            android:label="@string/title_facebook_login"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -73,6 +77,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
     </application>
 
 </manifest>
