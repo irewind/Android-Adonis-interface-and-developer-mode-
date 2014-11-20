@@ -31,22 +31,26 @@
             android:text="Virgil Pana" />
 
         <TextView
-            android:id="@+id/videos"
+            android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_red"
             android:textSize="12sp"
-            android:text="23 videos" />
+            android:text="Sibiu, RO" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="12 Sep 2014 12:24"
-        android:layout_centerVertical="true"
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
-        android:textColor="@color/text_gray"
-        android:textSize="11sp"
-        android:layout_marginRight="10dp"/>
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:button="@drawable/checkbox"/>
+
+    <Button
+        android:id="@+id/select"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
 </RelativeLayout>

@@ -120,6 +120,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
 
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.account));
     }
 

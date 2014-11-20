@@ -118,6 +118,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         });
         IRTabActivity.abTitle.setText(getString(R.string.change_password));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
     @Override

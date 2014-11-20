@@ -67,5 +67,6 @@ public class IRMoreTermsFragment extends Fragment {
         });
         IRTabActivity.abTitle.setText(getString(R.string.term_cond));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 }

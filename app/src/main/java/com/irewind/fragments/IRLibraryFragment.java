@@ -121,6 +121,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onResume() {
         super.onResume();
         IRTabActivity.abBack.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.movies));
         IRTabActivity.abSearch.setVisibility(View.VISIBLE);
         IRTabActivity.abSearch.setOnClickListener(this);

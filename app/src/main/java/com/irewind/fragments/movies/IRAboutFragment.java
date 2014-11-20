@@ -3,6 +3,8 @@ package com.irewind.fragments.movies;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,13 @@ import android.widget.TextView;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+
+import com.irewind.activities.IRTabActivity;
+
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.model.Tag;
+
 import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.TagView;
 
@@ -122,6 +128,15 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
                 vote(false);
                 break;
             case R.id.settings:
+                IRSettingsFragment fragment = IRSettingsFragment.newInstance();
+                fragment.video = video;
+                IRTabActivity.mLibraryFragment = fragment;
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+                ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
+                        .disallowAddToBackStack()
+                        .commit();
                 break;
         }
     }
