@@ -89,6 +89,7 @@ public class IRSettingsFragment extends Fragment implements View.OnClickListener
                 IRTabActivity.abTitle.setText(getString(R.string.movie_settings));
                 IRTabActivity.abAction.setText(getString(R.string.save));
                 IRTabActivity.abSearch.setVisibility(View.GONE);
+                IRTabActivity.abAction.setVisibility(View.VISIBLE);
             }
 
             @Override
