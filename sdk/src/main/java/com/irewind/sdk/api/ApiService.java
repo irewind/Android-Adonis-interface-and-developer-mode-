@@ -22,24 +22,24 @@ public interface ApiService {
 
     // --- USER --- //
 
-    @GET("/rest/user/")
+    @GET("/rest/user/?sort=firstname")
     UserListResponse users(@Header("Authorization") String authorization,
                            @Query("page") Integer page,
                            @Query("size") Integer size);
 
-    @GET("/rest/user/")
+    @GET("/rest/user/?sort=firstname")
     void users(@Header("Authorization") String authorization,
                @Query("page") Integer page,
                @Query("size") Integer size,
                Callback<UserListResponse> cb);
 
-    @GET("/rest/user/search/searchUsers")
+    @GET("/rest/user/search/searchUsers?sort=firstname")
     UserListResponse searchUsers(@Header("Authorization") String authorization,
                                  @Query("searchTerm") String query,
                                  @Query("page") Integer page,
                                  @Query("size") Integer size);
 
-    @GET("/rest/user/search/searchUsers")
+    @GET("/rest/user/search/searchUsers?sort=firstname")
     void searchUsers(@Header("Authorization") String authorization,
                      @Query("searchTerm") String query,
                      @Query("page") Integer page,
@@ -108,13 +108,13 @@ public interface ApiService {
                       @Query("pageSize") Integer size,
                       Callback<VideoListResponse> cb);
 
-    @GET("/rest/video/search/findVideosWithPagination")
+    @GET("/rest/video/search/findByUser")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
                                     @Query("user") long userID,
                                     @Query("pageNo") Integer page,
                                     @Query("pageSize") Integer size);
 
-    @GET("/rest/video/search/findVideosWithPagination")
+    @GET("/rest/video/search/findByUser")
     void videosForUser(@Header("Authorization") String authorization,
                        @Query("user") long userID,
                        @Query("pageNo") Integer page,
