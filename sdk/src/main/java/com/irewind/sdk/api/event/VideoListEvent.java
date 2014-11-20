@@ -7,10 +7,9 @@ import java.util.List;
 
 public class VideoListEvent {
     public List<Video> videos;
-
     public PageInfo pageInfo;
 
-    public VideoListEvent(List<Video> videos, PageInfo info) {
+    public VideoListEvent(List<Video> videos, PageInfo pageInfo) {
         this.videos = videos;
         this.pageInfo = pageInfo;
     }

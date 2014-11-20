@@ -23,6 +23,11 @@ public interface ApiService {
     // --- USER --- //
 
     @GET("/rest/user/")
+    UserListResponse users(@Header("Authorization") String authorization,
+                           @Query("page") Integer page,
+                           @Query("size") Integer size);
+
+    @GET("/rest/user/")
     void users(@Header("Authorization") String authorization,
                @Query("page") Integer page,
                @Query("size") Integer size,
@@ -68,10 +73,21 @@ public interface ApiService {
                    Callback<VideoResponse> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
+    VideoListResponse getVideos(@Header("Authorization") String authorization,
+                                @Query("pageNo") Integer page,
+                                @Query("pageSize") Integer size);
+
+    @GET("/rest/video/search/findVideosWithPagination")
     void getVideos(@Header("Authorization") String authorization,
                    @Query("pageNo") Integer page,
                    @Query("pageSize") Integer size,
                    Callback<VideoListResponse> cb);
+
+    @GET("/rest/video/search/findVideosWithPagination")
+    VideoListResponse videosForUser(@Header("Authorization") String authorization,
+                                    @Query("user") long userID,
+                                    @Query("pageNo") Integer page,
+                                    @Query("pageSize") Integer size);
 
     @GET("/rest/video/search/findVideosWithPagination")
     void videosForUser(@Header("Authorization") String authorization,
@@ -79,6 +95,12 @@ public interface ApiService {
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
                        Callback<VideoListResponse> cb);
+
+    @GET("/rest/video/search/findVideosWithPagination")
+    VideoListResponse relatedVideos(@Header("Authorization") String authorization,
+                                    @Query("videoId") long videoID,
+                                    @Query("pageNo") Integer page,
+                                    @Query("pageSize") Integer size);
 
     @GET("/rest/video/search/findVideosWithPagination")
     void relatedVideos(@Header("Authorization") String authorization,
@@ -141,6 +163,12 @@ public interface ApiService {
                                     Callback<Boolean> cb);
 
     // --- Comments --- //
+
+    @GET("/rest/v2/video-comment/list")
+    CommentListResponse videoComments(@Header("Authorization") String authorization,
+                                      @Query("videoId") long videoID,
+                                      @Query("pageNo") Integer page,
+                                      @Query("pageSize") Integer size);
 
     @GET("/rest/v2/video-comment/list")
     void videoComments(@Header("Authorization") String authorization,

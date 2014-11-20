@@ -50,6 +50,7 @@ import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.NotificationSettings;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
+import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -474,8 +475,7 @@ public class ApiClient implements SessionRefresher {
                 if (users != null && users.size() > 0) {
                     User user = users.get(0);
                     setActiveUser(user);
-                }
-                else {
+                } else {
                     eventBus.post(new UserInfoLoadedEvent(null));
                 }
             }
@@ -505,26 +505,34 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public void getUsers(final int page, int perPage) {
-        Session session = getActiveSession();
-        apiService.users(authHeader(session), page, perPage, new Callback<UserListResponse>() {
+    public SafeAsyncTask<UserListResponse> getUsers(final int page, final int perPage) {
+        final Session session = getActiveSession();
+        SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
             @Override
-            public void success(UserListResponse userListResponse, Response response) {
+            public UserListResponse call() throws Exception {
+                return apiService.users(authHeader(session), page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(UserListResponse userListResponse) {
                 UserListResponse.EmbeddedResponse embeddedUserResponse = userListResponse.getEmbeddedResponse();
                 if (embeddedUserResponse != null) {
                     List<User> users = embeddedUserResponse.getUsers();
                     eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
-                }
-                else {
+                } else {
                     eventBus.post(new UserListEvent(null, userListResponse.getPageInfo()));
                 }
             }
+        };
 
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new UserListFailEvent(error, page));
-            }
-        });
+        task.execute();
+
+        return task;
     }
 
     public void updateUser(final User user, String firstname, String lastname) {
@@ -593,8 +601,7 @@ public class ApiClient implements SessionRefresher {
                 if (content != null) {
                     List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
                     eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsListSuccessEvent(null));
                 }
             }
@@ -699,11 +706,22 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public void listVideos(final int page, int perPage) {
-        Session session = getActiveSession();
-        apiService.getVideos(authHeader(session), page, perPage, new Callback<VideoListResponse>() {
+    public SafeAsyncTask<VideoListResponse> listVideos(final int page, final int perPage) {
+        final Session session = getActiveSession();
+
+        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
             @Override
-            public void success(VideoListResponse videoListResponse, Response response) {
+            public VideoListResponse call() throws Exception {
+                return apiService.getVideos(authHeader(session), page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(VideoListResponse videoListResponse) {
                 VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
                 if (embeddedResponse != null) {
                     List<Video> videos = embeddedResponse.getVideos();
@@ -712,11 +730,10 @@ public class ApiClient implements SessionRefresher {
                     eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
                 }
             }
+        };
 
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new VideoListFailEvent(error, page));
-            }
-        });
+        task.execute();
+
+        return task;
     }
 }
