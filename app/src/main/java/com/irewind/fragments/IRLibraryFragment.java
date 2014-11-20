@@ -170,7 +170,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     void fetchVideos(int page) {
-        listTask = apiClient.listVideos(page, 1);
+        listTask = apiClient.listVideos(page, 20);
     }
 
     @Subscribe
