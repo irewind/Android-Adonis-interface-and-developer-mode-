@@ -408,8 +408,7 @@ public class ApiClient implements SessionRefresher {
                     public void success(AccessToken userAccessToken, Response response) {
                         if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
                             eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
-                        }
-                        else {
+                        } else {
                             userAccessToken.setLastRefreshDate(new Date());
                             openActiveSessionWithAccessToken(context, userAccessToken);
                         }
@@ -488,11 +487,18 @@ public class ApiClient implements SessionRefresher {
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
-                if (users != null && users.size() > 0) {
-                    User user = users.get(0);
-                    setActiveUser(user);
-                } else {
+                UserResponse.EmbeddedUserResponse embeddedUserResponse = userResponse.getEmbedded();
+
+                if (embeddedUserResponse != null) {
+                    List<User> users = userResponse.getEmbedded().getUsers();
+                    if (users != null && users.size() > 0) {
+                        User user = users.get(0);
+                        setActiveUser(user);
+                    } else {
+                        eventBus.post(new UserInfoLoadedEvent(null));
+                    }
+                }
+                else {
                     eventBus.post(new UserInfoLoadedEvent(null));
                 }
             }

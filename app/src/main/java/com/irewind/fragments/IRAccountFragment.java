@@ -202,6 +202,7 @@ public class IRAccountFragment extends Fragment implements AdapterView.OnItemCli
         apiClient.closeSessionAndClearTokenInformation();
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.putExtra(IRLoginActivity.EXTRA_SHOULD_LOGOUT_FIRST, true);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

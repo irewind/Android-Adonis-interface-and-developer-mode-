@@ -70,6 +70,9 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     private static final String TAG = "Login";
 
+    public static final String EXTRA_SHOULD_LOGOUT_FIRST = "should_logout_first";
+    private boolean shouldLogoutFirst;
+
     // UI references.
     @InjectView(R.id.login_form)
     View mLoginFormView;
@@ -96,6 +99,8 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @InjectView(R.id.facebook_sign_in_button)
     LoginButton mFacebookLogin;
 
+    private String email = "";
+
     private UiLifecycleHelper uiHelper;
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
@@ -110,6 +115,12 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle extraBundle = intent.getExtras();
+
+        shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
+
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
 
@@ -325,6 +336,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             // perform the user login attempt.
             showProgress(true);
 
+            this.email = email;
             apiClient.openSession(email, password);
         }
     }
@@ -359,15 +371,23 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
-            Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+            if (shouldLogoutFirst) {
+                signOutPlusClient();
+                shouldLogoutFirst = false;
+            }
+            else {
+                Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
 
-            Person person = getPlusClient().getCurrentPerson();
-            String email = getPlusClient().getAccountName();
-            String socialId = person.getId();
-            String firstname = person.getName().getGivenName();
-            String lastname = person.getName().getFamilyName();
-            String pictureUrl = person.getImage().getUrl();
-            apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+                Person person = getPlusClient().getCurrentPerson();
+                String email = getPlusClient().getAccountName();
+                String socialId = person.getId();
+                String firstname = person.getName().getGivenName();
+                String lastname = person.getName().getFamilyName();
+                String pictureUrl = person.getImage().getUrl();
+
+                this.email = email;
+                apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+            }
         } else {
             Log.d("PLUS_INFO", "is null");
             showProgress(false);
@@ -470,7 +490,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
 
-        String email = mEmailView.getText().toString();
         apiClient.getActiveUserByEmail(email);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
