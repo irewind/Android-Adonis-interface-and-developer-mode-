@@ -1,6 +1,7 @@
 package com.irewind.adapters;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,8 +94,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
         holder.name.setText(name);
 
         if (user.getLastLoginDate() > 0) {
-            Date date = new Date(user.getLastLoginDate());
-            holder.date.setText(dateFormat.format(date));
+            holder.date.setText(DateUtils.getRelativeTimeSpanString(user.getLastLoginDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         } else {
             holder.date.setText("");
         }

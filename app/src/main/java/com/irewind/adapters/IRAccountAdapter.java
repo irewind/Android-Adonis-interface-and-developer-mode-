@@ -54,7 +54,6 @@ public class IRAccountAdapter extends ArrayAdapter<String> {
 
         String info = getItem(position);
 
-
         holder.title.setText(info);
 
         return convertView;
