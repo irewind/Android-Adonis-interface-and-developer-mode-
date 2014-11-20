@@ -1,5 +1,6 @@
 package com.irewind.sdk.api;
 
+import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.TagListResponse;
@@ -7,6 +8,7 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.model.AccessToken;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -19,6 +21,37 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface ApiService {
+
+    @POST("/rest/v2/socialMobileLogin")
+    @FormUrlEncoded
+    void socialLogin(@Header("Authorization") String authorization,
+                     @Field("email") String email,
+                     @Field("socialId") String socialId,
+                     @Field("provider") String socialIdProvider,
+                     @Field("firstName") String firstName,
+                     @Field("lastName") String lastName,
+                     @Field("pictureUrl") String pictureURL,
+                     Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/socialMobileLogin?provider=FACEBOOK")
+    @FormUrlEncoded
+    void socialLoginFacebook(@Header("Authorization") String authorization,
+                             @Field("email") String email,
+                             @Field("socialId") String socialId,
+                             @Field("firstName") String firstName,
+                             @Field("lastName") String lastName,
+                             @Field("pictureUrl") String pictureURL,
+                             Callback<AccessToken> cb);
+
+    @POST("/rest/v2/socialMobileLogin?provider=GOOGLE")
+    @FormUrlEncoded
+    void socialLoginGoogle(@Header("Authorization") String authorization,
+                           @Field("email") String email,
+                           @Field("socialId") String socialId,
+                           @Field("firstName") String firstName,
+                           @Field("lastName") String lastName,
+                           @Field("pictureUrl") String pictureURL,
+                           Callback<AccessToken> cb);
 
     // --- USER --- //
 

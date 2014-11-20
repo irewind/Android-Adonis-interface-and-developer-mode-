@@ -45,34 +45,6 @@ public interface SessionService {
                  @Field("password") String password,
                  Callback<BaseResponse> cb);
 
-    @POST("/rest/v2/socialMobileLogin")
-    @FormUrlEncoded
-    void socialLogin(@Field("email") String email,
-                     @Field("socialId") String socialId,
-                     @Field("provider") String socialIdProvider,
-                     @Field("firstName") String firstName,
-                     @Field("lastName") String lastName,
-                     @Field("pictureUrl") String pictureURL,
-                     Callback<BaseResponse> cb);
-
-    @POST("/rest/v2/socialMobileLogin?provider=FACEBOOK")
-    @FormUrlEncoded
-    void socialLoginFacebook(@Field("email") String email,
-                             @Field("socialId") String socialId,
-                             @Field("firstName") String firstName,
-                             @Field("lastName") String lastName,
-                             @Field("pictureUrl") String pictureURL,
-                             Callback<BaseResponse> cb);
-
-    @POST("/rest/v2/socialMobileLogin?provider=GOOGLE")
-    @FormUrlEncoded
-    void socialLoginGoogle(@Field("email") String email,
-                           @Field("socialId") String socialId,
-                           @Field("firstName") String firstName,
-                           @Field("lastName") String lastName,
-                           @Field("pictureUrl") String pictureURL,
-                           Callback<BaseResponse> cb);
-
     @POST("/reset")
     @FormUrlEncoded
     void resetPassword(@Field("email") String email,

@@ -3,16 +3,12 @@ package com.irewind.activities;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.Scopes;
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.PlusClient;
-import com.irewind.R;
 
 /**
  * A base class to wrap communication with the Google Play Services PlusClient.
@@ -77,14 +73,14 @@ public abstract class PlusBaseActivity extends IRBaseActivity
         // Scopes indicate the information about the user your application will be able to access.
         mPlusClient =
                 new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN,
-                        Scopes.PLUS_ME, Scopes.PROFILE ,"https://www.googleapis.com/auth/userinfo.email").build();
+                        Scopes.PLUS_ME, Scopes.PROFILE, "https://www.googleapis.com/auth/userinfo.email").build();
 //        PlusClient plusClient = new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN, ).build();
     }
 
     /**
      * Try to sign in the user.
      */
-    public void signIn() {
+    public void signInGoogle() {
         if (!mPlusClient.isConnected()) {
             // Show the dialog as we are now signing in.
             setProgressBarVisible(true);
@@ -129,7 +125,7 @@ public abstract class PlusBaseActivity extends IRBaseActivity
     /**
      * Sign out the user (so they can switch to another account).
      */
-    public void signOut() {
+    public void signOutPlusClient() {
 
         // We only want to sign out if we're connected.
         if (mPlusClient.isConnected()) {

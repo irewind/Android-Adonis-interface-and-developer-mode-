@@ -8,8 +8,6 @@ import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
-import com.irewind.sdk.api.event.AdminAccessTokenFailEvent;
-import com.irewind.sdk.api.event.AdminAccessTokenSuccessEvent;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListFailedEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
@@ -25,7 +23,6 @@ import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
@@ -169,26 +166,26 @@ public class ApiClient implements SessionRefresher {
     private static final String adminUsername = "tremend@mailinator.com";
     private static final String adminSecret = "tremend.admin";
 
-    public void getAdminAccessToken() {
-        sessionService.getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
+    private void getAccessToken(String username, String password, final Callback<AccessToken> cb) {
+        sessionService.getAccessToken(username, password, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
-                eventBus.post(new AdminAccessTokenSuccessEvent(accessToken));
+                if (cb != null) {
+                    cb.success(accessToken, response);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new AdminAccessTokenFailEvent(AdminAccessTokenFailEvent.Reason.BadCredentials));
+                if (cb != null) {
+                    cb.failure(error);
+                }
             }
         });
     }
 
-    private void openAdminSession() {
-        openSession(adminUsername, adminSecret);
-    }
-
     public void openSession(String username, String password) {
-        sessionService.getAccessToken(username, password, new Callback<AccessToken>() {
+        getAccessToken(username, password, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
                 accessToken.setLastRefreshDate(new Date());
@@ -197,7 +194,7 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials, null));
             }
         });
     }
@@ -281,7 +278,7 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials, null));
             }
         });
     }
@@ -364,38 +361,70 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public void loginFACEBOOK(String email,
-                              String socialId,
-                              String firstName,
-                              String lastName,
-                              String pictureURL) {
-        sessionService.socialLoginFacebook(email, socialId, firstName, lastName, pictureURL, new Callback<BaseResponse>() {
+    public void loginFACEBOOK(final String email,
+                              final String socialId,
+                              final String firstName,
+                              final String lastName,
+                              final String pictureURL) {
+        getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
-            public void success(BaseResponse baseResponse, Response response) {
-                openAdminSession();
+            public void success(AccessToken accessToken, Response response) {
+                apiService.socialLoginFacebook(authHeader(accessToken), email, socialId, firstName, lastName, pictureURL, new Callback<AccessToken>() {
+                    @Override
+                    public void success(AccessToken userAccessToken, Response response) {
+                        if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
+                            eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
+                        }
+                        else {
+                            userAccessToken.setLastRefreshDate(new Date());
+                            openActiveSessionWithAccessToken(context, userAccessToken);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, null));
+                    }
+                });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SocialLoginFailEvent(SocialLoginFailEvent.Reason.Unknown));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, null));
             }
         });
     }
 
-    public void loginGOOGLE(String email,
-                            String socialId,
-                            String firstName,
-                            String lastName,
-                            String pictureURL) {
-        sessionService.socialLoginGoogle(email, socialId, firstName, lastName, pictureURL, new Callback<BaseResponse>() {
+    public void loginGOOGLE(final String email,
+                            final String socialId,
+                            final String firstName,
+                            final String lastName,
+                            final String pictureURL) {
+        getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
-            public void success(BaseResponse baseResponse, Response response) {
-                openAdminSession();
+            public void success(AccessToken accessToken, Response response) {
+                apiService.socialLoginGoogle(authHeader(accessToken), email, socialId, firstName, lastName, pictureURL, new Callback<AccessToken>() {
+                    @Override
+                    public void success(AccessToken userAccessToken, Response response) {
+                        if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
+                            eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
+                        }
+                        else {
+                            userAccessToken.setLastRefreshDate(new Date());
+                            openActiveSessionWithAccessToken(context, userAccessToken);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, null));
+                    }
+                });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new SocialLoginFailEvent(SocialLoginFailEvent.Reason.Unknown));
+                eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, null));
             }
         });
     }

@@ -45,7 +45,6 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
@@ -253,7 +252,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.plus_sign_in_button:
-                signIn();
+                signInGoogle();
                 break;
             case R.id.email_sign_in_button:
                 attemptLogin();
@@ -267,8 +266,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 startActivity(intentRegister);
                 break;
             case R.id.email_sign_in_google:
-                Log.d("CLICK", "google");
-                mPlusSignInButton.performClick();
+                signInGoogle();
                 break;
             case R.id.email_sign_in_facebook:
                 Log.d("CLICK", "facebook");
@@ -358,6 +356,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     @Override
     protected void onPlusClientSignIn() {
+
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
             Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
@@ -371,6 +370,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
+            showProgress(false);
         }
     }
 
@@ -484,14 +484,19 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     public void onEvent(SessionOpenFailEvent event) {
         showProgress(false);
 
-        Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
-    }
+        if (event.reason == SessionOpenFailEvent.Reason.BadCredentials) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+        }
+        else if (event.reason == SessionOpenFailEvent.Reason.Unknown) {
+            if (event.message != null) {
+                Toast.makeText(getApplicationContext(), event.message, Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+            }
+        }
 
-    @Subscribe
-    public void onEvent(SocialLoginFailEvent event) {
-        showProgress(false);
-
-        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
+        signOutPlusClient();
     }
 }
 

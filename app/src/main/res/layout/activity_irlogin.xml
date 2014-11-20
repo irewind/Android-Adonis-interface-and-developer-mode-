@@ -153,7 +153,7 @@
         android:id="@+id/plus_sign_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <com.facebook.widget.LoginButton
         android:id="@+id/facebook_sign_in_button"
