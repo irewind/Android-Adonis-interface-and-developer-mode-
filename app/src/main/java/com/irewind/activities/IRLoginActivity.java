@@ -426,6 +426,8 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
                 String id = (String)userMap.get("id");
                 String picture = "http://graph.facebook.com/"+id+"/picture?type=large";
 
+                this.email = email;
+                
                 apiClient.loginFACEBOOK(email, id, firstname, lastname, picture);
             }
         }
