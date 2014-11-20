@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -54,9 +55,9 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
 
     public static ImageButton abBack, abSearch;
     public static TextView abTitle;
+    public static Button abAction;
 
     public static Fragment mLibraryFragment, mPeopleFragment, mAccountFragment, mMoreFragment;
-    private Menu mMenu;
     public static MenuItem searchItem;
     public static SearchView searchView;
     public static IOnSearchCallback onSearchCallback;
@@ -91,6 +92,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
         abTitle = (TextView) view.findViewById(R.id.title);
         abSearch = (ImageButton) view.findViewById(R.id.btn_search);
         abBack = (ImageButton) view.findViewById(R.id.btn_back);
+        abAction = (Button) view.findViewById(R.id.action);
         getSupportActionBar().setCustomView(view);
 
         if (savedInstanceState == null) {
@@ -178,7 +180,6 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-        mMenu = menu;
 
         searchItem = menu.findItem(R.id.menu_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -206,7 +207,6 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
         searchView.setOnQueryTextListener(queryTextListener);
 
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-
             @Override
             public boolean onMenuItemActionCollapse(MenuItem arg0) {
                 return true;
@@ -216,8 +216,6 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
             public boolean onMenuItemActionExpand(MenuItem arg0) {
                 return true;
             }
-
-
         });
 
         return super.onCreateOptionsMenu(menu);

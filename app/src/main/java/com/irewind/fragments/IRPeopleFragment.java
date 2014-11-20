@@ -119,6 +119,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.people));
         IRTabActivity.abSearch.setVisibility(View.VISIBLE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
         IRTabActivity.abSearch.setOnClickListener(this);
         IRTabActivity.onSearchCallback = new IOnSearchCallback() {
             @Override

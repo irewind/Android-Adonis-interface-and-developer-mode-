@@ -116,6 +116,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         });
         IRTabActivity.abTitle.setText(getString(R.string.notifications));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
     @Override

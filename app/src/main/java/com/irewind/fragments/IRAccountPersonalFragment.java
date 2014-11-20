@@ -127,6 +127,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         });
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abTitle.setText(getString(R.string.personal_data));
+        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
     @Override

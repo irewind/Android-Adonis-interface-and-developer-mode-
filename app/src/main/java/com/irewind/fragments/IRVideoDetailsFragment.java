@@ -55,7 +55,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     boolean isPlaying = true;
     boolean autoPause;
 
-    Video video;
+    public Video video;
 
     CountDownTimer ct = new CountDownTimer(20000000, 500) {
 
@@ -182,6 +182,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         });
         IRTabActivity.abTitle.setText(getString(R.string.movies));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
         if (autoPause && videoView.getCurrentPosition() != videoView.getDuration()) {
             videoView.resume();
             autoPause = false;

@@ -67,5 +67,6 @@ public class IRMorePrivacyFragment extends Fragment {
         });
         IRTabActivity.abTitle.setText(getString(R.string.policy_s));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 }
