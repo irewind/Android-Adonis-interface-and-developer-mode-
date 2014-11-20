@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
@@ -102,6 +103,13 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         Bundle extraBundle = intent.getExtras();
 
         shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
+        if (shouldLogoutFirst) {
+            Session session = Session.getActiveSession();
+            if (session != null && session.isOpened()) {
+                session.closeAndClearTokenInformation();
+                shouldLogoutFirst = false;
+            }
+        }
 
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
@@ -171,6 +179,8 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
     @Override
     protected void onResume() {
+
+
         super.onResume();
 
         apiClient.getEventBus().register(this);
@@ -427,7 +437,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
                 String picture = "http://graph.facebook.com/"+id+"/picture?type=large";
 
                 this.email = email;
-                
+
                 apiClient.loginFACEBOOK(email, id, firstname, lastname, picture);
             }
         }
