@@ -16,6 +16,9 @@ import com.irewind.fragments.IRMoreFragment;
 import com.irewind.fragments.IRPeopleFragment;
 import com.irewind.fragments.IRRewindFunctionalityFragment;
 import com.irewind.fragments.IRVideoDetailsFragment;
+import com.irewind.fragments.movies.IRAboutFragment;
+import com.irewind.fragments.movies.IRCommentsFragment;
+import com.irewind.fragments.movies.IRRelatedFragment;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -43,6 +46,9 @@ import dagger.Provides;
 
                 IRLibraryFragment.class,
                 IRVideoDetailsFragment.class,
+                IRAboutFragment.class,
+                IRCommentsFragment.class,
+                IRRelatedFragment.class,
 
                 IRPeopleFragment.class,
 

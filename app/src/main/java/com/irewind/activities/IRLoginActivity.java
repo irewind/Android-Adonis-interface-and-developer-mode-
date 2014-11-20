@@ -28,11 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Request;
-import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
@@ -45,31 +41,28 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
-import com.irewind.sdk.api.event.SocialLoginFailEvent;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * A login screen that offers login via email/password and via Google+ sign in.
- * <p/>
- * ************ IMPORTANT SETUP NOTES: ************
- * In order for Google+ sign in to work with your app, you must first go to:
- * https://developers.google.com/+/mobile/android/getting-started#step_1_enable_the_google_api
- * and follow the steps in "Step 1" to create an OAuth 2.0 client for your package.
- */
-public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
+public class IRLoginActivity extends SocialLoginActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
     private static final String TAG = "Login";
+
+    public static final String EXTRA_SHOULD_LOGOUT_FIRST = "should_logout_first";
+    private boolean shouldLogoutFirst;
 
     // UI references.
     @InjectView(R.id.login_form)
@@ -97,13 +90,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @InjectView(R.id.facebook_sign_in_button)
     LoginButton mFacebookLogin;
 
-    private UiLifecycleHelper uiHelper;
-    private Session.StatusCallback callback = new Session.StatusCallback() {
-        @Override
-        public void call(final Session session, final SessionState state, final Exception exception) {
-            onSessionStateChange(session, state, exception);
-        }
-    };
+    private String email = "";
 
     @Inject
     protected ApiClient apiClient;
@@ -111,6 +98,19 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle extraBundle = intent.getExtras();
+
+        shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
+        if (shouldLogoutFirst) {
+            Session session = Session.getActiveSession();
+            if (session != null && session.isOpened()) {
+                session.closeAndClearTokenInformation();
+                shouldLogoutFirst = false;
+            }
+        }
+
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
 
@@ -127,8 +127,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         ButterKnife.inject(this);
         Injector.inject(this);
 
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+        mFacebookLogin.setReadPermissions(Arrays.asList("email"));
 
         if (supportsGooglePlayServices()) {
             // Set a listener to connect the user when the G+ button is clicked.
@@ -144,7 +143,7 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    signIn();
                     return true;
                 }
                 return false;
@@ -180,16 +179,11 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
 
     @Override
     protected void onResume() {
+
+
         super.onResume();
-        Session session = Session.getActiveSession();
-        if (session != null &&
-                (session.isOpened() || session.isClosed())) {
-            onSessionStateChange(session, session.getState(), null);
-        }
 
         apiClient.getEventBus().register(this);
-
-        uiHelper.onResume();
     }
 
     @Override
@@ -197,20 +191,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
-
-        uiHelper.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        uiHelper.onDestroy();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
     }
 
     @TargetApi(19)
@@ -226,37 +206,36 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         win.setAttributes(winParams);
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-        if (state.isOpened()) {
-            Log.i(TAG, "Logged in...");
-            Request request = Request.newMeRequest(session,
-                    new Request.GraphUserCallback() {
-                        // callback after Graph API response with user object
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    public void showProgress(final boolean show) {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-                        @Override
-                        public void onCompleted(GraphUser user,
-                                                Response response) {
-                            if (user != null && user.asMap() != null && user.asMap().get("email") != null) {
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-                            } else {
-
-                            }
-                        }
-                    });
-            Request.executeBatchAsync(request);
-        } else if (state.isClosed()) {
-            Log.i(TAG, "Logged out...");
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.plus_sign_in_button:
-                signIn();
-                break;
             case R.id.email_sign_in_button:
-                attemptLogin();
+                signIn();
                 break;
             case R.id.forgot_password:
                 Intent intentForgot = new Intent(this, IRForgotPasswordActivity.class);
@@ -267,11 +246,9 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
                 startActivity(intentRegister);
                 break;
             case R.id.email_sign_in_google:
-                Log.d("CLICK", "google");
-                mPlusSignInButton.performClick();
+                signInGoogle();
                 break;
             case R.id.email_sign_in_facebook:
-                Log.d("CLICK", "facebook");
                 mFacebookLogin.performClick();
                 break;
         }
@@ -281,13 +258,12 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         getLoaderManager().initLoader(0, null, this);
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    public void signIn() {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -327,50 +303,37 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
             // perform the user login attempt.
             showProgress(true);
 
+            this.email = email;
             apiClient.openSession(email, password);
         }
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    public void showProgress(final boolean show) {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            }
-        });
-
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            }
-        });
-    }
+    // --- Google Plus --- //
 
     @Override
     protected void onPlusClientSignIn() {
+
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
-            Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+            if (shouldLogoutFirst) {
+                signOutPlusClient();
+                shouldLogoutFirst = false;
+            } else {
+                Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
 
-            Person person = getPlusClient().getCurrentPerson();
-            String email = getPlusClient().getAccountName();
-            String socialId = person.getId();
-            String firstname = person.getName().getGivenName();
-            String lastname = person.getName().getFamilyName();
-            String pictureUrl = person.getImage().getUrl();
-            apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+                Person person = getPlusClient().getCurrentPerson();
+                String email = getPlusClient().getAccountName();
+                String socialId = person.getId();
+                String firstname = person.getName().getGivenName();
+                String lastname = person.getName().getFamilyName();
+                String pictureUrl = person.getImage().getUrl();
+
+                this.email = email;
+                apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+            }
         } else {
             Log.d("PLUS_INFO", "is null");
+            showProgress(false);
         }
     }
 
@@ -380,23 +343,20 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     }
 
     @Override
-    protected void updateConnectButtonState() {
-        //TODO: Update this logic to also handle the user logged in by email.
-        boolean connected = getPlusClient().isConnected();
-
-//        mPlusSignInButton.setVisibility(connected ? View.GONE : View.VISIBLE);
-        mEmailLoginFormView.setVisibility(connected ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
     protected void onPlusClientRevokeAccess() {
-        // TODO: Access to the user's G+ account has been revoked.  Per the developer terms, delete
-        // any stored user data here.
+
     }
 
     @Override
     protected void onPlusClientSignOut() {
 
+    }
+
+    @Override
+    protected void updateGPlusButtonState() {
+        boolean connected = getPlusClient().isConnected();
+
+        mEmailLoginFormView.setVisibility(connected ? View.GONE : View.VISIBLE);
     }
 
     /**
@@ -454,7 +414,6 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         int IS_PRIMARY = 1;
     }
 
-
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -464,13 +423,32 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
         mEmailView.setAdapter(adapter);
     }
 
+    // --- Facebook --- //
+
+    @Override
+    protected void onGraphUserLoaded(GraphUser user) {
+        if (user != null) {
+            Map<String, Object> userMap = user.asMap();
+            if (userMap != null) {
+                String email = (String)userMap.get("email");
+                String firstname = (String)userMap.get("first_name");
+                String lastname = (String)userMap.get("last_name");
+                String id = (String)userMap.get("id");
+                String picture = "http://graph.facebook.com/"+id+"/picture?type=large";
+
+                this.email = email;
+
+                apiClient.loginFACEBOOK(email, id, firstname, lastname, picture);
+            }
+        }
+    }
+
     // --- Events --- //
 
     @Subscribe
     public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
 
-        String email = mEmailView.getText().toString();
         apiClient.getActiveUserByEmail(email);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
@@ -484,14 +462,17 @@ public class IRLoginActivity extends PlusBaseActivity implements LoaderCallbacks
     public void onEvent(SessionOpenFailEvent event) {
         showProgress(false);
 
-        Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
-    }
+        if (event.reason == SessionOpenFailEvent.Reason.BadCredentials) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+        } else if (event.reason == SessionOpenFailEvent.Reason.Unknown) {
+            if (event.message != null) {
+                Toast.makeText(getApplicationContext(), event.message, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+            }
+        }
 
-    @Subscribe
-    public void onEvent(SocialLoginFailEvent event) {
-        showProgress(false);
-
-        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
+        signOutPlusClient();
     }
 }
 

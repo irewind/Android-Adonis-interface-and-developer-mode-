@@ -7,18 +7,37 @@ import com.irewind.sdk.model.Tag;
 import java.util.List;
 
 public class TagListResponse extends BaseResponse {
-    @SerializedName("content")
-    private List<Tag> content;
+
+
+    @SerializedName("_embedded")
+    private EmbeddedResponse embeddedResponse;
 
     @SerializedName("page")
     private PageInfo pageInfo;
 
-    public List<Tag> getContent() {
-        return content;
+    public EmbeddedResponse getEmbeddedResponse() {
+        return embeddedResponse;
     }
 
     public PageInfo getPageInfo() {
         return pageInfo;
+    }
+
+    public class EmbeddedResponse {
+
+        @SerializedName("tag")
+        private List<Tag> tags;
+
+        public List<Tag> getTags() {
+            return tags;
+        }
+
+        @Override
+        public String toString() {
+            return "EmbeddedResponse{" +
+                    "tags=" + tags +
+                    '}';
+        }
     }
 
     @Override
@@ -30,7 +49,7 @@ public class TagListResponse extends BaseResponse {
                     '}';
         }
         return "TagListResponse{" +
-                "content=" + content +
+                "embeddedResponse=" + embeddedResponse +
                 ", pageInfo=" + pageInfo +
                 '}';
     }

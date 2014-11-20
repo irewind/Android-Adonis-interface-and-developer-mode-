@@ -10,16 +10,23 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.adapters.IRRelatedAdapter;
-import com.irewind.models.RelatedItem;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
+import com.irewind.sdk.util.SafeAsyncTask;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +43,17 @@ public class IRRelatedFragment extends Fragment {
 
     public Video video;
 
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
+
+    private int lastPageListed = 0;
+    private int numberOfPagesAvailable = 0;
+
+    private SafeAsyncTask<VideoListResponse> listTask;
+
     public static IRRelatedFragment newInstance() {
         IRRelatedFragment fragment = new IRRelatedFragment();
         return fragment;
@@ -48,6 +66,8 @@ public class IRRelatedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
@@ -64,12 +84,6 @@ public class IRRelatedFragment extends Fragment {
 
         mListView = mPullToRefreshListView.getRefreshableView();
 
-        mPullToRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
-            @Override
-            public void onLastItemVisible() {
-                //TODO on last item visible
-            }
-        });
         mPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -78,32 +92,72 @@ public class IRRelatedFragment extends Fragment {
 
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-                mPullToRefreshListView.onRefreshComplete(); //TODO Move this line in onPostExecute if AsyncTask
+
+                fetch(0);
+            }
+        });
+        mPullToRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+            @Override
+            public void onLastItemVisible() {
+                if (lastPageListed + 1 < numberOfPagesAvailable) {
+                    fetch(lastPageListed + 1);
+                }
             }
         });
 
         mListView.setEmptyView(emptyText);
 
-        populate();
+        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, imageLoader);
+        mListView.setAdapter(mAdapter);
     }
 
-    private void populate() { //TODO Remove this
-        List<RelatedItem> data = new ArrayList<RelatedItem>();
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
-        data.add(new RelatedItem(0, "", "", Calendar.getInstance().getTime(), 10, 10, ""));
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, data);
-        mListView.setAdapter(mAdapter);
+        apiClient.getEventBus().register(this);
+        fetch(0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
+        cancelTask();
+    }
+
+    void fetch(int page) {
+        cancelTask();
+
+        listTask = apiClient.listRelatedVideos(video.getId(), page, 20);
+    }
+
+    void cancelTask() {
+        if (listTask != null) {
+            listTask.cancel(true);
+        }
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(VideoListEvent event) {
+        List<Video> videos = event.videos;
+        PageInfo pageInfo = event.pageInfo;
+
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setVideos(videos);
+
+            if (mPullToRefreshListView.isRefreshing()) {
+                mPullToRefreshListView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendVideos(videos);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+
+        listTask = null;
     }
 }

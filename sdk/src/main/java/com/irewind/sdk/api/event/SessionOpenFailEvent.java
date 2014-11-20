@@ -8,7 +8,10 @@ public class SessionOpenFailEvent {
 
     public Reason reason;
 
-    public SessionOpenFailEvent(Reason reason) {
+    public String message;
+
+    public SessionOpenFailEvent(Reason reason, String message) {
         this.reason = reason;
+        this.message = message;
     }
 }
