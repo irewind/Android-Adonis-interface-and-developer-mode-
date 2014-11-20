@@ -51,10 +51,12 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Inject
     ImageLoader imageLoader;
 
-    int lastPageListed = 0;
-    int numberOfPagesAvailable = 0;
+    private int lastPageListed = 0;
+    private int numberOfPagesAvailable = 0;
 
     private SafeAsyncTask<UserListResponse> listTask;
+
+    private String searchQuery = "";
 
     public static IRPeopleFragment newInstance() {
         IRPeopleFragment fragment = new IRPeopleFragment();
@@ -120,8 +122,9 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         IRTabActivity.abSearch.setOnClickListener(this);
         IRTabActivity.onSearchCallback = new IOnSearchCallback() {
             @Override
-            public void execute() {
-                //TODO set search for people
+            public void execute(String query) {
+                searchQuery = query;
+                fetch(0);
             }
         };
         if (IRTabActivity.searchItem != null)
@@ -156,7 +159,13 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     void fetch(int page) {
         cancelTask();
-        listTask = apiClient.listUsers(page, 20);
+
+        if (searchQuery != null && searchQuery.length() > 0) {
+            listTask = apiClient.searchUsers(searchQuery, page, 20);
+        }
+        else {
+            listTask = apiClient.listUsers(page, 20);
+        }
     }
 
     void cancelTask() {

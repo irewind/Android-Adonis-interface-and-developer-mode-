@@ -33,6 +33,19 @@ public interface ApiService {
                @Query("size") Integer size,
                Callback<UserListResponse> cb);
 
+    @GET("/rest/user/searchByName")
+    UserListResponse searchUsers(@Header("Authorization") String authorization,
+                                 @Query("searchTerm") String query,
+                                 @Query("page") Integer page,
+                                 @Query("size") Integer size);
+
+    @GET("/rest/user/searchByName")
+    void searchUsers(@Header("Authorization") String authorization,
+                     @Query("searchTerm") String query,
+                     @Query("page") Integer page,
+                     @Query("size") Integer size,
+                     Callback<UserListResponse> cb);
+
     @GET("/rest/user/")
     void userById(@Header("Authorization") String authorization,
                   @Path("idKeyword") long id,
@@ -108,6 +121,12 @@ public interface ApiService {
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
                        Callback<VideoListResponse> cb);
+
+    @GET("/rest/v2/search-videos")
+    VideoListResponse searchVideos(@Header("Authorization") String authorization,
+                                   @Query("searchTerm") String query,
+                                   @Query("pageNo") Integer page,
+                                   @Query("pageSize") Integer size);
 
     @GET("/rest/v2/search-videos")
     void searchVideos(@Header("Authorization") String authorization,

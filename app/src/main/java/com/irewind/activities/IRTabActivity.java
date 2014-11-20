@@ -194,8 +194,8 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
         // Set on click to open a fragment, not a activity
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
-                // Do something
+            public boolean onQueryTextChange(String query) {
+                onSearchCallback.execute(query);
                 return true;
             }
 
@@ -204,7 +204,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 Log.d("SEARCH", query);
                 searchView.clearFocus();
                 MenuItemCompat.collapseActionView(searchItem);
-                onSearchCallback.execute();
+                onSearchCallback.execute(query);
                 return false;
             }
         };

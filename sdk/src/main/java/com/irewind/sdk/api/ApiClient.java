@@ -521,6 +521,36 @@ public class ApiClient implements SessionRefresher {
         return task;
     }
 
+    public SafeAsyncTask<UserListResponse> searchUsers(final String query, final int page, final int perPage) {
+        final Session session = getActiveSession();
+        SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
+            @Override
+            public UserListResponse call() throws Exception {
+                return apiService.searchUsers(authHeader(session), query, page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(UserListResponse userListResponse) {
+                UserListResponse.EmbeddedResponse embeddedUserResponse = userListResponse.getEmbeddedResponse();
+                if (embeddedUserResponse != null) {
+                    List<User> users = embeddedUserResponse.getUsers();
+                    eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new UserListEvent(null, userListResponse.getPageInfo()));
+                }
+            }
+        };
+
+        task.execute();
+
+        return task;
+    }
+
     public void updateUser(final User user, String firstname, String lastname) {
         Session session = getActiveSession();
         apiService.updateUser(authHeader(session), user.getId(), firstname, lastname, new Callback<Boolean>() {
@@ -699,6 +729,37 @@ public class ApiClient implements SessionRefresher {
             @Override
             public VideoListResponse call() throws Exception {
                 return apiService.getVideos(authHeader(session), page, perPage);
+            }
+
+            @Override
+            protected void onException(Exception e) throws RuntimeException {
+                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+            }
+
+            @Override
+            public void onSuccess(VideoListResponse videoListResponse) {
+                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
+                if (embeddedResponse != null) {
+                    List<Video> videos = embeddedResponse.getVideos();
+                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
+                }
+            }
+        };
+
+        task.execute();
+
+        return task;
+    }
+
+    public SafeAsyncTask<VideoListResponse> searchVideos(final String query, final int page, final int perPage) {
+        final Session session = getActiveSession();
+
+        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+            @Override
+            public VideoListResponse call() throws Exception {
+                return apiService.searchVideos(authHeader(session), query, page, perPage);
             }
 
             @Override

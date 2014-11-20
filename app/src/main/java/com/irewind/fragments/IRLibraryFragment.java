@@ -52,10 +52,12 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Inject
     ImageLoader imageLoader;
 
-    int lastPageListed = 0;
-    int numberOfPagesAvailable = 0;
+    private int lastPageListed = 0;
+    private int numberOfPagesAvailable = 0;
 
     private SafeAsyncTask<VideoListResponse> listTask;
+
+    private String searchQuery = "";
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
@@ -124,8 +126,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         IRTabActivity.abSearch.setOnClickListener(this);
         IRTabActivity.onSearchCallback = new IOnSearchCallback() {
             @Override
-            public void execute() {
-                //TODO set search videos
+            public void execute(String query) {
+                searchQuery = query;
+                fetch(0);
             }
         };
 
@@ -168,7 +171,13 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     void fetch(int page) {
         cancelTask();
-        listTask = apiClient.listVideos(page, 20);
+
+        if (searchQuery != null && searchQuery.length() > 0) {
+            listTask = apiClient.searchVideos(searchQuery, page, 20);
+        }
+        else {
+            listTask = apiClient.listVideos(page, 20);
+        }
     }
 
     void cancelTask() {
