@@ -853,12 +853,12 @@ public class ApiClient implements SessionRefresher {
         apiService.tagsForVideo(authHeader(session), videoId, 0, 1000, new Callback<TagListResponse>() {
             @Override
             public void success(TagListResponse tagListResponse, Response response) {
-                eventBus.post(new TagListResponse());
+                eventBus.post(tagListResponse);
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                eventBus.post(new TagListResponse());
             }
         });
     }

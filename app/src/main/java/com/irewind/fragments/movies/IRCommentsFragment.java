@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.sdk.model.Video;
 
@@ -26,6 +27,8 @@ public class IRCommentsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override

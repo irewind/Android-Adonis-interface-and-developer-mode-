@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.models.RelatedItem;
@@ -48,6 +49,8 @@ public class IRRelatedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Injector.inject(this);
     }
 
     @Override
