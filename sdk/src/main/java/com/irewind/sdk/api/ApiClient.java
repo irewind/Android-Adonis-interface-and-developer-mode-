@@ -425,12 +425,6 @@ public class ApiClient implements SessionRefresher {
     public final void setActiveUser(User user) {
         synchronized (this.lock) {
             if (user != this.activeUser) {
-                User oldUser = this.activeUser;
-
-//                if (oldUser != null) {
-//                    oldUser.close();
-//                }
-
                 this.activeUser = user;
 
                 userCachingStrategy.save(UserCachingStrategy.userToBundle(this.activeUser));
@@ -445,14 +439,6 @@ public class ApiClient implements SessionRefresher {
     }
 
     private String authHeader(AccessToken accessToken) {
-//        try {
-//            String token = session.getAccessToken();
-//            byte[] bytes = token.getBytes("ISO-8859-1");
-//            String encoded = ByteString.of(bytes).base64();
-//            return "Basic " + encoded;
-//        } catch (UnsupportedEncodingException e) {
-//            throw new AssertionError();
-//        }
         return "Bearer " + accessToken.getCurrentToken();
     }
 
@@ -505,7 +491,7 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public SafeAsyncTask<UserListResponse> getUsers(final int page, final int perPage) {
+    public SafeAsyncTask<UserListResponse> listUsers(final int page, final int perPage) {
         final Session session = getActiveSession();
         SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
             @Override

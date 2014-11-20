@@ -113,7 +113,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
             IRTabActivity.searchItem.collapseActionView();
 
         apiClient.getEventBus().register(this);
-        apiClient.getUsers(0, 100);
+        apiClient.listUsers(0, 100);
     }
 
     @Override
