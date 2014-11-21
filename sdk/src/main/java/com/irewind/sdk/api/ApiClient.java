@@ -655,7 +655,7 @@ public class ApiClient implements SessionRefresher {
                     List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
                     eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
                 } else {
-                    eventBus.post(new NotificationSettingsListSuccessEvent(null));
+                    eventBus.post(new NotificationSettingsListSuccessEvent(new NotificationSettings()));
                 }
             }
 
