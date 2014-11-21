@@ -135,23 +135,22 @@
                     android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/first_name_caps"
+                    android:text="@string/email_address"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/editFirst"
-                    fontPath="fonts/OpenSans-Regular.ttf"
+                    android:id="@+id/editEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
-                    android:inputType="textPersonName"
+                    android:inputType="textEmailAddress"
                     android:layout_below="@+id/first_name_caps"
                     android:lines="1"
                     android:singleLine="true"
-                    android:hint="@string/first_name_small"
+                    android:hint="@string/email_address_small"
                     android:text=""
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
@@ -165,53 +164,11 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/separator" />
 
+
             <RelativeLayout
-                android:id="@+id/relLast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/separator1"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:id="@+id/last_name_caps"
-                    android:layout_marginLeft="20dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/last_name_caps"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/editLast"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/titleLast"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:inputType="textPersonName"
-                    android:lines="1"
-                    android:hint="@string/last_name_small"
-                    android:layout_below="@+id/last_name_caps"
-                    android:singleLine="true"
-                    android:text=""
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
-            </RelativeLayout>
-
-            <View
-                android:id="@+id/separator2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/relLast"
-                android:layout_marginTop="5dp"
-                android:background="@color/separator" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/separator2"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp">
 

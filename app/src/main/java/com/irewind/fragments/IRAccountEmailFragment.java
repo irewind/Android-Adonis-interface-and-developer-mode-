@@ -2,11 +2,13 @@ package com.irewind.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +20,17 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
-import com.irewind.sdk.api.event.PasswordChangeFailEvent;
-import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
+import com.irewind.sdk.api.event.UserDeleteFailEvent;
+import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
+import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.irewind.utils.CheckUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
@@ -34,7 +38,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRAccountPasswordFragment extends Fragment implements View.OnClickListener {
+
+public class IRAccountEmailFragment extends Fragment implements View.OnClickListener {
 
     @Inject
     ApiClient apiClient;
@@ -56,24 +61,18 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.progressView)
     View progressView;
 
-    @InjectView(R.id.editCurrent)
-    EditText editCurrent;
-
-    @InjectView(R.id.editNew)
-    EditText editNew;
-
-    @InjectView(R.id.editConfirm)
-    EditText editConfirm;
+    @InjectView(R.id.editEmail)
+    EditText mEmail;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
 
-    public static IRAccountPasswordFragment newInstance() {
-        IRAccountPasswordFragment fragment = new IRAccountPasswordFragment();
+    public static IRAccountEmailFragment newInstance() {
+        IRAccountEmailFragment fragment = new IRAccountEmailFragment();
         return fragment;
     }
 
-    public IRAccountPasswordFragment() {
+    public IRAccountEmailFragment() {
         // Required empty public constructor
     }
 
@@ -81,14 +80,14 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Injector.inject(this);
+//        Injector.inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return getActivity().getLayoutInflater().inflate(R.layout.fragment_iraccount_password, container, false);
+        return getActivity().getLayoutInflater().inflate(R.layout.fragment_iraccount_email, container, false);
     }
 
     @Override
@@ -104,8 +103,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void onResume() {
         super.onResume();
 
-        apiClient.getEventBus().register(this);
-        apiClient.loadActiveUserInfo();
+//        apiClient.getEventBus().register(this);
+//        apiClient.loadActiveUserInfo();
 
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +119,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
                         .commit();
             }
         });
-        IRTabActivity.abTitle.setText(getString(R.string.change_password));
         IRTabActivity.abSearch.setVisibility(View.GONE);
+        IRTabActivity.abTitle.setText(getString(R.string.change_email));
         IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
@@ -129,7 +128,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void onPause() {
         super.onPause();
 
-        apiClient.getEventBus().unregister(this);
+//        apiClient.getEventBus().unregister(this);
     }
 
     @Override
@@ -167,27 +166,11 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     }
 
     public void change() {
-        String currentPassword = editCurrent.getText().toString();
-        String newPassword = editNew.getText().toString();
-        String confirmPassword = editConfirm.getText().toString();
+        String email = mEmail.getText().toString();
 
-        View focusView = null;
-        boolean cancel = false;
-
-        if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
-            editConfirm.setError(getString(R.string.error_match));
-            focusView = editConfirm;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            showProgress(true);
-            apiClient.changeUserPassword(apiClient.getActiveUser(), currentPassword, newPassword);
-        }
+        showProgress(true);
+//        apiClient.updateUser(apiClient.getActiveUser(), email);
+        //TODO update email
     }
 
     private void updateUserInfo(User user) {
@@ -199,14 +182,16 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
             date.setText(user.getCreatedDate() + "");
+            mEmail.setText(user.getEmail());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
             date.setText("");
+            mEmail.setText("");
         }
     }
 
-    // --- Events --- //
+    // --- Events ---//
 
     @Subscribe
     public void onEvent(UserInfoLoadedEvent event) {
@@ -219,20 +204,16 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     }
 
     @Subscribe
-    public void onEvent(PasswordChangeSuccessEvent event) {
+    public void onEvent(UserInfoUpdateFailEvent event) {
         showProgress(false);
 
-        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.change_password_succeded), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
     }
 
     @Subscribe
-    public void onEvent(PasswordChangeFailEvent event) {
+    public void onEvent(UserInfoUpdateSuccessEvent event) {
         showProgress(false);
 
-        if (event.reason == PasswordChangeFailEvent.Reason.WrongPassword) {
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_incorrect_current_password), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(getActivity().getApplicationContext(), getString(R.string.profile_update_succeded), Toast.LENGTH_LONG).show();
     }
 }

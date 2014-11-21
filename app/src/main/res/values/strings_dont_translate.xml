@@ -2,4 +2,6 @@
 <resources>
     <string name="notif_comment_video">notif_comment_video</string>
     <string name="notif_like_video">notif_like_video</string>
+    <string name="notif_share_video">notif_share_video</string>
+    <string name="notif_message_video">notif_message_video</string>
 </resources>
