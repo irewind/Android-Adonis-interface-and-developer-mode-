@@ -9,28 +9,28 @@ public class VideoSearchResponse extends BaseResponse {
     @SerializedName("content")
     private List<Video> content;
 
-    @SerializedName("more")
-    private int more;
+    @SerializedName("total")
+    private int total;
 
     public List<Video> getContent() {
         return content;
     }
 
-    public int getMore() {
-        return more;
+    public int getTotal() {
+        return total;
     }
 
     @Override
     public String toString() {
         if (super.getError() != null) {
-            return "VideoListResponse{" +
+            return "VideoSearchResponse{" +
                     "error='" + super.getError() + '\'' +
                     ", errorDescription='" + super.getErrorDescription() + '\'' +
                     '}';
         }
         return "VideoSearchResponse{" +
                 "content=" + content +
-                ", more=" + more +
+                ", total=" + total +
                 '}';
     }
 }

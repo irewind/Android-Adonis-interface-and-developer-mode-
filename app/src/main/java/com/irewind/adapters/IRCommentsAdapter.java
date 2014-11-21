@@ -2,6 +2,7 @@ package com.irewind.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import android.widget.TextView;
 import com.irewind.R;
 import com.irewind.activities.IRCommentActivity;
 import com.irewind.sdk.model.Comment;
+import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class IRCommentsAdapter extends ArrayAdapter<Comment> {
@@ -32,6 +35,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
         super(context, resource);
         mContext = context;
         layout = resource;
+        this.imageLoader = imageLoader;
     }
 
     @Override
@@ -56,9 +60,9 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             holder.username = (TextView) convertView.findViewById(R.id.username);
             holder.date = (TextView) convertView.findViewById(R.id.date);
             holder.reply = (TextView) convertView.findViewById(R.id.reply);
-            holder.comments = (TextView) convertView.findViewById(R.id.description);
+            holder.content = (TextView) convertView.findViewById(R.id.content);
             holder.addComment = (TextView) convertView.findViewById(R.id.addComment);
-            holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
+//            holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
             holder.pictureTop = (RoundedImageView) convertView.findViewById(R.id.profileImageTop);
             holder.picture = (RoundedImageView) convertView.findViewById(R.id.profileImage);
             holder.topRow = (LinearLayout) convertView.findViewById(R.id.firstRow);
@@ -70,6 +74,17 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
         }
 
         Comment comment = getItem(position);
+        User user = comment.getUser();
+        holder.username.setText(comment.getUser().getDisplayName());
+
+        if (user.getPicture() != null && user.getPicture().length() > 0) {
+            imageLoader.displayImage(user.getPicture(), holder.picture);
+        } else {
+            holder.picture.setImageResource(R.drawable.img_default_picture);
+        }
+
+        holder.content.setText(comment.getContent());
+        holder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
 
         if (position == 0) {
             holder.topRow.setVisibility(View.VISIBLE);
@@ -80,15 +95,15 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             holder.topRow.setVisibility(View.GONE);
             holder.otherRow.setVisibility(View.VISIBLE);
             holder.reply.setOnClickListener(new CustomOnClickReplayListener());
-            holder.delete.setOnClickListener(new CustomOnClickReplayListener());
+//            holder.delete.setOnClickListener(new CustomOnClickReplayListener());
         }
 
         return convertView;
     }
 
     private class CommentHolder {
-        TextView username, date, comments, reply, addComment;
-        ImageButton delete;
+        TextView username, date, content, reply, addComment;
+//        ImageButton delete;
         RoundedImageView pictureTop, picture;
         LinearLayout topRow;
         RelativeLayout otherRow;

@@ -8,6 +8,9 @@ import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
+import com.irewind.sdk.api.event.CommentAddEvent;
+import com.irewind.sdk.api.event.CommentAddFailEvent;
+import com.irewind.sdk.api.event.CommentListEvent;
 import com.irewind.sdk.api.event.CommentListFailEvent;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListFailedEvent;
@@ -812,8 +815,8 @@ public class ApiClient implements SessionRefresher {
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setNumber(page);
                 pageInfo.setSize(videoListResponse.getContent().size());
-                pageInfo.setTotalPages(videoListResponse.getMore());
-                eventBus.post(new VideoListEvent(videoListResponse.getContent(), new PageInfo()));
+                pageInfo.setTotalPages(videoListResponse.getTotal());
+                eventBus.post(new VideoListEvent(videoListResponse.getContent(), pageInfo));
             }
         };
 
@@ -915,12 +918,58 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             public void onSuccess(CommentListResponse commentListResponse) {
-                eventBus.post(commentListResponse);
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(commentListResponse.getContent().size());
+                pageInfo.setTotalPages(commentListResponse.getTotal());
+                eventBus.post(new CommentListEvent(commentListResponse.getContent(), pageInfo));
             }
         };
 
         task.execute();
 
         return task;
+    }
+
+    public void addComment(final long videoId, final String content) {
+        final Session session = getActiveSession();
+
+        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                if (baseResponse.getError() == null) {
+                    eventBus.post(new CommentAddEvent());
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new CommentAddFailEvent());
+            }
+        });
+    }
+
+    public void replyComment(final long videoId, final String content, final long parentCommentId) {
+        final Session session = getActiveSession();
+
+        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, parentCommentId, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                if (baseResponse.getError() == null) {
+                    eventBus.post(new CommentAddEvent());
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new CommentAddFailEvent());
+            }
+        });
     }
 }

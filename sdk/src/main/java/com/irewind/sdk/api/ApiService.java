@@ -217,13 +217,13 @@ public interface ApiService {
 
     // --- Comments --- //
 
-    @GET("/rest/video-comment/search/findByVideo")
+    @GET("/rest/v2/video-comment/list")
     CommentListResponse videoComments(@Header("Authorization") String authorization,
                                       @Query("videoId") long videoID,
                                       @Query("pageNo") Integer page,
                                       @Query("pageSize") Integer size);
 
-    @GET("/rest/video-comment/search/findByVideo")
+    @GET("/rest/v2/video-comment/list")
     void videoComments(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
@@ -235,13 +235,13 @@ public interface ApiService {
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
-                          Callback<Boolean> cb);
+                          Callback<BaseResponse> cb);
 
     @PATCH("/rest/video-comment")
     @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
-                          @Field("parentVideoComment") String parentVideoCommentID,
-                          Callback<Boolean> cb);
+                          @Field("parentVideoComment") long parentVideoCommentID,
+                          Callback<BaseResponse> cb);
 }
