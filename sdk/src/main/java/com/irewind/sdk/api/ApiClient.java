@@ -44,10 +44,12 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.NotificationSettings;
+import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
@@ -791,12 +793,12 @@ public class ApiClient implements SessionRefresher {
         return task;
     }
 
-    public SafeAsyncTask<VideoListResponse> searchVideos(final String query, final int page, final int perPage) {
+    public SafeAsyncTask<VideoSearchResponse> searchVideos(final String query, final int page, final int perPage) {
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+        SafeAsyncTask<VideoSearchResponse> task = new SafeAsyncTask<VideoSearchResponse>() {
             @Override
-            public VideoListResponse call() throws Exception {
+            public VideoSearchResponse call() throws Exception {
                 return apiService.searchVideos(authHeader(session), query, page, perPage);
             }
 
@@ -806,14 +808,12 @@ public class ApiClient implements SessionRefresher {
             }
 
             @Override
-            public void onSuccess(VideoListResponse videoListResponse) {
-                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
-                if (embeddedResponse != null) {
-                    List<Video> videos = embeddedResponse.getVideos();
-                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
-                } else {
-                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
-                }
+            public void onSuccess(VideoSearchResponse videoListResponse) {
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(videoListResponse.getContent().size());
+                pageInfo.setTotalPages(videoListResponse.getMore());
+                eventBus.post(new VideoListEvent(videoListResponse.getContent(), new PageInfo()));
             }
         };
 

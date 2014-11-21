@@ -24,6 +24,7 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
@@ -56,6 +57,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     private int numberOfPagesAvailable = 0;
 
     private SafeAsyncTask<VideoListResponse> listTask;
+    private SafeAsyncTask<VideoSearchResponse> searchTask;
 
     private String searchQuery = "";
 
@@ -181,7 +183,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         cancelTask();
 
         if (searchQuery != null && searchQuery.length() > 0) {
-            listTask = apiClient.searchVideos(searchQuery, page, 20);
+            searchTask = apiClient.searchVideos(searchQuery, page, 20);
         }
         else {
             listTask = apiClient.listVideos(page, 20);
@@ -193,6 +195,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             listTask.cancel(true);
         }
         listTask = null;
+
+        if (searchTask != null) {
+            searchTask.cancel(true);
+        }
+        searchTask = null;
     }
 
     @Subscribe
@@ -214,11 +221,13 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+        searchTask = null;
     }
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
         listTask = null;
+        searchTask = null;
 
         if (mPullToRefreshGridView.isRefreshing()) {
             mPullToRefreshGridView.onRefreshComplete();

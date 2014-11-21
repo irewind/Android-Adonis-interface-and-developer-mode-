@@ -8,6 +8,7 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.AccessToken;
 
 import retrofit.Callback;
@@ -129,17 +130,17 @@ public interface ApiService {
                     @Query("pageSize") Integer size,
                     Callback<VideoListResponse> cb);
 
-    @GET("/rest/video/search/findVideosWithPaginationAndSearchTerm")
-    VideoListResponse searchVideos(@Header("Authorization") String authorization,
-                                   @Query("searchTerm") String query,
-                                   @Query("pageNo") Integer page,
-                                   @Query("pageSize") Integer size);
+    @GET("/rest/v2/search-videos")
+    VideoSearchResponse searchVideos(@Header("Authorization") String authorization,
+                                     @Query("searchTerm") String query,
+                                     @Query("pageNo") Integer page,
+                                     @Query("pageSize") Integer size);
 
     @GET("/rest/v2/search-videos")
     void searchVideos(@Header("Authorization") String authorization,
                       @Query("pageNo") Integer page,
                       @Query("pageSize") Integer size,
-                      Callback<VideoListResponse> cb);
+                      Callback<VideoSearchResponse> cb);
 
     @GET("/rest/video/search/findByUser")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
