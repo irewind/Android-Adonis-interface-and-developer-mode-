@@ -55,7 +55,6 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
             holder = new UserHolder();
 
             holder.name = (TextView) convertView.findViewById(R.id.name);
-            holder.videos = (TextView) convertView.findViewById(R.id.videos);
             holder.date = (TextView) convertView.findViewById(R.id.date);
             holder.picture = (RoundedImageView) convertView.findViewById(R.id.profileImage);
             convertView.setTag(holder);
@@ -103,7 +102,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
     }
 
     private class UserHolder {
-        TextView name, videos, date;
+        TextView name, date;
         RoundedImageView picture;
     }
 
