@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.irewind.fragments.IRAccountFragment"
+    tools:ignore="MissingPrefix">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_profile" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+
+            <com.irewind.ui.views.RoundedImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_default_picture" />
+
+            <TextView
+                fontPath="fonts/OpenSans-Regular.ttf"
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profileImageView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <TextView
+                fontPath="fonts/OpenSans-Regular.ttf"
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:text=""
+                android:textColor="#bbb"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/videoListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false"/>
+
+
+    <TextView
+        android:id="@+id/emptyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/black"
+        android:text="@string/no_videos" />
+
+</RelativeLayout>
