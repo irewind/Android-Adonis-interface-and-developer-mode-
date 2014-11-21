@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/playerLayout"
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="@dimen/video_dim">
 
         <VideoView
             android:id="@+id/videoView1"
