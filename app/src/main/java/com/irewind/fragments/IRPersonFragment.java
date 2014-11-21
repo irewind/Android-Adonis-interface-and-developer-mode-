@@ -63,7 +63,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     @Inject
     ImageLoader imageLoader;
 
-    public User user;
+    public User person;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -125,13 +125,14 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, imageLoader);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        updateUserInfo(user);
+        updateUserInfo(person);
 
         apiClient.getEventBus().register(this);
         fetch(0);
@@ -151,7 +152,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         });
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abAction.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(user.getDisplayName());
+        IRTabActivity.abTitle.setText(person.getDisplayName());
     }
 
     @Override
@@ -164,7 +165,19 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        
+        Video video = mAdapter.getItem(position);
+
+        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
+        fragment.video = video;
+        fragment.person = person;
+
+        IRTabActivity.mPeopleFragment = fragment;
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+        ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
+                .disallowAddToBackStack()
+                .commit();
     }
 
     private void updateUserInfo(User user) {

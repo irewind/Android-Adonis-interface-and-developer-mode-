@@ -27,7 +27,6 @@ import com.irewind.sdk.api.event.UserListFailEvent;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
-import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -154,7 +153,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         User user = mAdapter.getItem(position);
 
         IRPersonFragment fragment = IRPersonFragment.newInstance();
-        fragment.user = user;
+        fragment.person = user;
 
         IRTabActivity.mPeopleFragment = fragment;
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
