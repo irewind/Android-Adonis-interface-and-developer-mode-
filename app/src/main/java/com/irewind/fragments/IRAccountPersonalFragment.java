@@ -53,8 +53,8 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.emailTextView)
-    TextView emailTextView;
+    @InjectView(R.id.date)
+    TextView date;
 
     @InjectView(R.id.contentView)
     View contentView;
@@ -65,9 +65,6 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     EditText mFirst;
     @InjectView(R.id.editLast)
     EditText mLast;
-
-    @InjectView(R.id.btnDelete)
-    Button btnDelete;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
@@ -102,7 +99,6 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         ButterKnife.inject(this, view);
 
         btnChange.setOnClickListener(this);
-        btnDelete.setOnClickListener(this);
     }
 
     @Override
@@ -142,9 +138,6 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         switch (view.getId()) {
             case R.id.btnChange:
                 change();
-                break;
-            case R.id.btnDelete:
-                delete();
                 break;
         }
     }
@@ -196,13 +189,13 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            emailTextView.setText(user.getEmail());
+            date.setText(user.getCreatedDate() + "");
             mFirst.setText(user.getFirstname());
             mLast.setText(user.getLastname());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            emailTextView.setText("");
+            date.setText("");
             mFirst.setText("");
             mLast.setText("");
         }

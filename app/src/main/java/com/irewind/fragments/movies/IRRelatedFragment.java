@@ -3,10 +3,13 @@ package com.irewind.fragments.movies;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +18,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
+import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
@@ -31,7 +36,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRRelatedFragment extends Fragment {
+public class IRRelatedFragment extends Fragment implements AdapterView.OnItemClickListener{
 
     @InjectView(R.id.relatedListView)
     PullToRefreshListView mPullToRefreshListView;
@@ -109,6 +114,7 @@ public class IRRelatedFragment extends Fragment {
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, imageLoader);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -159,5 +165,30 @@ public class IRRelatedFragment extends Fragment {
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Video video = mAdapter.getItem(position);
+
+        try {
+            IRVideoDetailsFragment.sCt.cancel();
+            IRVideoDetailsFragment.sVideoView.stopPlayback();
+            IRVideoDetailsFragment.sVideoView.clearAnimation();
+            IRVideoDetailsFragment.sVideoView = null;
+        } catch (Exception e){
+
+        }
+
+        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
+        fragment.video = video;
+
+        IRTabActivity.mLibraryFragment = fragment;
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+        ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
+                .disallowAddToBackStack()
+                .commit();
     }
 }

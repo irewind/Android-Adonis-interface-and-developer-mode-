@@ -54,8 +54,8 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.emailTextView)
-    TextView emailTextView;
+    @InjectView(R.id.date)
+    TextView date;
 
     private IRMoreAdapter mMoreAdapter;
 
@@ -202,11 +202,11 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            emailTextView.setText(user.getEmail());
+            date.setText(user.getCreatedDate() + "");
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            emailTextView.setText("");
+            date.setText("");
         }
     }
 }
