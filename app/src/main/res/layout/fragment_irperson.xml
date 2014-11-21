@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
 
-
             <com.irewind.ui.views.RoundedImageView
                 android:id="@+id/profileImageView"
                 android:layout_width="70dp"
@@ -60,21 +59,26 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/videoListView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:clipToPadding="false"/>
+        android:layout_below="@id/top">
 
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/videoListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:clipToPadding="false"/>
 
-    <TextView
-        android:id="@+id/emptyText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@android:color/black"
-        android:text="@string/no_videos" />
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/black"
+            android:text="@string/no_videos" />
 
+        </RelativeLayout>
 </RelativeLayout>

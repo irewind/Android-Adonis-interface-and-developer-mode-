@@ -81,6 +81,30 @@ public class User {
         return lastLoginDate;
     }
 
+    public String getDisplayName() {
+        String name = "";
+        if (getFirstname() != null && getFirstname().length() > 0) {
+            name += getFirstname();
+        }
+
+        if (getLastname() != null && getLastname().length() > 0) {
+            if (name.length() > 0) {
+                name += " ";
+            }
+            name += getLastname();
+        }
+
+        if (name.length() == 0 && getFullname() != null && getFullname().length() > 0) {
+            name = getFullname();
+        }
+
+        if (name.length() == 0 && getEmail() != null && getEmail().length() > 0) {
+            name = getEmail();
+        }
+
+        return name;
+    }
+
     public User(long id, String email, String firstname, String lastname, String fullname, long createdDate, String status, String authProvider, String role, String picture, long lastLoginDate) {
         this.id = id;
         this.email = email;

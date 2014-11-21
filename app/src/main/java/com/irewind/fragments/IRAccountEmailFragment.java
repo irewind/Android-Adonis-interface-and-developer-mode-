@@ -180,7 +180,7 @@ public class IRAccountEmailFragment extends Fragment implements View.OnClickList
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
+            nameTextView.setText(user.getDisplayName());
             date.setText(user.getCreatedDate() + "");
             mEmail.setText(user.getEmail());
         } else {

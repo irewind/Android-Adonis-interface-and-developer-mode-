@@ -3,6 +3,8 @@ package com.irewind.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,10 +136,22 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         apiClient.getEventBus().register(this);
         fetch(0);
 
-        IRTabActivity.abBack.setVisibility(View.GONE);
+        IRTabActivity.abBack.setVisibility(View.VISIBLE);
+        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IRTabActivity.mPeopleFragment = IRPeopleFragment.newInstance();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+                ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
+                        .disallowAddToBackStack()
+                        .commit();
+            }
+        });
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abAction.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(getString(R.string.account));
+        IRTabActivity.abTitle.setText(user.getDisplayName());
     }
 
     @Override
@@ -150,7 +164,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        
     }
 
     private void updateUserInfo(User user) {
@@ -160,7 +174,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
+            nameTextView.setText(user.getDisplayName());
             emailTextView.setText(user.getEmail());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
