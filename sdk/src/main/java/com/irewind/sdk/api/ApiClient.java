@@ -8,6 +8,7 @@ import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
+import com.irewind.sdk.api.event.CommentListFailEvent;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListFailedEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
@@ -909,7 +910,7 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                eventBus.post(new CommentListFailEvent((RetrofitError) e, page));
             }
 
             @Override

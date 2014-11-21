@@ -9,21 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.irewind.Injector;
+import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.irewind.Injector;
 import com.irewind.R;
-
 import com.irewind.adapters.IRCommentsAdapter;
-import com.irewind.models.CommentItem;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.CommentListEvent;
+import com.irewind.sdk.api.response.CommentListResponse;
+import com.irewind.sdk.model.Comment;
+import com.irewind.sdk.model.PageInfo;
+import com.irewind.sdk.model.Video;
+import com.irewind.sdk.util.SafeAsyncTask;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.irewind.sdk.model.Video;
 
 
 public class IRCommentsFragment extends Fragment {
@@ -34,6 +40,17 @@ public class IRCommentsFragment extends Fragment {
     private ListView mListView;
     private IRCommentsAdapter mAdapter;
     public Video video;
+
+    @Inject
+    ApiClient apiClient;
+
+    @Inject
+    ImageLoader imageLoader;
+
+    private int lastPageListed = 0;
+    private int numberOfPagesAvailable = 0;
+
+    private SafeAsyncTask<CommentListResponse> listTask;
 
     public static IRCommentsFragment newInstance() {
         IRCommentsFragment fragment = new IRCommentsFragment();
@@ -63,10 +80,14 @@ public class IRCommentsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
+        mListView = mPullToRefreshListView.getRefreshableView();
+
         mPullToRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
-
+                if (lastPageListed + 1 < numberOfPagesAvailable) {
+                    fetch(lastPageListed + 1);
+                }
             }
         });
         mPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
@@ -77,30 +98,62 @@ public class IRCommentsFragment extends Fragment {
 
                 // Update the LastUpdatedLabel
                 refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-                mPullToRefreshListView.onRefreshComplete(); //TODO Move this line in onPostExecute if AsyncTask
+
+                fetch(0);
             }
         });
-        mListView = mPullToRefreshListView.getRefreshableView();
-        populate();
+
+        mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list, imageLoader);
+        mListView.setAdapter(mAdapter);
     }
 
-    private void populate(){
-        //TODO REMOVE THIS
-        List<CommentItem> data = new ArrayList<CommentItem>();
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
-        data.add(new CommentItem(0, "","", Calendar.getInstance().getTime(), "link", "comments"));
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list, data);
-        mListView.setAdapter(mAdapter);
+        apiClient.getEventBus().register(this);
+        fetch(0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        apiClient.getEventBus().unregister(this);
+        cancelTask();
+    }
+
+    void fetch(int page) {
+        cancelTask();
+
+        listTask = apiClient.listVideoComments(video.getId(), page, 20);
+    }
+
+    void cancelTask() {
+        if (listTask != null) {
+            listTask.cancel(true);
+        }
+        listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(CommentListEvent event) {
+        List<Comment> comments = event.comments;
+        PageInfo pageInfo = event.pageInfo;
+
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setComments(comments);
+
+            if (mPullToRefreshListView.isRefreshing()) {
+                mPullToRefreshListView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendComments(comments);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+
+        listTask = null;
     }
 }
