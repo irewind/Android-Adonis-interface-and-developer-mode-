@@ -123,6 +123,8 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @Subscribe
     public void onEvent(CommentAddEvent event) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(commentEdit.getWindowToken(), 0);
         finish();
     }
 

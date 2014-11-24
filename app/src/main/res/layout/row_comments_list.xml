@@ -5,7 +5,7 @@
     android:background="@drawable/bg_tabs">
 
     <LinearLayout
-        android:id="@+id/addCommentRow"
+        android:id="@+id/addCommentRowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -13,13 +13,13 @@
         android:visibility="invisible">
 
         <com.irewind.ui.views.RoundedImageView
-            android:id="@+id/profileImageTop"
+            android:id="@+id/profileImageAdd"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/img_default_picture" />
 
         <TextView
-            android:id="@+id/addComment"
+            android:id="@+id/addCommentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_add_comment"
@@ -33,7 +33,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/commentLayout"
+        android:id="@+id/parentCommentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
@@ -129,7 +129,7 @@
         android:paddingLeft="68dp">
 
         <com.irewind.ui.views.RoundedImageView
-            android:id="@+id/profileImage"
+            android:id="@+id/profileImageChild"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/img_default_picture"
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/profileImage"
+            android:layout_toRightOf="@+id/profileImageChild"
             android:layout_marginLeft="10dp">
 
             <LinearLayout
@@ -149,7 +149,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/username"
+                    android:id="@+id/usernameChild"
                     android:textColor="@android:color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                     android:layout_gravity="center_vertical"/>
 
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/dateChild"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/tab_gray"
@@ -174,23 +174,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/contentChild"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/tab_gray_dots"
-                android:text="adsada sdas dasd asdasd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd "/>
+                android:text=""/>
         </LinearLayout>
 
-        <!--<ImageButton-->
-        <!--android:id="@+id/delete"-->
-        <!--android:layout_width="19dp"-->
-        <!--android:layout_height="19dp"-->
-        <!--android:scaleType="fitCenter"-->
-        <!--android:src="@drawable/ic_delete"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:layout_alignParentRight="true"/>-->
     </RelativeLayout>
 
 </RelativeLayout>
