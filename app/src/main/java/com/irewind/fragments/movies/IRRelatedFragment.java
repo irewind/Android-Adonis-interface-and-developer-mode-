@@ -169,7 +169,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Video video = mAdapter.getItem(position);
+        Video video = mAdapter.getItem(position - 1);
 
         try {
             IRVideoDetailsFragment.sCt.cancel();

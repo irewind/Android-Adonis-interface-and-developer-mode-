@@ -150,7 +150,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        User user = mAdapter.getItem(position);
+        User user = mAdapter.getItem(position - 1);
 
         IRPersonFragment fragment = IRPersonFragment.newInstance();
         fragment.person = user;
