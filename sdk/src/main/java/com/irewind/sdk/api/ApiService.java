@@ -20,7 +20,6 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
-import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -243,6 +242,6 @@ public interface ApiService {
     @POST("/rest/video-comment")
     @Headers("Content-Type: application/json")
     void replyVideoComment(@Header("Authorization") String authorization,
-                          @Body ReplyCommentRequest commentRequest,
-                          Callback<BaseResponse> cb);
+                           @Body ReplyCommentRequest commentRequest,
+                           Callback<BaseResponse> cb);
 }

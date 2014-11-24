@@ -6,9 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
@@ -24,6 +21,7 @@ import java.util.List;
 public class IRCommentsAdapter extends ArrayAdapter<Comment> {
     public interface ActionListener {
         void addComment();
+
         void replyComment(Comment parentComment);
     }
 
@@ -61,18 +59,18 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             holder = new CommentHolder();
 
             holder.addCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.addCommentRowLayout);
-            holder.addCommentHolder.picture = (RoundedImageView)holder.addCommentHolder.rootViewGroup.findViewById(R.id.profileImageAdd);
-            holder.addCommentHolder.addCommentTextView = (TextView)holder.addCommentHolder.rootViewGroup.findViewById(R.id.addCommentTextView);
+            holder.addCommentHolder.picture = (RoundedImageView) holder.addCommentHolder.rootViewGroup.findViewById(R.id.profileImageAdd);
+            holder.addCommentHolder.addCommentTextView = (TextView) holder.addCommentHolder.rootViewGroup.findViewById(R.id.addCommentTextView);
 
             holder.parentCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.parentCommentLayout);
-            holder.parentCommentHolder.picture = (RoundedImageView)holder.parentCommentHolder.rootViewGroup.findViewById(R.id.profileImage);
+            holder.parentCommentHolder.picture = (RoundedImageView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.profileImage);
             holder.parentCommentHolder.username = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.username);
             holder.parentCommentHolder.date = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.date);
             holder.parentCommentHolder.content = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.content);
             holder.parentCommentHolder.reply = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.reply);
 
             holder.childCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.childCommentLayout);
-            holder.childCommentHolder.picture = (RoundedImageView)holder.childCommentHolder.rootViewGroup.findViewById(R.id.profileImageChild);
+            holder.childCommentHolder.picture = (RoundedImageView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.profileImageChild);
             holder.childCommentHolder.username = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.usernameChild);
             holder.childCommentHolder.date = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.dateChild);
             holder.childCommentHolder.content = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.contentChild);
@@ -122,8 +120,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
 
                 holder.childCommentHolder.content.setText(comment.getContent());
                 holder.childCommentHolder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
-            }
-            else {
+            } else {
                 holder.parentCommentHolder.rootViewGroup.setVisibility(View.VISIBLE);
                 holder.childCommentHolder.rootViewGroup.setVisibility(View.GONE);
 
