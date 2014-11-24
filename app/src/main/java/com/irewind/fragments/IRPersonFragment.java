@@ -30,6 +30,7 @@ import com.irewind.sdk.util.SafeAsyncTask;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,9 +46,8 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.emailTextView)
-    TextView emailTextView;
-
+    @InjectView(R.id.date)
+    TextView date;
 
     @InjectView(R.id.videoListView)
     PullToRefreshListView mPullToRefreshListView;
@@ -188,11 +188,11 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getDisplayName());
-            emailTextView.setText(user.getEmail());
+            date.setText(DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            emailTextView.setText("");
+            date.setText("");
         }
     }
 
