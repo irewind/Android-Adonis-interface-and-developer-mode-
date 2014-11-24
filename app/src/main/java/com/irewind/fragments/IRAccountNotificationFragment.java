@@ -178,6 +178,12 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
             case R.id.switchLikeNotifications:
                 apiClient.toggleLikeNotifications(isChecked);
                 break;
+            case R.id.switchShareNotifications:
+                apiClient.toggleShareNotifications(isChecked);
+                break;
+            case R.id.switchMessageNotifications:
+                apiClient.toggleMessageNotifications(isChecked);
+                break;
         }
     }
 

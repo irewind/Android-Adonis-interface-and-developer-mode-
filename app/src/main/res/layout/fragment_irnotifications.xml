@@ -204,7 +204,8 @@
                 android:layout_below="@+id/separator2"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
-                android:layout_height="48dp">
+                android:layout_height="48dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/titleLast3"
@@ -239,7 +240,8 @@
                 android:layout_height="1dp"
                 android:background="@color/separator"
                 android:layout_below="@+id/relLast2"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/relLast3"
@@ -247,7 +249,8 @@
                 android:layout_below="@+id/separator3"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
-                android:layout_height="48dp">
+                android:layout_height="48dp"
+                android:visibility="gone">
 
                 <TextView
                     fontPath="fonts/OpenSansRegular.ttf"
@@ -283,7 +286,8 @@
                 android:layout_height="1dp"
                 android:background="@color/separator"
                 android:layout_below="@+id/relLast3"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
         </RelativeLayout>
     </ScrollView>
 
