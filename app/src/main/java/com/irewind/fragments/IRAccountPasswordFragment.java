@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,7 +175,15 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         View focusView = null;
         boolean cancel = false;
 
-        if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
+        if (TextUtils.isEmpty(currentPassword)){
+            editCurrent.setError(getString(R.string.error_field_required));
+            focusView = editCurrent;
+            cancel = true;
+        } else if (!CheckUtil.isPasswordValid(newPassword)){
+            editNew.setError(getString(R.string.error_invalid_password));
+            focusView = editNew;
+            cancel = true;
+        } else if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
             editConfirm.setError(getString(R.string.error_match));
             focusView = editConfirm;
             cancel = true;

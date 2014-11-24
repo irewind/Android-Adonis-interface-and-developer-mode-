@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.IntentCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.CheckUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
@@ -168,11 +170,30 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     }
 
     public void change() {
+        View focusView = null;
+        boolean cancel = false;
+
         String firstname = mFirst.getText().toString();
         String lastname = mLast.getText().toString();
 
-        showProgress(true);
-        apiClient.updateUser(apiClient.getActiveUser(), firstname, lastname);
+        if (TextUtils.isEmpty(firstname)){
+            mFirst.setError(getString(R.string.error_field_required));
+            focusView = mFirst;
+            cancel = true;
+        } else if (TextUtils.isEmpty(lastname)){
+            mLast.setError(getString(R.string.error_field_required));
+            focusView = mLast;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            showProgress(true);
+            apiClient.updateUser(apiClient.getActiveUser(), firstname, lastname);
+        }
     }
 
     public void delete() {

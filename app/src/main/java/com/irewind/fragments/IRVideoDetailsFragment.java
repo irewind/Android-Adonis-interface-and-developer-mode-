@@ -133,6 +133,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
             }
         });
 
+        seekBar.setVideo(video);
+
         String videoURI = video.getMp4HighResolutionURL();
         if (videoURI == null || videoURI.length() == 0) {
             videoURI = video.getOggHighResolutionURL();
@@ -148,6 +150,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 MediaController mediacontroller = new MediaController(
                         getActivity());
                 mediacontroller.setAnchorView(videoView);
+                mediacontroller.setVisibility(View.INVISIBLE);
                 // Get the URL from String VideoURL
                 videoView.setMediaController(mediacontroller);
                 videoView.setVideoURI(Uri.parse(videoURI));

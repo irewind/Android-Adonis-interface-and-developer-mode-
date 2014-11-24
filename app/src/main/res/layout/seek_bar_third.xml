@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@android:color/black">
 
     <TextView
         android:id="@+id/textViewCurent"
@@ -11,8 +12,8 @@
         android:text="2:16"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
-        android:layout_marginLeft="20dp" />
+        android:textSize="18dp"
+        android:layout_marginLeft="10dp" />
 
 
     <LinearLayout
@@ -21,7 +22,7 @@
         android:layout_height="fill_parent"
         android:layout_weight="10"
         android:orientation="horizontal"
-        android:layout_marginLeft="30dp">
+        android:layout_marginLeft="10dp">
 
 
         <ImageView
@@ -55,8 +56,16 @@
         android:text="5:00"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="20dp" />
+        android:textSize="18dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <ImageButton
+        android:id="@+id/fullScreen"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_full_screen"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"/>
 
 </LinearLayout>

@@ -102,5 +102,6 @@
     <string name="confirm_password_small">confirm password</string>
     <string name="email_address_small">email address</string>
     <string name="change_email">Change email</string>
+    <string name="title_activity_irfull_screen_movie">IRFullScreenMovieActivity</string>
 
 </resources>

@@ -64,10 +64,16 @@
             android:label="@string/title_activity_ircomment"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme.Dialog"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"/>
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+        <activity
+            android:name="com.irewind.activities.IRFullScreenMovieActivity"
+            android:label="@string/title_activity_irfull_screen_movie"
+            android:theme="@style/IRAppTheme.Splash"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape"/>
         <activity
             android:name="com.facebook.LoginActivity"
-            android:label="@string/title_facebook_login"/>
+            android:label="@string/title_facebook_login" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -78,7 +84,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
     </application>
 
 </manifest>
