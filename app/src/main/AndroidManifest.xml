@@ -60,7 +60,7 @@
             android:theme="@style/IRAppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name="com.irewind.activities.IRCommentActivity"
+            android:name=".activities.IRAddCommentActivity"
             android:label="@string/title_activity_ircomment"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme.Dialog"

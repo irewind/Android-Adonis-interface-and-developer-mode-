@@ -179,8 +179,6 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
     @Override
     protected void onResume() {
-
-
         super.onResume();
 
         apiClient.getEventBus().register(this);

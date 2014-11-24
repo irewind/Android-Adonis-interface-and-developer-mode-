@@ -26,6 +26,9 @@ public class Comment {
     @SerializedName("children")
     private List<Comment> children;
 
+    private boolean isChildComment;
+    private long parentCommentId;
+
     public long getId() {
         return id;
     }
@@ -54,6 +57,22 @@ public class Comment {
         return children;
     }
 
+    public boolean isChildComment() {
+        return isChildComment;
+    }
+
+    public void setIsChildComment(boolean isChildComment) {
+        this.isChildComment = isChildComment;
+    }
+
+    public long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -64,6 +83,8 @@ public class Comment {
                 ", dislikes=" + dislikes +
                 ", user=" + user +
                 ", children=" + children +
+                ", isChildComment" + isChildComment +
+                ", parentCommentId=" + parentCommentId +
                 '}';
     }
 }

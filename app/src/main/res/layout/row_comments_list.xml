@@ -5,7 +5,7 @@
     android:background="@drawable/bg_tabs">
 
     <LinearLayout
-        android:id="@+id/firstRow"
+        android:id="@+id/addCommentRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -33,7 +33,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/anyLayout"
+        android:id="@+id/commentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
@@ -117,6 +117,80 @@
             <!--android:layout_margin="5dp"-->
             <!--android:background="@android:color/transparent"-->
             <!--android:layout_alignParentRight="true"/>-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/childCommentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="68dp">
+
+        <com.irewind.ui.views.RoundedImageView
+            android:id="@+id/profileImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/img_default_picture"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/profileImage"
+            android:layout_marginLeft="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/username"
+                    android:textColor="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Marius"
+                    android:textSize="12sp"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="2dp"
+                    android:background="@color/tab_gray"
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/tab_gray"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="12sp"
+                    android:text="4 months ago"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/tab_gray_dots"
+                android:text="adsada sdas dasd asdasd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd "/>
+        </LinearLayout>
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/delete"-->
+        <!--android:layout_width="19dp"-->
+        <!--android:layout_height="19dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/ic_delete"-->
+        <!--android:layout_margin="5dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:layout_alignParentRight="true"/>-->
     </RelativeLayout>
 
 </RelativeLayout>

@@ -933,8 +933,8 @@ public class ApiClient implements SessionRefresher {
 
     public void addComment(final long videoId, final String content) {
         final Session session = getActiveSession();
-
-        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, new Callback<BaseResponse>() {
+        String video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        apiService.postVideoComment(authHeader(session), video, content, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
                 if (baseResponse.getError() == null) {
@@ -955,7 +955,7 @@ public class ApiClient implements SessionRefresher {
     public void replyComment(final long videoId, final String content, final long parentCommentId) {
         final Session session = getActiveSession();
 
-        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, parentCommentId, new Callback<BaseResponse>() {
+        apiService.postVideoComment(authHeader(session), "http://web01.dev.irewind.com/api/rest/video/" + videoId, content, parentCommentId, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
                 if (baseResponse.getError() == null) {
