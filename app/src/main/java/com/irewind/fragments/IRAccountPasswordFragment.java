@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import com.irewind.ui.views.RoundedImageView;
 import com.irewind.utils.CheckUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -49,8 +52,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.emailTextView)
-    TextView emailTextView;
+    @InjectView(R.id.date)
+    TextView date;
 
     @InjectView(R.id.contentView)
     View contentView;
@@ -62,6 +65,9 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
 
     @InjectView(R.id.editNew)
     EditText editNew;
+
+    @InjectView(R.id.editConfirm)
+    EditText editConfirm;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
@@ -167,7 +173,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void change() {
         String currentPassword = editCurrent.getText().toString();
         String newPassword = editNew.getText().toString();
-//        String confirmPassword = editConfirm.getText().toString();
+        String confirmPassword = editConfirm.getText().toString();
 
         View focusView = null;
         boolean cancel = false;
@@ -180,11 +186,11 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             editNew.setError(getString(R.string.error_invalid_password));
             focusView = editNew;
             cancel = true;
-        } /*else if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
+        } else if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
             editConfirm.setError(getString(R.string.error_match));
             focusView = editConfirm;
             cancel = true;
-        }*/
+        }
 
         if (cancel){
             focusView.requestFocus();
@@ -202,11 +208,11 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            emailTextView.setText(user.getEmail());
+            date.setText(DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            emailTextView.setText("");
+            date.setText("");
         }
     }
 

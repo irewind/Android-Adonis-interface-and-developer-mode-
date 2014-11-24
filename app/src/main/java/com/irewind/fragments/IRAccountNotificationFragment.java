@@ -7,9 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,6 +31,8 @@ import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -36,9 +41,22 @@ import butterknife.InjectView;
 public class IRAccountNotificationFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     @InjectView(R.id.switchCommentNotifications)
-    Switch switchCommentNotifications;
+    CheckBox switchCommentNotifications;
     @InjectView(R.id.switchLikeNotifications)
-    Switch switchLikeNotifications;
+    CheckBox switchLikeNotifications;
+    @InjectView(R.id.switchShareNotifications)
+    CheckBox switchShareNotifications;
+    @InjectView(R.id.switchMessageNotifications)
+    CheckBox switchMessageNotifications;
+
+    @InjectView(R.id.checkLikeVideo)
+    Button checkLikeVideo;
+    @InjectView(R.id.checkCommentVideo)
+    Button checkCommentVideo;
+    @InjectView(R.id.checkShareVideo)
+    Button checkShareVideo;
+    @InjectView(R.id.checkMessageVideo)
+    Button checkMessageVideo;
 
     @Inject
     ApiClient apiClient;
@@ -52,8 +70,8 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.emailTextView)
-    TextView emailTextView;
+    @InjectView(R.id.date)
+    TextView date;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -89,8 +107,22 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
         switchCommentNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_comment_video), getResources().getBoolean(R.bool.default_notif_comment_video)));
         switchLikeNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_like_video), getResources().getBoolean(R.bool.default_notif_like_video)));
+        switchShareNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_share_video), getResources().getBoolean(R.bool.default_notif_share_video)));
+        switchMessageNotifications.setChecked(sharedPreferences.getBoolean(getString(R.string.notif_message_video), getResources().getBoolean(R.bool.default_notif_message_video)));
         switchCommentNotifications.setOnCheckedChangeListener(this);
         switchLikeNotifications.setOnCheckedChangeListener(this);
+        switchShareNotifications.setOnCheckedChangeListener(this);
+        switchMessageNotifications.setOnCheckedChangeListener(this);
+
+        checkCommentVideo.setOnClickListener(this);
+        checkLikeVideo.setOnClickListener(this);
+        checkShareVideo.setOnClickListener(this);
+        checkMessageVideo.setOnClickListener(this);
+
+        checkCommentVideo.setSoundEffectsEnabled(false);
+        checkLikeVideo.setSoundEffectsEnabled(false);
+        checkShareVideo.setSoundEffectsEnabled(false);
+        checkMessageVideo.setSoundEffectsEnabled(false);
     }
 
     @Override
@@ -114,7 +146,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
                         .commit();
             }
         });
-        IRTabActivity.abTitle.setText(getString(R.string.notifications));
+        IRTabActivity.abTitle.setText(getString(R.string.notif_email));
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abAction.setVisibility(View.GONE);
     }
@@ -122,7 +154,18 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.checkCommentVideo:
+                switchCommentNotifications.setChecked(!switchCommentNotifications.isChecked());
+                break;
+            case R.id.checkLikeVideo:
+                switchLikeNotifications.setChecked(!switchLikeNotifications.isChecked());
+                break;
+            case R.id.checkShareVideo:
+                switchShareNotifications.setChecked(!switchShareNotifications.isChecked());
+                break;
+            case R.id.checkMessageVideo:
+                switchMessageNotifications.setChecked(!switchMessageNotifications.isChecked());
+                break;
         }
     }
 
@@ -152,12 +195,12 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            emailTextView.setText(user.getEmail());
+            nameTextView.setText(user.getDisplayName());
+            date.setText(DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            emailTextView.setText("");
+            date.setText("");
         }
     }
 
@@ -179,16 +222,30 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     @Subscribe
     public void onEvent(NotificationSettingsListSuccessEvent event) {
+
+        if (sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (editor == null)
+            editor = sharedPreferences.edit();
+
         editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.commentNotificationEnabled());
         editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.likeNotificationEnabled());
+//        editor.putBoolean(getString(R.string.notif_share_video), event.notificationSettings.likeNotificationEnabled());//TODO UNCOMMENT AND PUT NECESSARY INFO
+//        editor.putBoolean(getString(R.string.notif_message_video), event.notificationSettings.likeNotificationEnabled());
         editor.commit();
 
         switchCommentNotifications.setOnCheckedChangeListener(null);
         switchLikeNotifications.setOnCheckedChangeListener(null);
+        switchShareNotifications.setOnCheckedChangeListener(null);
+        switchMessageNotifications.setOnCheckedChangeListener(null);
         switchCommentNotifications.setChecked(event.notificationSettings.commentNotificationEnabled());
         switchLikeNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());
+//        switchShareNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());//TODO UNCOMMENT AND PUT NECESSARY INFO
+//        switchMessageNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());
         switchCommentNotifications.setOnCheckedChangeListener(this);
         switchLikeNotifications.setOnCheckedChangeListener(this);
+        switchShareNotifications.setOnCheckedChangeListener(this);
+        switchMessageNotifications.setOnCheckedChangeListener(this);
     }
 
     @Subscribe
