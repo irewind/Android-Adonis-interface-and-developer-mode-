@@ -8,6 +8,10 @@ import com.irewind.sdk.api.cache.SharedPreferencesTokenCachingStrategy;
 import com.irewind.sdk.api.cache.SharedPreferencesUserCachingStrategy;
 import com.irewind.sdk.api.cache.TokenCachingStrategy;
 import com.irewind.sdk.api.cache.UserCachingStrategy;
+import com.irewind.sdk.api.event.CommentAddEvent;
+import com.irewind.sdk.api.event.CommentAddFailEvent;
+import com.irewind.sdk.api.event.CommentListEvent;
+import com.irewind.sdk.api.event.CommentListFailEvent;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListFailedEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
@@ -43,10 +47,12 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.NotificationSettings;
+import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
@@ -655,7 +661,7 @@ public class ApiClient implements SessionRefresher {
                     List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
                     eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
                 } else {
-                    eventBus.post(new NotificationSettingsListSuccessEvent(null));
+                    eventBus.post(new NotificationSettingsListSuccessEvent(new NotificationSettings()));
                 }
             }
 
@@ -790,12 +796,12 @@ public class ApiClient implements SessionRefresher {
         return task;
     }
 
-    public SafeAsyncTask<VideoListResponse> searchVideos(final String query, final int page, final int perPage) {
+    public SafeAsyncTask<VideoSearchResponse> searchVideos(final String query, final int page, final int perPage) {
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+        SafeAsyncTask<VideoSearchResponse> task = new SafeAsyncTask<VideoSearchResponse>() {
             @Override
-            public VideoListResponse call() throws Exception {
+            public VideoSearchResponse call() throws Exception {
                 return apiService.searchVideos(authHeader(session), query, page, perPage);
             }
 
@@ -805,14 +811,12 @@ public class ApiClient implements SessionRefresher {
             }
 
             @Override
-            public void onSuccess(VideoListResponse videoListResponse) {
-                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
-                if (embeddedResponse != null) {
-                    List<Video> videos = embeddedResponse.getVideos();
-                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
-                } else {
-                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
-                }
+            public void onSuccess(VideoSearchResponse videoListResponse) {
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(videoListResponse.getContent().size());
+                pageInfo.setTotalPages(videoListResponse.getTotal());
+                eventBus.post(new VideoListEvent(videoListResponse.getContent(), pageInfo));
             }
         };
 
@@ -909,17 +913,63 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                eventBus.post(new CommentListFailEvent((RetrofitError) e, page));
             }
 
             @Override
             public void onSuccess(CommentListResponse commentListResponse) {
-                eventBus.post(commentListResponse);
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(commentListResponse.getContent().size());
+                pageInfo.setTotalPages(commentListResponse.getTotal());
+                eventBus.post(new CommentListEvent(commentListResponse.getContent(), pageInfo));
             }
         };
 
         task.execute();
 
         return task;
+    }
+
+    public void addComment(final long videoId, final String content) {
+        final Session session = getActiveSession();
+
+        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                if (baseResponse.getError() == null) {
+                    eventBus.post(new CommentAddEvent());
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new CommentAddFailEvent());
+            }
+        });
+    }
+
+    public void replyComment(final long videoId, final String content, final long parentCommentId) {
+        final Session session = getActiveSession();
+
+        apiService.postVideoComment(authHeader(session), content, "http://web01.dev.irewind.com/api/rest/video/" + videoId, parentCommentId, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                if (baseResponse.getError() == null) {
+                    eventBus.post(new CommentAddEvent());
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                eventBus.post(new CommentAddFailEvent());
+            }
+        });
     }
 }

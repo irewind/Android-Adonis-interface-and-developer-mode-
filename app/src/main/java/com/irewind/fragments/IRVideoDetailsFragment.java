@@ -29,6 +29,7 @@ import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRVideoPagerAdapter;
 import com.irewind.player.SeekBarV3Fragment;
+import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
 import com.jazzyviewpager.JazzyViewPager;
@@ -59,6 +60,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     boolean autoPause;
 
     public Video video;
+    public User person;
 
     public static CountDownTimer sCt;
     public static VideoView sVideoView;
@@ -198,19 +200,33 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (videoView != null) {
-                    ct.cancel();
-                    videoView.stopPlayback();
-                    videoView.clearAnimation();
-                    videoView = null;
+                if (person != null) {
+                    IRPersonFragment fragment = IRPersonFragment.newInstance();
+                    fragment.person = person;
+
+                    IRTabActivity.mPeopleFragment = fragment;
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+                    ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
+                            .disallowAddToBackStack()
+                            .commit();
                 }
-                IRTabActivity.mLibraryFragment = IRLibraryFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                else {
+                    if (videoView != null) {
+                        ct.cancel();
+                        videoView.stopPlayback();
+                        videoView.clearAnimation();
+                        videoView = null;
+                    }
+                    IRTabActivity.mLibraryFragment = IRLibraryFragment.newInstance();
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
+                    ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
+                            .disallowAddToBackStack()
+                            .commit();
+                }
             }
         });
         IRTabActivity.abTitle.setText(getString(R.string.movies));

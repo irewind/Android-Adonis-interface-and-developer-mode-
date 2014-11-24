@@ -17,24 +17,11 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/bg_profile" />
-        
-        <ImageButton
-            android:id="@+id/photo"
-            android:layout_width="30dp"
-            android:layout_height="31dp"
-            android:src="@drawable/ic_camera"
-            android:scaleType="fitCenter"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            android:visibility="gone"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
-
 
             <com.irewind.ui.views.RoundedImageView
                 android:id="@+id/profileImageView"
@@ -72,21 +59,26 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/listViewAccount"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="153dp"
-        android:layout_below="@+id/top" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/top">
 
-    <Button
-        fontPath="fonts/OpenSans-Regular.ttf"
-        android:id="@+id/btnLogout"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="@string/logout"
-        android:textColor="@drawable/ir_text_color_change"
-        android:background="@drawable/btn_all_red"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/listViewAccount"
-        android:layout_marginTop="10dp"/>
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/videoListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:clipToPadding="false"/>
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/black"
+            android:text="@string/no_videos" />
+
+        </RelativeLayout>
 </RelativeLayout>

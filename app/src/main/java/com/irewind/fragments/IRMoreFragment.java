@@ -201,7 +201,7 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
-            nameTextView.setText(user.getFirstname() + " " + user.getLastname());
+            nameTextView.setText(user.getDisplayName());
             date.setText(user.getCreatedDate() + "");
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);

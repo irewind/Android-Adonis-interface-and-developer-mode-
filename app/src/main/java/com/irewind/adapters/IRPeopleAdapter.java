@@ -55,7 +55,6 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
             holder = new UserHolder();
 
             holder.name = (TextView) convertView.findViewById(R.id.name);
-            holder.videos = (TextView) convertView.findViewById(R.id.videos);
             holder.date = (TextView) convertView.findViewById(R.id.date);
             holder.picture = (RoundedImageView) convertView.findViewById(R.id.profileImage);
             convertView.setTag(holder);
@@ -71,27 +70,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
             holder.picture.setImageResource(R.drawable.img_default_picture);
         }
 
-        String name = "";
-        if (user.getFirstname() != null && user.getFirstname().length() > 0) {
-            name += user.getFirstname();
-        }
-
-        if (user.getLastname() != null && user.getLastname().length() > 0) {
-            if (name.length() > 0) {
-                name += " ";
-            }
-            name += user.getLastname();
-        }
-
-        if (name.length() == 0 && user.getFullname() != null && user.getFullname().length() > 0) {
-            name = user.getFullname();
-        }
-
-        if (name.length() == 0 && user.getEmail() != null && user.getEmail().length() > 0) {
-            name = user.getEmail();
-        }
-
-        holder.name.setText(name);
+        holder.name.setText(user.getDisplayName());
 
         if (user.getLastLoginDate() > 0) {
             holder.date.setText(DateUtils.getRelativeTimeSpanString(user.getLastLoginDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
@@ -103,7 +82,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
     }
 
     private class UserHolder {
-        TextView name, videos, date;
+        TextView name, date;
         RoundedImageView picture;
     }
 

@@ -26,7 +26,6 @@ import com.irewind.sdk.api.event.PasswordChangeSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.irewind.utils.CheckUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import javax.inject.Inject;
@@ -48,8 +47,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.date)
-    TextView date;
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     @InjectView(R.id.contentView)
     View contentView;
@@ -61,9 +60,6 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
 
     @InjectView(R.id.editNew)
     EditText editNew;
-
-    @InjectView(R.id.editConfirm)
-    EditText editConfirm;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
@@ -169,25 +165,9 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void change() {
         String currentPassword = editCurrent.getText().toString();
         String newPassword = editNew.getText().toString();
-        String confirmPassword = editConfirm.getText().toString();
 
-        View focusView = null;
-        boolean cancel = false;
-
-        if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
-            editConfirm.setError(getString(R.string.error_match));
-            focusView = editConfirm;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            showProgress(true);
-            apiClient.changeUserPassword(apiClient.getActiveUser(), currentPassword, newPassword);
-        }
+        showProgress(true);
+        apiClient.changeUserPassword(apiClient.getActiveUser(), currentPassword, newPassword);
     }
 
     private void updateUserInfo(User user) {
@@ -198,11 +178,11 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            date.setText(user.getCreatedDate() + "");
+            emailTextView.setText(user.getEmail());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            date.setText("");
+            emailTextView.setText("");
         }
     }
 

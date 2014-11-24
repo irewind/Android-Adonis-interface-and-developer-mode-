@@ -53,8 +53,8 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.date)
-    TextView date;
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     @InjectView(R.id.contentView)
     View contentView;
@@ -65,6 +65,9 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     EditText mFirst;
     @InjectView(R.id.editLast)
     EditText mLast;
+
+    @InjectView(R.id.btnDelete)
+    Button btnDelete;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
@@ -99,6 +102,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         ButterKnife.inject(this, view);
 
         btnChange.setOnClickListener(this);
+        btnDelete.setOnClickListener(this);
     }
 
     @Override
@@ -138,6 +142,9 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         switch (view.getId()) {
             case R.id.btnChange:
                 change();
+                break;
+            case R.id.btnDelete:
+                delete();
                 break;
         }
     }
@@ -189,13 +196,13 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            date.setText(user.getCreatedDate() + "");
+            emailTextView.setText(user.getEmail());
             mFirst.setText(user.getFirstname());
             mLast.setText(user.getLastname());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            date.setText("");
+            emailTextView.setText("");
             mFirst.setText("");
             mLast.setText("");
         }
@@ -232,6 +239,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         apiClient.closeSessionAndClearTokenInformation();
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
+        intent.putExtra(IRLoginActivity.EXTRA_SHOULD_LOGOUT_FIRST, true);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
