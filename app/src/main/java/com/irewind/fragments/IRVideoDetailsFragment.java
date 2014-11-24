@@ -210,7 +210,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                     IRTabActivity.mPeopleFragment = fragment;
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ft = fragmentManager.beginTransaction();
-                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
                     ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
                             .disallowAddToBackStack()
                             .commit();
@@ -412,7 +412,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
     private void setupJazziness(JazzyViewPager.TransitionEffect effect) {
         mJazzyViewPager.setTransitionEffect(effect);
-        mJazzyViewPager.setAdapter(new IRVideoPagerAdapter(getChildFragmentManager(), mJazzyViewPager, video));
+        mJazzyViewPager.setAdapter(new IRVideoPagerAdapter(getChildFragmentManager(), mJazzyViewPager, video, person));
         mJazzyViewPager.setPageMargin(0);
         mJazzyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

@@ -178,7 +178,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:scaleType="fitCenter"
-                    android:background="@android:color/transparent" />
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

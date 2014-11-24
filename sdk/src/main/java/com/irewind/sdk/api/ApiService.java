@@ -1,5 +1,7 @@
 package com.irewind.sdk.api;
 
+import com.irewind.sdk.api.request.CreateCommentRequest;
+import com.irewind.sdk.api.request.ReplyCommentRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
@@ -12,11 +14,12 @@ import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.AccessToken;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.PATCH;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -231,17 +234,14 @@ public interface ApiService {
                        Callback<CommentListResponse> cb);
 
     @POST("/rest/video-comment")
-    @FormUrlEncoded
+    @Headers("Content-Type: application/json")
     void postVideoComment(@Header("Authorization") String authorization,
-                          @Field("video") String videoURL,
-                          @Field("content") String content,
+                          @Body CreateCommentRequest commentRequest,
                           Callback<BaseResponse> cb);
 
     @POST("/rest/video-comment")
-    @FormUrlEncoded
-    void postVideoComment(@Header("Authorization") String authorization,
-                          @Field("video") String videoURL,
-                          @Field("content") String content,
-                          @Field("parentVideoComment") long parentVideoCommentID,
-                          Callback<BaseResponse> cb);
+    @Headers("Content-Type: application/json")
+    void replyVideoComment(@Header("Authorization") String authorization,
+                           @Body ReplyCommentRequest commentRequest,
+                           Callback<BaseResponse> cb);
 }

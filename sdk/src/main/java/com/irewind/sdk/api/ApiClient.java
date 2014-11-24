@@ -38,6 +38,8 @@ import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
+import com.irewind.sdk.api.request.CreateCommentRequest;
+import com.irewind.sdk.api.request.ReplyCommentRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
@@ -380,8 +382,7 @@ public class ApiClient implements SessionRefresher {
                     public void success(AccessToken userAccessToken, Response response) {
                         if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
                             eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
-                        }
-                        else {
+                        } else {
                             userAccessToken.setLastRefreshDate(new Date());
                             openActiveSessionWithAccessToken(context, userAccessToken);
                         }
@@ -503,8 +504,7 @@ public class ApiClient implements SessionRefresher {
                     } else {
                         eventBus.post(new UserInfoLoadedEvent(null));
                     }
-                }
-                else {
+                } else {
                     eventBus.post(new UserInfoLoadedEvent(null));
                 }
             }
@@ -933,16 +933,15 @@ public class ApiClient implements SessionRefresher {
 
     public void addComment(final long videoId, final String content) {
         final Session session = getActiveSession();
-        String video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
-        apiService.postVideoComment(authHeader(session), video, content, new Callback<BaseResponse>() {
+
+        CreateCommentRequest commentRequest = new CreateCommentRequest();
+        commentRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        commentRequest.content = content;
+
+        apiService.postVideoComment(authHeader(session), commentRequest, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
-                if (baseResponse.getError() == null) {
-                    eventBus.post(new CommentAddEvent());
-                }
-                else {
-                    eventBus.post(new CommentAddFailEvent());
-                }
+                eventBus.post(new CommentAddEvent());
             }
 
             @Override
@@ -955,15 +954,15 @@ public class ApiClient implements SessionRefresher {
     public void replyComment(final long videoId, final String content, final long parentCommentId) {
         final Session session = getActiveSession();
 
-        apiService.postVideoComment(authHeader(session), "http://web01.dev.irewind.com/api/rest/video/" + videoId, content, parentCommentId, new Callback<BaseResponse>() {
+        ReplyCommentRequest commentRequest = new ReplyCommentRequest();
+        commentRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        commentRequest.content = content;
+        commentRequest.parentVideoComment = "http://web01.dev.irewind.com/api/rest/video-comment/" + parentCommentId;
+
+        apiService.replyVideoComment(authHeader(session), commentRequest, new Callback<BaseResponse>() {
             @Override
             public void success(BaseResponse baseResponse, Response response) {
-                if (baseResponse.getError() == null) {
-                    eventBus.post(new CommentAddEvent());
-                }
-                else {
-                    eventBus.post(new CommentAddFailEvent());
-                }
+                eventBus.post(new CommentAddEvent());
             }
 
             @Override

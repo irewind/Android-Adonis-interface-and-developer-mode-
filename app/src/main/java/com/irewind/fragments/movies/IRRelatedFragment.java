@@ -20,11 +20,13 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
+import com.irewind.fragments.IRPersonFragment;
 import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.model.PageInfo;
+import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,6 +49,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     private IRRelatedAdapter mAdapter;
 
     public Video video;
+    public User person;
 
     @Inject
     ApiClient apiClient;
@@ -183,12 +186,25 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
         IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
         fragment.video = video;
 
-        IRTabActivity.mLibraryFragment = fragment;
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-        ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                .disallowAddToBackStack()
-                .commit();
+        if (person != null) {
+            fragment.person = person;
+
+            IRTabActivity.mPeopleFragment = fragment;
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+            ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
+                    .disallowAddToBackStack()
+                    .commit();
+        }
+        else {
+            IRTabActivity.mLibraryFragment = fragment;
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+            ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
+                    .disallowAddToBackStack()
+                    .commit();
+        }
     }
 }

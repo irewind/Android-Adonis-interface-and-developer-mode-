@@ -123,6 +123,11 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @Subscribe
     public void onEvent(CommentAddEvent event) {
+
+        apiClient.listVideoComments(videoId, 0, 20);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(commentEdit.getWindowToken(), 0);
         finish();
     }
 

@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
@@ -23,6 +21,7 @@ import java.util.List;
 public class IRCommentsAdapter extends ArrayAdapter<Comment> {
     public interface ActionListener {
         void addComment();
+
         void replyComment(Comment parentComment);
     }
 
@@ -59,17 +58,22 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             convertView = LayoutInflater.from(mContext).inflate(layout, null);
             holder = new CommentHolder();
 
-            holder.username = (TextView) convertView.findViewById(R.id.username);
-            holder.date = (TextView) convertView.findViewById(R.id.date);
-            holder.reply = (TextView) convertView.findViewById(R.id.reply);
-            holder.content = (TextView) convertView.findViewById(R.id.content);
-            holder.addComment = (TextView) convertView.findViewById(R.id.addComment);
-//            holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
-            holder.pictureTop = (RoundedImageView) convertView.findViewById(R.id.profileImageTop);
-            holder.picture = (RoundedImageView) convertView.findViewById(R.id.profileImage);
-            holder.addCommentRow = (LinearLayout) convertView.findViewById(R.id.addCommentRow);
-            holder.commentRow = (RelativeLayout) convertView.findViewById(R.id.commentLayout);
-            holder.childCommentRow = (RelativeLayout) convertView.findViewById(R.id.childCommentLayout);
+            holder.addCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.addCommentRowLayout);
+            holder.addCommentHolder.picture = (RoundedImageView) holder.addCommentHolder.rootViewGroup.findViewById(R.id.profileImageAdd);
+            holder.addCommentHolder.addCommentTextView = (TextView) holder.addCommentHolder.rootViewGroup.findViewById(R.id.addCommentTextView);
+
+            holder.parentCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.parentCommentLayout);
+            holder.parentCommentHolder.picture = (RoundedImageView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.profileImage);
+            holder.parentCommentHolder.username = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.username);
+            holder.parentCommentHolder.date = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.date);
+            holder.parentCommentHolder.content = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.content);
+            holder.parentCommentHolder.reply = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.reply);
+
+            holder.childCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.childCommentLayout);
+            holder.childCommentHolder.picture = (RoundedImageView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.profileImageChild);
+            holder.childCommentHolder.username = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.usernameChild);
+            holder.childCommentHolder.date = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.dateChild);
+            holder.childCommentHolder.content = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.contentChild);
 
             convertView.setTag(holder);
         } else {
@@ -77,17 +81,17 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
         }
 
         if (position == 0) {
-            holder.addCommentRow.setVisibility(View.VISIBLE);
-            holder.commentRow.setVisibility(View.GONE);
-            holder.childCommentRow.setVisibility(View.GONE);
+            holder.addCommentHolder.rootViewGroup.setVisibility(View.VISIBLE);
+            holder.parentCommentHolder.rootViewGroup.setVisibility(View.GONE);
+            holder.childCommentHolder.rootViewGroup.setVisibility(View.GONE);
 
             if (profileImage != null && profileImage.length() > 0) {
-                imageLoader.displayImage(profileImage, holder.picture);
+                imageLoader.displayImage(profileImage, holder.addCommentHolder.picture);
             } else {
-                holder.picture.setImageResource(R.drawable.img_default_picture);
+                holder.addCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
             }
 
-            holder.addComment.setOnClickListener(new View.OnClickListener() {
+            holder.addCommentHolder.addCommentTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (actionListener != null) {
@@ -97,20 +101,30 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             });
 
         } else {
-            holder.addCommentRow.setVisibility(View.GONE);
+            holder.addCommentHolder.rootViewGroup.setVisibility(View.GONE);
 
             final Comment comment = getItem(position - 1);
             User user = comment.getUser();
 
             if (comment.isChildComment()) {
-                holder.commentRow.setVisibility(View.GONE);
-                holder.childCommentRow.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.commentRow.setVisibility(View.VISIBLE);
-                holder.childCommentRow.setVisibility(View.GONE);
+                holder.parentCommentHolder.rootViewGroup.setVisibility(View.GONE);
+                holder.childCommentHolder.rootViewGroup.setVisibility(View.VISIBLE);
 
-                holder.reply.setOnClickListener(new View.OnClickListener() {
+                holder.childCommentHolder.username.setText(comment.getUser().getDisplayName());
+
+                if (user.getPicture() != null && user.getPicture().length() > 0) {
+                    imageLoader.displayImage(user.getPicture(), holder.childCommentHolder.picture);
+                } else {
+                    holder.childCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
+                }
+
+                holder.childCommentHolder.content.setText(comment.getContent());
+                holder.childCommentHolder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            } else {
+                holder.parentCommentHolder.rootViewGroup.setVisibility(View.VISIBLE);
+                holder.childCommentHolder.rootViewGroup.setVisibility(View.GONE);
+
+                holder.parentCommentHolder.reply.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (actionListener != null) {
@@ -119,31 +133,44 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
                     }
                 });
 
-                holder.reply.setTag(comment);
+                holder.parentCommentHolder.username.setText(comment.getUser().getDisplayName());
+
+                if (user.getPicture() != null && user.getPicture().length() > 0) {
+                    imageLoader.displayImage(user.getPicture(), holder.parentCommentHolder.picture);
+                } else {
+                    holder.parentCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
+                }
+
+                holder.parentCommentHolder.content.setText(comment.getContent());
+                holder.parentCommentHolder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
             }
-
-            holder.username.setText(comment.getUser().getDisplayName());
-
-            if (user.getPicture() != null && user.getPicture().length() > 0) {
-                imageLoader.displayImage(user.getPicture(), holder.picture);
-            } else {
-                holder.picture.setImageResource(R.drawable.img_default_picture);
-            }
-
-            holder.content.setText(comment.getContent());
-            holder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         }
 
         return convertView;
     }
 
     private class CommentHolder {
-        TextView username, date, content, reply, addComment;
-        //        ImageButton delete;
-        RoundedImageView pictureTop, picture;
-        LinearLayout addCommentRow;
-        RelativeLayout commentRow;
-        RelativeLayout childCommentRow;
+        AddCommentHolder addCommentHolder = new AddCommentHolder();
+        ParentCommentHolder parentCommentHolder = new ParentCommentHolder();
+        ChildCommentHolder childCommentHolder = new ChildCommentHolder();
+    }
+
+    private class AddCommentHolder {
+        ViewGroup rootViewGroup;
+        RoundedImageView picture;
+        TextView addCommentTextView;
+    }
+
+    private class ParentCommentHolder {
+        ViewGroup rootViewGroup;
+        RoundedImageView picture;
+        TextView username, date, content, reply;
+    }
+
+    private class ChildCommentHolder {
+        ViewGroup rootViewGroup;
+        RoundedImageView picture;
+        TextView username, date, content;
     }
 
     public ActionListener getActionListener() {
