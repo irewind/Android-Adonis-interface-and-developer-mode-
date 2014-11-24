@@ -1,5 +1,8 @@
 package com.irewind.fragments.movies;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,12 +17,16 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRAddCommentActivity;
 import com.irewind.adapters.IRCommentsAdapter;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.CommentAddEvent;
+import com.irewind.sdk.api.event.CommentAddFailEvent;
 import com.irewind.sdk.api.event.CommentListEvent;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.model.Comment;
 import com.irewind.sdk.model.PageInfo;
+import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class IRCommentsFragment extends Fragment {
+public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.ActionListener {
 
     @InjectView(R.id.commentsListView)
     PullToRefreshListView mPullToRefreshListView;
@@ -104,6 +111,14 @@ public class IRCommentsFragment extends Fragment {
         });
 
         mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list, imageLoader);
+
+        apiClient.loadActiveUserInfo();
+        User user = apiClient.getActiveUser();
+        if (user != null) {
+            mAdapter.setProfileImage(user.getPicture());
+        }
+
+        mAdapter.setActionListener(this);
         mListView.setAdapter(mAdapter);
     }
 
@@ -136,6 +151,33 @@ public class IRCommentsFragment extends Fragment {
         listTask = null;
     }
 
+    @Override
+    public void addComment() {
+        Intent intent = new Intent(getActivity(), IRAddCommentActivity.class);
+        intent.putExtra(IRAddCommentActivity.EXTRA_VIDEO_ID_KEY, video.getId());
+
+        User user = apiClient.getActiveUser();
+        if (user != null && user.getPicture() != null) {
+            intent.putExtra(IRAddCommentActivity.EXTRA_PROFILE_IMAGE_KEY, user.getPicture());
+        }
+
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void replyComment(Comment comment) {
+        Intent intent = new Intent(getActivity(), IRAddCommentActivity.class);
+        intent.putExtra(IRAddCommentActivity.EXTRA_VIDEO_ID_KEY, video.getId());
+        intent.putExtra(IRAddCommentActivity.EXTRA_PARENT_COMMENT_ID_KEY, comment.getId());
+
+        User user = apiClient.getActiveUser();
+        if (user != null && user.getPicture() != null) {
+            intent.putExtra(IRAddCommentActivity.EXTRA_PROFILE_IMAGE_KEY, user.getPicture());
+        }
+
+        getActivity().startActivity(intent);
+    }
+
     @Subscribe
     public void onEvent(CommentListEvent event) {
         List<Comment> comments = event.comments;
@@ -155,5 +197,15 @@ public class IRCommentsFragment extends Fragment {
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+    }
+
+    @Subscribe
+    public void onEvent(CommentAddEvent event) {
+        fetch(0);
+    }
+
+    @Subscribe
+    public void onEvent(CommentAddFailEvent event) {
+
     }
 }

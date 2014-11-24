@@ -2,6 +2,7 @@ package com.irewind;
 
 import android.content.Context;
 
+import com.irewind.activities.IRAddCommentActivity;
 import com.irewind.activities.IRForgotPasswordActivity;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRRegisterActivity;
@@ -20,10 +21,8 @@ import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.fragments.movies.IRAboutFragment;
 import com.irewind.fragments.movies.IRCommentsFragment;
 import com.irewind.fragments.movies.IRRelatedFragment;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import javax.inject.Singleton;
 
@@ -49,6 +48,7 @@ import dagger.Provides;
                 IRVideoDetailsFragment.class,
                 IRAboutFragment.class,
                 IRCommentsFragment.class,
+                IRAddCommentActivity.class,
                 IRRelatedFragment.class,
 
                 IRPeopleFragment.class,

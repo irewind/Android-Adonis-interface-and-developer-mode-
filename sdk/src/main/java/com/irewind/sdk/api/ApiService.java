@@ -230,18 +230,18 @@ public interface ApiService {
                        @Query("pageSize") Integer size,
                        Callback<CommentListResponse> cb);
 
-    @PATCH("/rest/video-comment")
+    @POST("/rest/video-comment")
     @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
-                          @Field("content") String content,
                           @Field("video") String videoURL,
+                          @Field("content") String content,
                           Callback<BaseResponse> cb);
 
-    @PATCH("/rest/video-comment")
+    @POST("/rest/video-comment")
     @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
-                          @Field("content") String content,
                           @Field("video") String videoURL,
+                          @Field("content") String content,
                           @Field("parentVideoComment") long parentVideoCommentID,
                           Callback<BaseResponse> cb);
 }
