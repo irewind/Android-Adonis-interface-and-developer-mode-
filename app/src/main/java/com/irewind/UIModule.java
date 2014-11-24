@@ -14,6 +14,7 @@ import com.irewind.fragments.IRAccountPersonalFragment;
 import com.irewind.fragments.IRLibraryFragment;
 import com.irewind.fragments.IRMoreFragment;
 import com.irewind.fragments.IRPeopleFragment;
+import com.irewind.fragments.IRPersonFragment;
 import com.irewind.fragments.IRRewindFunctionalityFragment;
 import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.fragments.movies.IRAboutFragment;
@@ -51,6 +52,7 @@ import dagger.Provides;
                 IRRelatedFragment.class,
 
                 IRPeopleFragment.class,
+                IRPersonFragment.class,
 
                 IRRewindFunctionalityFragment.class,
 

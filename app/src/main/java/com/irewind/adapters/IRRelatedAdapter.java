@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.irewind.R;
-import com.irewind.models.RelatedItem;
 import com.irewind.sdk.model.Video;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -69,8 +68,7 @@ public class IRRelatedAdapter extends ArrayAdapter<Video> {
 
         if (video.getThumbnail() != null && video.getThumbnail().length() > 0) {
             imageLoader.displayImage(video.getThumbnail(), holder.picture);
-        }
-        else {
+        } else {
             holder.picture.setImageResource(R.drawable.ic_launcher);
         }
 
@@ -99,8 +97,7 @@ public class IRRelatedAdapter extends ArrayAdapter<Video> {
     public void appendVideos(List<Video> videos) {
         if (this.videos == null) {
             this.videos = new ArrayList<Video>(videos);
-        }
-        else {
+        } else {
             this.videos.addAll(videos);
         }
         notifyDataSetChanged();

@@ -1,18 +1,18 @@
 package com.irewind.sdk.api.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.irewind.sdk.model.Comment;
+import com.irewind.sdk.model.Video;
 
 import java.util.List;
 
-public class CommentListResponse extends BaseResponse {
+public class VideoSearchResponse extends BaseResponse {
     @SerializedName("content")
-    private List<Comment> content;
+    private List<Video> content;
 
     @SerializedName("total")
     private int total;
 
-    public List<Comment> getContent() {
+    public List<Video> getContent() {
         return content;
     }
 
@@ -23,12 +23,12 @@ public class CommentListResponse extends BaseResponse {
     @Override
     public String toString() {
         if (super.getError() != null) {
-            return "CommentListResponse{" +
+            return "VideoSearchResponse{" +
                     "error='" + super.getError() + '\'' +
                     ", errorDescription='" + super.getErrorDescription() + '\'' +
                     '}';
         }
-        return "CommentListResponse{" +
+        return "VideoSearchResponse{" +
                 "content=" + content +
                 ", total=" + total +
                 '}';

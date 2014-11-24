@@ -73,6 +73,7 @@
     <string name="comments">Comments</string>
     <string name="description">DESCRIPTION</string>
     <string name="dummy_text">Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</string>
+    <string name="no_videos">No videos</string>
     <string name="no_related_videos">No related videos found</string>
     <string name="reply"><u>Reply</u></string>
     <string name="movie_settings">Movie settings</string>

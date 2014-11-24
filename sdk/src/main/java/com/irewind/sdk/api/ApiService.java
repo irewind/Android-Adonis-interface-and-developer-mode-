@@ -8,6 +8,7 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.AccessToken;
 
 import retrofit.Callback;
@@ -129,17 +130,17 @@ public interface ApiService {
                     @Query("pageSize") Integer size,
                     Callback<VideoListResponse> cb);
 
-    @GET("/rest/video/search/findVideosWithPaginationAndSearchTerm")
-    VideoListResponse searchVideos(@Header("Authorization") String authorization,
-                                   @Query("searchTerm") String query,
-                                   @Query("pageNo") Integer page,
-                                   @Query("pageSize") Integer size);
+    @GET("/rest/v2/search-videos")
+    VideoSearchResponse searchVideos(@Header("Authorization") String authorization,
+                                     @Query("searchTerm") String query,
+                                     @Query("pageNo") Integer page,
+                                     @Query("pageSize") Integer size);
 
-    @GET("/rest/video/search/findVideosWithPaginationAndSearchTerm")
+    @GET("/rest/v2/search-videos")
     void searchVideos(@Header("Authorization") String authorization,
                       @Query("pageNo") Integer page,
                       @Query("pageSize") Integer size,
-                      Callback<VideoListResponse> cb);
+                      Callback<VideoSearchResponse> cb);
 
     @GET("/rest/video/search/findByUser")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
@@ -216,13 +217,13 @@ public interface ApiService {
 
     // --- Comments --- //
 
-    @GET("/rest/video-comment/search/findByVideo")
+    @GET("/rest/v2/video-comment/list")
     CommentListResponse videoComments(@Header("Authorization") String authorization,
                                       @Query("videoId") long videoID,
                                       @Query("pageNo") Integer page,
                                       @Query("pageSize") Integer size);
 
-    @GET("/rest/video-comment/search/findByVideo")
+    @GET("/rest/v2/video-comment/list")
     void videoComments(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
@@ -234,13 +235,13 @@ public interface ApiService {
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
-                          Callback<Boolean> cb);
+                          Callback<BaseResponse> cb);
 
     @PATCH("/rest/video-comment")
     @FormUrlEncoded
     void postVideoComment(@Header("Authorization") String authorization,
                           @Field("content") String content,
                           @Field("video") String videoURL,
-                          @Field("parentVideoComment") String parentVideoCommentID,
-                          Callback<Boolean> cb);
+                          @Field("parentVideoComment") long parentVideoCommentID,
+                          Callback<BaseResponse> cb);
 }

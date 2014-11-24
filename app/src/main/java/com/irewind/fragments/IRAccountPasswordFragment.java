@@ -49,8 +49,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
 
-    @InjectView(R.id.date)
-    TextView date;
+    @InjectView(R.id.emailTextView)
+    TextView emailTextView;
 
     @InjectView(R.id.contentView)
     View contentView;
@@ -62,9 +62,6 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
 
     @InjectView(R.id.editNew)
     EditText editNew;
-
-    @InjectView(R.id.editConfirm)
-    EditText editConfirm;
 
     @InjectView(R.id.btnChange)
     Button btnChange;
@@ -170,7 +167,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     public void change() {
         String currentPassword = editCurrent.getText().toString();
         String newPassword = editNew.getText().toString();
-        String confirmPassword = editConfirm.getText().toString();
+//        String confirmPassword = editConfirm.getText().toString();
 
         View focusView = null;
         boolean cancel = false;
@@ -183,15 +180,13 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             editNew.setError(getString(R.string.error_invalid_password));
             focusView = editNew;
             cancel = true;
-        } else if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
+        } /*else if (!CheckUtil.isPasswordValid(newPassword, confirmPassword)){
             editConfirm.setError(getString(R.string.error_match));
             focusView = editConfirm;
             cancel = true;
-        }
+        }*/
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+        if (cancel){
             focusView.requestFocus();
         } else {
             showProgress(true);
@@ -207,11 +202,11 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getFirstname() + " " + user.getLastname());
-            date.setText(user.getCreatedDate() + "");
+            emailTextView.setText(user.getEmail());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
-            date.setText("");
+            emailTextView.setText("");
         }
     }
 

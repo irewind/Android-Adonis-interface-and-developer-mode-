@@ -3,6 +3,8 @@ package com.irewind.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -148,7 +150,18 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO On item click
+        User user = mAdapter.getItem(position);
+
+        IRPersonFragment fragment = IRPersonFragment.newInstance();
+        fragment.person = user;
+
+        IRTabActivity.mPeopleFragment = fragment;
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+        ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
+                .disallowAddToBackStack()
+                .commit();
     }
 
     @Override

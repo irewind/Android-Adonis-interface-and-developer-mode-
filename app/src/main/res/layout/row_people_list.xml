@@ -14,39 +14,26 @@
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/profileImage"
-        android:orientation="vertical"
+        android:textColor="@android:color/black"
         android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:text="Virgil Pana" />
-
-        <TextView
-            android:id="@+id/videos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_red"
-            android:textSize="12sp"
-            android:text="23 videos" />
-    </LinearLayout>
+        android:textSize="12sp"
+        android:gravity="left|center"
+        android:text="Virgil Pana" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="12 Sep 2014 12:24"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:textColor="@color/text_gray"
         android:textSize="11sp"
+        android:gravity="right|center"
         android:layout_marginRight="10dp"/>
 </RelativeLayout>

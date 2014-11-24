@@ -2,65 +2,67 @@ package com.irewind.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
 import com.irewind.activities.IRCommentActivity;
-import com.irewind.models.CommentItem;
-import com.irewind.models.RelatedItem;
+import com.irewind.sdk.model.Comment;
+import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-/**
- * Created by tzmst on 5/7/14.
- */
-public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
+public class IRCommentsAdapter extends ArrayAdapter<Comment> {
 
-    private List<CommentItem> dataList;
+    private List<Comment> comments;
     private int layout;
     private Context mContext;
+    private ImageLoader imageLoader;
 
-    public IRCommentsAdapter(Context context, int resource, List<CommentItem> data) {
+
+    public IRCommentsAdapter(Context context, int resource, ImageLoader imageLoader) {
         super(context, resource);
         mContext = context;
         layout = resource;
-        dataList = data;
+        this.imageLoader = imageLoader;
     }
 
     @Override
-    public CommentItem getItem(int position) {
-        return dataList.get(position);
+    public Comment getItem(int position) {
+        return comments.get(position);
     }
 
     @Override
     public int getCount() {
-        return dataList.size();
+        return comments != null ? comments.size() : 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        CommentsItemHolder holder;
+        CommentHolder holder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(layout, null);
-            holder = new CommentsItemHolder();
+            holder = new CommentHolder();
 
             holder.username = (TextView) convertView.findViewById(R.id.username);
             holder.date = (TextView) convertView.findViewById(R.id.date);
             holder.reply = (TextView) convertView.findViewById(R.id.reply);
-            holder.comments = (TextView) convertView.findViewById(R.id.description);
+            holder.content = (TextView) convertView.findViewById(R.id.content);
             holder.addComment = (TextView) convertView.findViewById(R.id.addComment);
-            holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
+//            holder.delete = (ImageButton) convertView.findViewById(R.id.delete);
             holder.pictureTop = (RoundedImageView) convertView.findViewById(R.id.profileImageTop);
             holder.picture = (RoundedImageView) convertView.findViewById(R.id.profileImage);
             holder.topRow = (LinearLayout) convertView.findViewById(R.id.firstRow);
@@ -68,12 +70,23 @@ public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
 
             convertView.setTag(holder);
         } else {
-            holder = (CommentsItemHolder) convertView.getTag();
+            holder = (CommentHolder) convertView.getTag();
         }
 
-        CommentItem info = getItem(position);
+        Comment comment = getItem(position);
+        User user = comment.getUser();
+        holder.username.setText(comment.getUser().getDisplayName());
 
-        if (position == 0){
+        if (user.getPicture() != null && user.getPicture().length() > 0) {
+            imageLoader.displayImage(user.getPicture(), holder.picture);
+        } else {
+            holder.picture.setImageResource(R.drawable.img_default_picture);
+        }
+
+        holder.content.setText(comment.getContent());
+        holder.date.setText(DateUtils.getRelativeTimeSpanString(comment.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+
+        if (position == 0) {
             holder.topRow.setVisibility(View.VISIBLE);
             holder.otherRow.setVisibility(View.GONE);
 
@@ -82,21 +95,21 @@ public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
             holder.topRow.setVisibility(View.GONE);
             holder.otherRow.setVisibility(View.VISIBLE);
             holder.reply.setOnClickListener(new CustomOnClickReplayListener());
-            holder.delete.setOnClickListener(new CustomOnClickReplayListener());
+//            holder.delete.setOnClickListener(new CustomOnClickReplayListener());
         }
 
         return convertView;
     }
 
-    private class CommentsItemHolder {
-        TextView username, date, comments, reply, addComment;
-        ImageButton delete;
+    private class CommentHolder {
+        TextView username, date, content, reply, addComment;
+//        ImageButton delete;
         RoundedImageView pictureTop, picture;
         LinearLayout topRow;
         RelativeLayout otherRow;
     }
 
-    private class CustomOnClickAddCommentListener implements View.OnClickListener{
+    private class CustomOnClickAddCommentListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -105,7 +118,7 @@ public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
         }
     }
 
-    private class CustomOnClickReplayListener implements View.OnClickListener{
+    private class CustomOnClickReplayListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -113,11 +126,25 @@ public class IRCommentsAdapter extends ArrayAdapter<CommentItem>{
         }
     }
 
-    private class CustomOnClickDeleteListener implements View.OnClickListener{
+    private class CustomOnClickDeleteListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             //TODO Delete comment
         }
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+        notifyDataSetChanged();
+    }
+
+    public void appendComments(List<Comment> comments) {
+        if (this.comments == null) {
+            this.comments = new ArrayList<Comment>(comments);
+        } else {
+            this.comments.addAll(comments);
+        }
+        notifyDataSetChanged();
     }
 }
