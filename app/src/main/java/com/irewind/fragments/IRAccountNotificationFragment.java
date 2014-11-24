@@ -230,8 +230,8 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
         editor.putBoolean(getString(R.string.notif_comment_video), event.notificationSettings.commentNotificationEnabled());
         editor.putBoolean(getString(R.string.notif_like_video), event.notificationSettings.likeNotificationEnabled());
-//        editor.putBoolean(getString(R.string.notif_share_video), event.notificationSettings.likeNotificationEnabled());//TODO UNCOMMENT AND PUT NECESSARY INFO
-//        editor.putBoolean(getString(R.string.notif_message_video), event.notificationSettings.likeNotificationEnabled());
+        editor.putBoolean(getString(R.string.notif_share_video), event.notificationSettings.shareNotificationEnabled());
+        editor.putBoolean(getString(R.string.notif_message_video), event.notificationSettings.msgNotificationEnabled());
         editor.commit();
 
         switchCommentNotifications.setOnCheckedChangeListener(null);
@@ -240,8 +240,8 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         switchMessageNotifications.setOnCheckedChangeListener(null);
         switchCommentNotifications.setChecked(event.notificationSettings.commentNotificationEnabled());
         switchLikeNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());
-//        switchShareNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());//TODO UNCOMMENT AND PUT NECESSARY INFO
-//        switchMessageNotifications.setChecked(event.notificationSettings.likeNotificationEnabled());
+        switchShareNotifications.setChecked(event.notificationSettings.shareNotificationEnabled());
+        switchMessageNotifications.setChecked(event.notificationSettings.msgNotificationEnabled());
         switchCommentNotifications.setOnCheckedChangeListener(this);
         switchLikeNotifications.setOnCheckedChangeListener(this);
         switchShareNotifications.setOnCheckedChangeListener(this);
