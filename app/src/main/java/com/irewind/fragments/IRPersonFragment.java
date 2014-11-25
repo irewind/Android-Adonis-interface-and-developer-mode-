@@ -22,6 +22,7 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
@@ -100,12 +101,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         mPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-
-                // Update the LastUpdatedLabel
-                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
                 fetch(0);
             }
         });
@@ -121,7 +116,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setEmptyView(emptyText);
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
-        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
 
@@ -180,7 +174,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
-                Picasso.with(getActivity()).load(user.getPicture()).into(profileImageView);
+                Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
@@ -198,7 +192,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     void fetch(int page) {
         cancelTask();
 
-        listTask = apiClient.listVideos(page, 20);
+        listTask = apiClient.listVideosForUser(person.getId(), page, 200);
     }
 
     void cancelTask() {
@@ -227,5 +221,16 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 }

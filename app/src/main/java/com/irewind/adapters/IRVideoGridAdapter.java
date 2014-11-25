@@ -67,7 +67,7 @@ public class IRVideoGridAdapter extends BaseAdapter {
         Video video = videos.get(position);
 
         if (video.getThumbnail() != null && video.getThumbnail().length() > 0) {
-            Picasso.with(mContext).load(video.getThumbnail()).into(holder.picture);
+            Picasso.with(mContext).load(video.getThumbnail()).placeholder(R.drawable.ic_launcher).into(holder.picture);
         }
         else {
             holder.picture.setImageResource(R.drawable.ic_placeholder);

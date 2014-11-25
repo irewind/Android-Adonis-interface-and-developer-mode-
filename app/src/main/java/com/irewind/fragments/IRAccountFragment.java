@@ -29,7 +29,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRAccountAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
@@ -75,7 +74,6 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
     @InjectView(R.id.editNotifs)
     Button editNotifs;
 
-    private IRAccountAdapter mAccountAdapter;
     private String realPath;
     private File sdImageMainDirectory;
     private Uri mImageCaptureUri;
@@ -200,7 +198,7 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
-                Picasso.with(getActivity()).load(user.getPicture()).into(profileImageView);
+                Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }

@@ -24,7 +24,7 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
-import com.irewind.sdk.api.response.VideoSearchResponse;
+import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
@@ -53,7 +53,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     private int numberOfPagesAvailable = 0;
 
     private SafeAsyncTask<VideoListResponse> listTask;
-    private SafeAsyncTask<VideoSearchResponse> searchTask;
+    private SafeAsyncTask<VideoListResponse2> searchTask;
 
     private String searchQuery = "";
 
@@ -88,12 +88,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mPullToRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<GridView>() {
             @Override
             public void onRefresh(PullToRefreshBase<GridView> refreshView) {
-                String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-
-                // Update the LastUpdatedLabel
-                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
                 fetch(0);
             }
         });
@@ -112,7 +106,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mGridView.setOnItemClickListener(this);
 
         mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid);
-        mGridView.setAdapter(mAdapter);
     }
 
     @Override
@@ -179,9 +172,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         cancelTask();
 
         if (searchQuery != null && searchQuery.length() > 0) {
-            searchTask = apiClient.searchVideos(searchQuery, page, 20);
+            searchTask = apiClient.searchVideos(searchQuery, page, 200);
         } else {
-            listTask = apiClient.listVideos(page, 20);
+            listTask = apiClient.listVideos(page, 200);
         }
     }
 
@@ -217,6 +210,10 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         listTask = null;
         searchTask = null;
+
+        if (mGridView.getAdapter() == null) {
+            mGridView.setAdapter(mAdapter);
+        }
     }
 
     @Subscribe
@@ -226,6 +223,10 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         if (mPullToRefreshGridView.isRefreshing()) {
             mPullToRefreshGridView.onRefreshComplete();
+        }
+
+        if (mGridView.getAdapter() == null) {
+            mGridView.setAdapter(mAdapter);
         }
     }
 }

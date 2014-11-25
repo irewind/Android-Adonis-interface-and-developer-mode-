@@ -87,12 +87,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-
-                // Update the LastUpdatedLabel
-                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
                 fetch(0);
             }
         });
@@ -108,7 +102,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setEmptyView(emptyText);
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -173,10 +166,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         cancelTask();
 
         if (searchQuery != null && searchQuery.length() > 0) {
-            listTask = apiClient.searchUsers(searchQuery, page, 20);
+            listTask = apiClient.searchUsers(searchQuery, page, 200);
         }
         else {
-            listTask = apiClient.listUsers(page, 20);
+            listTask = apiClient.listUsers(page, 200);
         }
     }
 
@@ -207,6 +200,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Subscribe
@@ -215,6 +212,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
+        }
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
         }
     }
 }

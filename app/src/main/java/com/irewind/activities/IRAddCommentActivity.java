@@ -96,7 +96,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
         apiClient.getEventBus().register(this);
 
         if (profileImage != null && profileImage.length() > 0) {
-            Picasso.with(this).load(profileImage).into(profileImageView);
+            Picasso.with(this).load(profileImage).placeholder(R.drawable.ic_launcher).into(profileImageView);
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
         }
@@ -121,7 +121,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
     @Subscribe
     public void onEvent(CommentAddEvent event) {
 
-        apiClient.listVideoComments(videoId, 0, 20);
+        apiClient.listVideoComments(videoId, 0, 200);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(commentEdit.getWindowToken(), 0);

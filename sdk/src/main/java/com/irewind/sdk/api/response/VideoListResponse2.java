@@ -5,7 +5,7 @@ import com.irewind.sdk.model.Video;
 
 import java.util.List;
 
-public class VideoSearchResponse extends BaseResponse {
+public class VideoListResponse2 extends BaseResponse {
     @SerializedName("content")
     private List<Video> content;
 
@@ -23,12 +23,12 @@ public class VideoSearchResponse extends BaseResponse {
     @Override
     public String toString() {
         if (super.getError() != null) {
-            return "VideoSearchResponse{" +
+            return "VideoListResponse2{" +
                     "error='" + super.getError() + '\'' +
                     ", errorDescription='" + super.getErrorDescription() + '\'' +
                     '}';
         }
-        return "VideoSearchResponse{" +
+        return "VideoListResponse2{" +
                 "content=" + content +
                 ", total=" + total +
                 '}';

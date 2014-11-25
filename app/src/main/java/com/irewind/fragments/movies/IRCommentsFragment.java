@@ -94,12 +94,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         mPullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-                String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
-                        DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-
-                // Update the LastUpdatedLabel
-                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
                 fetch(0);
             }
         });
@@ -113,7 +107,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         }
 
         mAdapter.setActionListener(this);
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -191,6 +184,10 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if(mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Subscribe
@@ -200,6 +197,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
-
+        if(mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 }
