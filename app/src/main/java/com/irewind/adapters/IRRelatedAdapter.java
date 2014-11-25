@@ -64,7 +64,7 @@ public class IRRelatedAdapter extends ArrayAdapter<Video> {
         if (video.getThumbnail() != null && video.getThumbnail().length() > 0) {
             Picasso.with(mContext).load(video.getThumbnail()).placeholder(R.drawable.ic_launcher).into(holder.picture);
         } else {
-            holder.picture.setImageResource(R.drawable.ic_launcher);
+            holder.picture.setImageResource(R.drawable.ic_placeholder);
         }
 
         holder.title.setText(video.getTitle() != null ? video.getTitle() : "");

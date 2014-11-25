@@ -70,7 +70,7 @@ public class IRVideoGridAdapter extends BaseAdapter {
             Picasso.with(mContext).load(video.getThumbnail()).placeholder(R.drawable.ic_launcher).into(holder.picture);
         }
         else {
-            holder.picture.setImageResource(R.drawable.ic_launcher);
+            holder.picture.setImageResource(R.drawable.ic_placeholder);
         }
 
         holder.title.setText(video.getTitle() != null ? video.getTitle() : "");
