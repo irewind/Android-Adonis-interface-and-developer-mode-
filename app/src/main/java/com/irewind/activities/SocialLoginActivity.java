@@ -123,7 +123,6 @@ public abstract class SocialLoginActivity extends IRBaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        initiatePlusClientConnect();
     }
 
     @Override
@@ -186,9 +185,9 @@ public abstract class SocialLoginActivity extends IRBaseActivity
                 // order to retrieve one.
                 initiatePlusClientConnect();
             }
-        }
 
-        updateGPlusButtonState();
+            updateGPlusButtonState();
+        }
     }
 
     /**
@@ -207,9 +206,9 @@ public abstract class SocialLoginActivity extends IRBaseActivity
             initiatePlusClientDisconnect();
 
             Log.v(TAG, "Sign out successful!");
-        }
 
-        updateGPlusButtonState();
+            updateGPlusButtonState();
+        }
     }
 
     /**
@@ -327,6 +326,21 @@ public abstract class SocialLoginActivity extends IRBaseActivity
     protected abstract void updateGPlusButtonState();
 
     // --- Facebook --- //
+
+    protected boolean isFacebookLoggedIn() {
+        Session session = Session.getActiveSession();
+        return session != null && session.isOpened();
+    }
+
+    protected void signOutFacebook() {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            if (!session.isClosed()) {
+                session.closeAndClearTokenInformation();
+                //clear your preferences if saved
+            }
+        }
+    }
 
     protected abstract void onGraphUserLoaded(GraphUser user);
 }

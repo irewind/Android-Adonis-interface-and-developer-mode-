@@ -166,7 +166,6 @@ public class ApiClient implements SessionRefresher {
                 }
 
                 this.activeSession = session;
-                session.setSessionRefresher(this);
             }
         }
     }
@@ -226,6 +225,9 @@ public class ApiClient implements SessionRefresher {
 
             eventBus.post(new SessionOpenedEvent());
             return session;
+        }
+        else if(SessionState.OPENED_TOKEN_EXPIRED.equals(session.getState())) {
+            refreshSession(session);
         }
         return session;
     }

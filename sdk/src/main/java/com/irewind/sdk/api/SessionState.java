@@ -51,6 +51,8 @@ public enum SessionState {
      */
     OPENED_TOKEN_UPDATED(Category.OPENED_CATEGORY),
 
+    OPENED_TOKEN_EXPIRED(Category.EXPIRED_CATEGORY),
+
     /**
      * Indicates that the Session is closed, and that it was not closed
      * normally. Typically this means that the open call failed, and the
@@ -93,6 +95,6 @@ public enum SessionState {
     }
 
     private enum Category {
-        CREATED_CATEGORY, OPENED_CATEGORY, CLOSED_CATEGORY
+        CREATED_CATEGORY, OPENED_CATEGORY, CLOSED_CATEGORY, EXPIRED_CATEGORY
     }
 }

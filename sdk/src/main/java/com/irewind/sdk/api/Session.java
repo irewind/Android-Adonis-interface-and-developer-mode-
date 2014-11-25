@@ -45,8 +45,6 @@ public class Session implements Serializable {
     private final Object lock = new Object();
     private TokenCachingStrategy tokenCachingStrategy;
 
-    private SessionRefresher sessionRefresher;
-
     private Session(SessionState state,
                     AccessToken tokenInfo, Date lastAttemptedTokenExtendDate) {
         this.state = state;
@@ -84,16 +82,15 @@ public class Session implements Serializable {
             Date lastRefreshDate = BundleUtil.getDate(tokenState, TokenCachingStrategy.LAST_REFRESH_DATE_KEY);
             Date now = new Date();
 
+            this.tokenInfo = TokenCachingStrategy.createFromBundle(tokenState);
+
             if (state.isOpened()
                     && (expirationTime == 0) || now.getTime() - lastRefreshDate.getTime() + expirationTime > TOKEN_EXTEND_RETRY_SECONDS * 1000) {
-                // If expired clear out the
-                // current token cache.
-                tokenCachingStrategy.clear();
-                this.tokenInfo = AccessToken.createEmptyToken();
+                // If expired, mark it
+                this.state = SessionState.CREATED_TOKEN_LOADED;
             } else {
                 // Otherwise we have a valid token, so use it.
-                this.tokenInfo = TokenCachingStrategy.createFromBundle(tokenState);
-                this.state = SessionState.CREATED_TOKEN_LOADED;
+                this.state = SessionState.OPENED_TOKEN_EXPIRED;
             }
         } else {
             this.tokenInfo = AccessToken.createEmptyToken();
@@ -167,18 +164,6 @@ public class Session implements Serializable {
     public void setTokenCachingStrategy(TokenCachingStrategy tokenCachingStrategy) {
         synchronized (this.lock) {
             this.tokenCachingStrategy = tokenCachingStrategy;
-        }
-    }
-
-    public SessionRefresher getSessionRefresher() {
-        synchronized (this.lock) {
-            return sessionRefresher;
-        }
-    }
-
-    public void setSessionRefresher(SessionRefresher sessionRefresher) {
-        synchronized (this.lock) {
-            this.sessionRefresher = sessionRefresher;
         }
     }
 

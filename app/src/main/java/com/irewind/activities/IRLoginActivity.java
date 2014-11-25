@@ -104,11 +104,9 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
         shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
         if (shouldLogoutFirst) {
-            Session session = Session.getActiveSession();
-            if (session != null && session.isOpened()) {
-                session.closeAndClearTokenInformation();
-                shouldLogoutFirst = false;
-            }
+            signOutFacebook();
+            signOutPlusClient();
+            shouldLogoutFirst = false;
         }
 
         getSupportActionBar().hide();
@@ -313,25 +311,20 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
         //Set up sign out and disconnect buttons.
         if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
-            if (shouldLogoutFirst) {
-                signOutPlusClient();
-                shouldLogoutFirst = false;
-            } else {
-                Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
 
-                Person person = getPlusClient().getCurrentPerson();
-                String email = getPlusClient().getAccountName();
-                String socialId = person.getId();
-                String firstname = person.getName().getGivenName();
-                String lastname = person.getName().getFamilyName();
-                String pictureUrl = person.getImage().getUrl();
+            Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
 
-                this.email = email;
-                apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
-            }
+            Person person = getPlusClient().getCurrentPerson();
+            String email = getPlusClient().getAccountName();
+            String socialId = person.getId();
+            String firstname = person.getName().getGivenName();
+            String lastname = person.getName().getFamilyName();
+            String pictureUrl = person.getImage().getUrl();
+
+            this.email = email;
+            apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
-            showProgress(false);
         }
     }
 
