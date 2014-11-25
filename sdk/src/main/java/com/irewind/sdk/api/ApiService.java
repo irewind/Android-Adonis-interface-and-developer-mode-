@@ -59,12 +59,12 @@ public interface ApiService {
 
     // --- USER --- //
 
-    @GET("/rest/user/?sort=firstname")
+    @GET("/rest/user/search/getAllActiveUsersOrderedByLastLoginDate")
     UserListResponse users(@Header("Authorization") String authorization,
                            @Query("page") Integer page,
                            @Query("size") Integer size);
 
-    @GET("/rest/user/?sort=firstname")
+    @GET("/rest/user/search/getAllActiveUsersOrderedByLastLoginDate")
     void users(@Header("Authorization") String authorization,
                @Query("page") Integer page,
                @Query("size") Integer size,

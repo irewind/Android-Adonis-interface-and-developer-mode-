@@ -552,10 +552,27 @@ public class ApiClient implements SessionRefresher {
             @Override
             public void onSuccess(UserListResponse userListResponse) {
                 UserListResponse.EmbeddedResponse embeddedUserResponse = userListResponse.getEmbeddedResponse();
+                PageInfo pageInfo = userListResponse.getPageInfo();
+
                 if (embeddedUserResponse != null) {
                     List<User> users = embeddedUserResponse.getUsers();
-                    eventBus.post(new UserListEvent(users, userListResponse.getPageInfo()));
+
+                    if (pageInfo == null) {
+                        pageInfo = new PageInfo();
+                        pageInfo.setNumber(0);
+                        pageInfo.setSize(users.size());
+                        pageInfo.setTotalPages(1);
+                    }
+
+                    eventBus.post(new UserListEvent(users, pageInfo));
                 } else {
+                    if (pageInfo == null) {
+                        pageInfo = new PageInfo();
+                        pageInfo.setNumber(0);
+                        pageInfo.setSize(0);
+                        pageInfo.setTotalPages(0);
+                    }
+
                     eventBus.post(new UserListEvent(null, userListResponse.getPageInfo()));
                 }
             }
