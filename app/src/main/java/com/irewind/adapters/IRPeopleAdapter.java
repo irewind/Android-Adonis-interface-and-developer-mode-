@@ -63,7 +63,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
         User user = getItem(position);
 
         if (user.getPicture() != null && user.getPicture().length() > 0) {
-            Picasso.with(mContext).load(user.getPicture()).into(holder.picture);
+            Picasso.with(mContext).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(holder.picture);
         } else {
             holder.picture.setImageResource(R.drawable.img_default_picture);
         }
