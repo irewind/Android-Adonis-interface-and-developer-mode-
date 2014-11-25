@@ -172,10 +172,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         cancelTask();
 
         if (searchQuery != null && searchQuery.length() > 0) {
-            listTask = apiClient.searchUsers(searchQuery, page, 20);
+            listTask = apiClient.searchUsers(searchQuery, page, 200);
         }
         else {
-            listTask = apiClient.listUsers(page, 20);
+            listTask = apiClient.listUsers(page, 200);
         }
     }
 

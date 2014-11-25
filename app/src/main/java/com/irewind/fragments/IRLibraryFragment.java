@@ -178,9 +178,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         cancelTask();
 
         if (searchQuery != null && searchQuery.length() > 0) {
-            searchTask = apiClient.searchVideos(searchQuery, page, 20);
+            searchTask = apiClient.searchVideos(searchQuery, page, 200);
         } else {
-            listTask = apiClient.listVideos(page, 20);
+            listTask = apiClient.listVideos(page, 200);
         }
     }
 

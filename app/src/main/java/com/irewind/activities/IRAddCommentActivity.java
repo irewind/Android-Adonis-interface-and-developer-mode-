@@ -121,7 +121,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
     @Subscribe
     public void onEvent(CommentAddEvent event) {
 
-        apiClient.listVideoComments(videoId, 0, 20);
+        apiClient.listVideoComments(videoId, 0, 200);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(commentEdit.getWindowToken(), 0);

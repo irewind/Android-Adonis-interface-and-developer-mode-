@@ -135,7 +135,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     void fetch(int page) {
         cancelTask();
 
-        listTask = apiClient.listRelatedVideos(video.getId(), page, 20);
+        listTask = apiClient.listRelatedVideos(video.getId(), page, 200);
     }
 
     void cancelTask() {
