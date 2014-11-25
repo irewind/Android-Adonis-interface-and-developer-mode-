@@ -463,6 +463,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             }
         }
 
+        signOutFacebook();
         signOutPlusClient();
     }
 }
