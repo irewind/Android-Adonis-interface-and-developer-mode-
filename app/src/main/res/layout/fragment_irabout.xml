@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     tools:context="com.irewind.fragments.movies.IRAboutFragment"
     android:background="@android:color/transparent"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -199,6 +199,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
+                android:textSize="12sp"
                 android:text="@string/description"/>
 
             <View
@@ -215,7 +216,6 @@
                 android:id="@+id/textDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dummy_text"
                 android:textColor="@color/tab_gray_dots"
                 android:layout_below="@+id/view2"
                 android:layout_marginTop="5dp"/>

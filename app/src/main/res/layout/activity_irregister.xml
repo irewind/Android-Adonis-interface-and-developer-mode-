@@ -55,6 +55,7 @@
                         android:id="@+id/first"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="2dp"
                         android:hint="@string/first_name"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:textColor="@color/irapptheme_color"
@@ -70,6 +71,7 @@
                         android:id="@+id/last"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="2dp"
                         android:hint="@string/last_name"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:textColor="@color/irapptheme_color"
@@ -86,6 +88,7 @@
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="2dp"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
@@ -100,6 +103,7 @@
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="2dp"
                         android:hint="@string/prompt_password"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:textColor="@color/irapptheme_color"
@@ -115,6 +119,7 @@
                         android:id="@+id/confirm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="2dp"
                         android:hint="@string/confirm_password"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:textColor="@color/irapptheme_color"
@@ -156,6 +161,7 @@
                             android:textColor="@drawable/ir_text_color_change"
                             android:layout_marginLeft="5dp"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:text="@string/register_sign_in" />
 
                     </LinearLayout>

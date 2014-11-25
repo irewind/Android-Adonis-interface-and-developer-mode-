@@ -101,7 +101,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/personal_data"
                             android:layout_marginTop="5dp"
-                            android:layout_marginLeft="10dp" />
+                            android:layout_marginLeft="10dp"
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                     <Button
@@ -139,7 +140,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/upper_password"
                             android:layout_marginTop="5dp"
-                            android:layout_marginLeft="10dp" />
+                            android:layout_marginLeft="10dp"
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                     <Button
@@ -177,7 +179,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/notif_email"
                             android:layout_marginTop="5dp"
-                            android:layout_marginLeft="10dp" />
+                            android:layout_marginLeft="10dp"
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                     <Button

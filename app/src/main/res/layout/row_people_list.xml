@@ -32,6 +32,7 @@
         android:layout_height="match_parent"
         android:text="12 Sep 2014 12:24"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:textColor="@color/text_gray"
         android:textSize="11sp"
         android:gravity="right|center"
