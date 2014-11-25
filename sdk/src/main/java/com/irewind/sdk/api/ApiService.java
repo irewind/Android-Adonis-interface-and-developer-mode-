@@ -145,7 +145,7 @@ public interface ApiService {
                       @Query("pageSize") Integer size,
                       Callback<VideoSearchResponse> cb);
 
-    @GET("/rest/video/search/findByUser")
+    @GET("/rest/video/search/findVideosWithPagination")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
                                     @Query("user") long userID,
                                     @Query("pageNo") Integer page,

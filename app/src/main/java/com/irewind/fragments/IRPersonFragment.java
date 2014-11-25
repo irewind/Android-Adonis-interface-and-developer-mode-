@@ -198,7 +198,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     void fetch(int page) {
         cancelTask();
 
-        listTask = apiClient.listVideos(page, 20);
+        listTask = apiClient.listVideosForUser(person.getId(), page, 20);
     }
 
     void cancelTask() {
