@@ -108,7 +108,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setEmptyView(emptyText);
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -207,6 +206,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Subscribe
@@ -215,6 +218,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
+        }
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
         }
     }
 }

@@ -22,6 +22,7 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
@@ -121,7 +122,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setEmptyView(emptyText);
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
-        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
 
@@ -227,5 +227,16 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 }

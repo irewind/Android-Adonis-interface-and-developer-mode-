@@ -113,7 +113,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         }
 
         mAdapter.setActionListener(this);
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -191,6 +190,10 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if(mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Subscribe
@@ -200,6 +203,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
-
+        if(mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 }

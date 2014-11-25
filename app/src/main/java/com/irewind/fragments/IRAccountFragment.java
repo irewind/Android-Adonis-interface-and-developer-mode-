@@ -29,7 +29,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
-import com.irewind.adapters.IRAccountAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
@@ -75,7 +74,6 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
     @InjectView(R.id.editNotifs)
     Button editNotifs;
 
-    private IRAccountAdapter mAccountAdapter;
     private String realPath;
     private File sdImageMainDirectory;
     private Uri mImageCaptureUri;
