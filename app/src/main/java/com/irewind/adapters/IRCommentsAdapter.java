@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.irewind.R;
 import com.irewind.sdk.model.Comment;
 import com.irewind.sdk.model.User;
+import com.irewind.ui.views.AutoResizeTextView;
 import com.irewind.ui.views.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
@@ -62,15 +63,15 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
 
             holder.parentCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.parentCommentLayout);
             holder.parentCommentHolder.picture = (RoundedImageView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.profileImage);
-            holder.parentCommentHolder.username = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.username);
-            holder.parentCommentHolder.date = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.date);
+            holder.parentCommentHolder.username = (AutoResizeTextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.username);
+            holder.parentCommentHolder.date = (AutoResizeTextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.date);
             holder.parentCommentHolder.content = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.content);
-            holder.parentCommentHolder.reply = (TextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.reply);
+            holder.parentCommentHolder.reply = (AutoResizeTextView) holder.parentCommentHolder.rootViewGroup.findViewById(R.id.reply);
 
             holder.childCommentHolder.rootViewGroup = (ViewGroup) convertView.findViewById(R.id.childCommentLayout);
             holder.childCommentHolder.picture = (RoundedImageView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.profileImageChild);
-            holder.childCommentHolder.username = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.usernameChild);
-            holder.childCommentHolder.date = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.dateChild);
+            holder.childCommentHolder.username = (AutoResizeTextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.usernameChild);
+            holder.childCommentHolder.date = (AutoResizeTextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.dateChild);
             holder.childCommentHolder.content = (TextView) holder.childCommentHolder.rootViewGroup.findViewById(R.id.contentChild);
 
             convertView.setTag(holder);
@@ -162,13 +163,15 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
     private class ParentCommentHolder {
         ViewGroup rootViewGroup;
         RoundedImageView picture;
-        TextView username, date, content, reply;
+        AutoResizeTextView username, date,reply;
+        TextView content;
     }
 
     private class ChildCommentHolder {
         ViewGroup rootViewGroup;
         RoundedImageView picture;
-        TextView username, date, content;
+        AutoResizeTextView username, date;
+        TextView content;
     }
 
     public ActionListener getActionListener() {

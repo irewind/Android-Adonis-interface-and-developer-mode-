@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_placeholder" />
 
         <ImageView
             android:layout_width="28dp"

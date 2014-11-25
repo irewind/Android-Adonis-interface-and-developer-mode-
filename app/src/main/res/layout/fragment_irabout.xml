@@ -41,6 +41,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_eye" />
 
                 <TextView
@@ -48,57 +49,57 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/tab_gray"
                     android:text="2143 views" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:id="@+id/voteDown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/ic_arrow_down"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/downVotes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/tab_gray_dots"
-                        android:text="10" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/voteUp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_marginLeft="10dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/ic_arrow_up"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/upVotes"
+                    <LinearLayout
+                        android:id="@+id/voteDown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/tab_gray_dots"
-                        android:text="5" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:id="@+id/downVotes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/tab_gray_dots"
+                            android:text="10" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/voteUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/ic_arrow_up"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:id="@+id/upVotes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/tab_gray_dots"
+                            android:text="5" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
