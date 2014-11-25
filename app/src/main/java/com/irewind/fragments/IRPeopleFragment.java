@@ -99,7 +99,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
             }
         });
         mListView.setOnItemClickListener(this);
-        mListView.setEmptyView(emptyText);
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
     }
@@ -203,6 +202,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
         }
     }
 
@@ -216,6 +216,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
         }
     }
 }

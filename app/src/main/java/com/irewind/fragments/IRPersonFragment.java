@@ -113,8 +113,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
             }
         });
 
-        mListView.setEmptyView(emptyText);
-
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
         mListView.setOnItemClickListener(this);
     }
@@ -224,6 +222,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
         }
     }
 
@@ -231,6 +230,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     public void onEvent(VideoListFailEvent event) {
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
         }
     }
 }

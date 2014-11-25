@@ -102,7 +102,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         });
 
         mGridView = mPullToRefreshGridView.getRefreshableView();
-        mGridView.setEmptyView(emptyText);
         mGridView.setOnItemClickListener(this);
 
         mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid);
@@ -213,6 +212,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         if (mGridView.getAdapter() == null) {
             mGridView.setAdapter(mAdapter);
+            mGridView.setEmptyView(emptyText);
         }
     }
 
@@ -227,6 +227,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         if (mGridView.getAdapter() == null) {
             mGridView.setAdapter(mAdapter);
+            mGridView.setEmptyView(emptyText);
         }
     }
 }

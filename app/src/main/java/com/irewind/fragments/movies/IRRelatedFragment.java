@@ -23,6 +23,7 @@ import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
+import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
@@ -103,10 +104,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
             }
         });
 
-        mListView.setEmptyView(emptyText);
-
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
-        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
 
@@ -158,6 +156,25 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
         listTask = null;
+
+        if(mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        listTask = null;
+
+        if (mPullToRefreshListView.isRefreshing()) {
+            mPullToRefreshListView.onRefreshComplete();
+        }
+
+        if (mListView.getAdapter() == null) {
+            mListView.setAdapter(mAdapter);
+            mListView.setEmptyView(emptyText);
+        }
     }
 
     @Override
