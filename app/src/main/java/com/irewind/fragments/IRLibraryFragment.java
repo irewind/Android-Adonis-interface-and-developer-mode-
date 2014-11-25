@@ -24,7 +24,7 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
-import com.irewind.sdk.api.response.VideoSearchResponse;
+import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
@@ -53,7 +53,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     private int numberOfPagesAvailable = 0;
 
     private SafeAsyncTask<VideoListResponse> listTask;
-    private SafeAsyncTask<VideoSearchResponse> searchTask;
+    private SafeAsyncTask<VideoListResponse2> searchTask;
 
     private String searchQuery = "";
 

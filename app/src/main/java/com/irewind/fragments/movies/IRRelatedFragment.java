@@ -24,6 +24,7 @@ import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
@@ -55,7 +56,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
-    private SafeAsyncTask<VideoListResponse> listTask;
+    private SafeAsyncTask<VideoListResponse2> listTask;
 
     public static IRRelatedFragment newInstance() {
         IRRelatedFragment fragment = new IRRelatedFragment();

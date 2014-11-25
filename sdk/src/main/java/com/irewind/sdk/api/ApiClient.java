@@ -48,8 +48,8 @@ import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.api.response.VideoResponse;
-import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -798,12 +798,12 @@ public class ApiClient implements SessionRefresher {
         return task;
     }
 
-    public SafeAsyncTask<VideoSearchResponse> searchVideos(final String query, final int page, final int perPage) {
+    public SafeAsyncTask<VideoListResponse2> searchVideos(final String query, final int page, final int perPage) {
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoSearchResponse> task = new SafeAsyncTask<VideoSearchResponse>() {
+        SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
             @Override
-            public VideoSearchResponse call() throws Exception {
+            public VideoListResponse2 call() throws Exception {
                 return apiService.searchVideos(authHeader(session), query, page, perPage);
             }
 
@@ -813,7 +813,7 @@ public class ApiClient implements SessionRefresher {
             }
 
             @Override
-            public void onSuccess(VideoSearchResponse videoListResponse) {
+            public void onSuccess(VideoListResponse2 videoListResponse) {
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setNumber(page);
                 pageInfo.setSize(videoListResponse.getContent().size());
@@ -827,13 +827,13 @@ public class ApiClient implements SessionRefresher {
         return task;
     }
 
-    public SafeAsyncTask<VideoListResponse> listRelatedVideos(final long videoId, final int page, final int perPage) {
+    public SafeAsyncTask<VideoListResponse2> listRelatedVideos(final long videoId, final int page, final int perPage) {
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+        SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
             @Override
-            public VideoListResponse call() throws Exception {
-                return apiService.relatedVideos(authHeader(session), videoId, page, perPage);
+            public VideoListResponse2 call() throws Exception {
+                return apiService.relatedVideos(authHeader(session), videoId, page, perPage, "");
             }
 
             @Override
@@ -842,14 +842,12 @@ public class ApiClient implements SessionRefresher {
             }
 
             @Override
-            public void onSuccess(VideoListResponse videoListResponse) {
-                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
-                if (embeddedResponse != null) {
-                    List<Video> videos = embeddedResponse.getVideos();
-                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
-                } else {
-                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
-                }
+            public void onSuccess(VideoListResponse2 videoListResponse) {
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(videoListResponse.getContent().size());
+                pageInfo.setTotalPages(videoListResponse.getTotal());
+                eventBus.post(new VideoListEvent(videoListResponse.getContent(), pageInfo));
             }
         };
 

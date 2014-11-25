@@ -9,8 +9,8 @@ import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
+import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.api.response.VideoResponse;
-import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.AccessToken;
 
 import retrofit.Callback;
@@ -134,7 +134,7 @@ public interface ApiService {
                     Callback<VideoListResponse> cb);
 
     @GET("/rest/v2/search-videos")
-    VideoSearchResponse searchVideos(@Header("Authorization") String authorization,
+    VideoListResponse2 searchVideos(@Header("Authorization") String authorization,
                                      @Query("searchTerm") String query,
                                      @Query("pageNo") Integer page,
                                      @Query("pageSize") Integer size);
@@ -143,7 +143,7 @@ public interface ApiService {
     void searchVideos(@Header("Authorization") String authorization,
                       @Query("pageNo") Integer page,
                       @Query("pageSize") Integer size,
-                      Callback<VideoSearchResponse> cb);
+                      Callback<VideoListResponse2> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
     VideoListResponse videosForUser(@Header("Authorization") String authorization,
@@ -158,18 +158,20 @@ public interface ApiService {
                        @Query("pageSize") Integer size,
                        Callback<VideoListResponse> cb);
 
-    @GET("/rest/video/search/findVideosWithPagination")
-    VideoListResponse relatedVideos(@Header("Authorization") String authorization,
+    @GET("/rest/v2/related-videos")
+    VideoListResponse2 relatedVideos(@Header("Authorization") String authorization,
                                     @Query("videoId") long videoID,
                                     @Query("pageNo") Integer page,
-                                    @Query("pageSize") Integer size);
+                                    @Query("pageSize") Integer size,
+                                    @Query("tagList") String tagList);
 
-    @GET("/rest/video/search/findVideosWithPagination")
+    @GET("/rest/v2/related-videos")
     void relatedVideos(@Header("Authorization") String authorization,
                        @Query("videoId") long videoID,
                        @Query("pageNo") Integer page,
                        @Query("pageSize") Integer size,
-                       Callback<VideoListResponse> cb);
+                       @Query("tagList") String tagList,
+                       Callback<VideoListResponse2> cb);
 
     // --- Tags --- //
 
