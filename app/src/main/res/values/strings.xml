@@ -97,11 +97,11 @@
     <string name="last_name_caps">LAST NAME</string>
     <string name="last_name_small">last name</string>
     <string name="current_password_caps">CURRENT PASSWORD</string>
-    <string name="current_password_small">current password</string>
+    <string name="current_password_small">Enter current password</string>
     <string name="new_password_caps">NEW PASSWORD</string>
-    <string name="new_password_small">new password</string>
+    <string name="new_password_small">Enter new password</string>
     <string name="confirm_password_caps">CONFIRM PASSWORD</string>
-    <string name="confirm_password_small">confirm password</string>
+    <string name="confirm_password_small">Enter confirm password</string>
     <string name="email_address_small">email address</string>
     <string name="change_email">Change email</string>
     <string name="title_activity_irfull_screen_movie">IRFullScreenMovieActivity</string>

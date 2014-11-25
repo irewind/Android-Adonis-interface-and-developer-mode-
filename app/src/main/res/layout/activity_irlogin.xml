@@ -47,6 +47,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="2dp"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
@@ -60,6 +61,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="2dp"
                     android:hint="@string/prompt_password"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
@@ -111,6 +113,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@drawable/ir_text_color_change"
                         android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
                         android:textSize="16sp"
                         android:text="@string/login_sign_up" />
 
@@ -133,8 +136,9 @@
             android:layout_height="48dp"
             android:text="@string/action_sign_in_facebook"
             android:textColor="@drawable/ir_text_color_change"
+            android:textStyle="bold"
             android:background="@color/color_facebook"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:layout_weight="1" />
 
         <Button
@@ -142,8 +146,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="@string/action_sign_in_google"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@drawable/ir_text_color_change"
+            android:textStyle="bold"
             android:background="@color/color_google"
             android:layout_weight="1" />
 
