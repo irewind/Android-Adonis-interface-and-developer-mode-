@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.irewind.R;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -23,14 +22,12 @@ public class IRSearchPeopleAdapter extends ArrayAdapter<User> {
     private List<User> users;
     private int layout;
     private Context mContext;
-    private ImageLoader imageLoader;
     private DateFormat dateFormat;
 
-    public IRSearchPeopleAdapter(Context context, int resource, ImageLoader imageLoader) {
+    public IRSearchPeopleAdapter(Context context, int resource) {
         super(context, resource);
         mContext = context;
         layout = resource;
-        this.imageLoader = imageLoader;
 
         dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
     }

@@ -28,7 +28,7 @@ import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
 import com.irewind.ui.views.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 import java.util.List;
@@ -59,9 +59,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     public User person;
 
@@ -123,7 +120,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
         mListView.setEmptyView(emptyText);
 
-        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, imageLoader);
+        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
@@ -183,7 +180,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
-                imageLoader.displayImage(user.getPicture(), profileImageView);
+                Picasso.with(getActivity()).load(user.getPicture()).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }

@@ -1,7 +1,5 @@
 package com.irewind;
 
-import android.content.Context;
-
 import com.irewind.activities.IRAddCommentActivity;
 import com.irewind.activities.IRForgotPasswordActivity;
 import com.irewind.activities.IRLoginActivity;
@@ -21,13 +19,8 @@ import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.fragments.movies.IRAboutFragment;
 import com.irewind.fragments.movies.IRCommentsFragment;
 import com.irewind.fragments.movies.IRRelatedFragment;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * Dagger module for setting up provides statements.
@@ -69,23 +62,4 @@ import dagger.Provides;
 
 public class UIModule {
 
-    @Singleton
-    @Provides
-    public ImageLoaderConfiguration provideImageLoaderConfig(Context context) {
-        return new ImageLoaderConfiguration.Builder(context)
-                .memoryCacheExtraOptions(480, 800)
-                .diskCacheExtraOptions(480, 800, null)
-                .threadPriority(Thread.NORM_PRIORITY - 1)
-//                .denyCacheImageMultipleSizesInMemory()
-                .diskCacheSize(150 * 1024 * 1024) // 150 Mb
-                .build();
-    }
-
-    @Singleton
-    @Provides
-    public ImageLoader provideImageLoader(ImageLoaderConfiguration config) {
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
-        return imageLoader;
-    }
 }

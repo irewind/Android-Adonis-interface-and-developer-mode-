@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.irewind.R;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -23,14 +23,12 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
     private List<User> users;
     private int layout;
     private Context mContext;
-    private ImageLoader imageLoader;
     private DateFormat dateFormat;
 
-    public IRPeopleAdapter(Context context, int resource, ImageLoader imageLoader) {
+    public IRPeopleAdapter(Context context, int resource) {
         super(context, resource);
         mContext = context;
         layout = resource;
-        this.imageLoader = imageLoader;
 
         dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
     }
@@ -65,7 +63,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
         User user = getItem(position);
 
         if (user.getPicture() != null && user.getPicture().length() > 0) {
-            imageLoader.displayImage(user.getPicture(), holder.picture);
+            Picasso.with(mContext).load(user.getPicture()).into(holder.picture);
         } else {
             holder.picture.setImageResource(R.drawable.img_default_picture);
         }

@@ -22,8 +22,11 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.model.Tag;
 
+import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
+import com.irewind.ui.views.RoundedImageView;
 import com.irewind.ui.views.TagView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +57,8 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     ImageButton settings;
     @InjectView(R.id.textDescription)
     TextView txtDescription; //Description of the text;
+    @InjectView(R.id.profileImage)
+    RoundedImageView profileImage;
     @InjectView(R.id.username)
     TextView txtAuthorName;
 
@@ -99,6 +104,13 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         txtViews.setText("" + video.getViews());
         txtUpVote.setText("" + video.getLikes());
         txtDownVote.setText("" + video.getDislikes());
+
+        User user = video.getUser();
+        if (user != null && user.getPicture() != null && user.getPicture().length() > 0) {
+            Picasso.with(getActivity()).load(user.getPicture()).into(profileImage);
+        } else {
+            profileImage.setImageResource(R.drawable.img_default_picture);
+        }
         txtAuthorName.setText(video.getAuthorName());
     }
 

@@ -28,7 +28,6 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.util.SafeAsyncTask;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -49,9 +48,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -111,7 +107,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setOnItemClickListener(this);
         mListView.setEmptyView(emptyText);
 
-        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list, imageLoader);
+        mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
         mListView.setAdapter(mAdapter);
     }
 

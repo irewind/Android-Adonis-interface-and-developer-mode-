@@ -20,7 +20,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
-import com.irewind.fragments.IRPersonFragment;
 import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
@@ -29,7 +28,6 @@ import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -38,7 +36,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class IRRelatedFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class IRRelatedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     @InjectView(R.id.relatedListView)
     PullToRefreshListView mPullToRefreshListView;
@@ -53,9 +51,6 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -115,7 +110,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
         mListView.setEmptyView(emptyText);
 
-        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list, imageLoader);
+        mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
@@ -179,7 +174,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
             IRVideoDetailsFragment.sVideoView.stopPlayback();
             IRVideoDetailsFragment.sVideoView.clearAnimation();
             IRVideoDetailsFragment.sVideoView = null;
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -196,8 +191,7 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
             ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
                     .disallowAddToBackStack()
                     .commit();
-        }
-        else {
+        } else {
             IRTabActivity.mLibraryFragment = fragment;
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             FragmentTransaction ft = fragmentManager.beginTransaction();

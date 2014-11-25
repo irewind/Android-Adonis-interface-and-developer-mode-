@@ -28,7 +28,6 @@ import com.irewind.sdk.api.response.VideoSearchResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -49,9 +48,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -115,7 +111,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mGridView.setEmptyView(emptyText);
         mGridView.setOnItemClickListener(this);
 
-        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid, imageLoader);
+        mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid);
         mGridView.setAdapter(mAdapter);
     }
 
@@ -139,7 +135,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             IRTabActivity.searchItem.collapseActionView();
 
         searchQuery = "";
-        
+
         apiClient.getEventBus().register(this);
         fetch(0);
     }
@@ -184,8 +180,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         if (searchQuery != null && searchQuery.length() > 0) {
             searchTask = apiClient.searchVideos(searchQuery, page, 20);
-        }
-        else {
+        } else {
             listTask = apiClient.listVideos(page, 20);
         }
     }

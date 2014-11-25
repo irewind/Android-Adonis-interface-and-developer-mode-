@@ -29,7 +29,7 @@ import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.irewind.utils.CheckUtil;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
@@ -42,9 +42,6 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     @InjectView(R.id.profileImageView)
     RoundedImageView profileImageView;
@@ -203,7 +200,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
-                imageLoader.displayImage(user.getPicture(), profileImageView);
+                Picasso.with(getActivity()).load(user.getPicture()).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }

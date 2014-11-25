@@ -27,7 +27,6 @@ import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.util.SafeAsyncTask;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -48,9 +47,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -108,7 +104,7 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
             }
         });
 
-        mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list, imageLoader);
+        mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list);
 
         apiClient.loadActiveUserInfo();
         User user = apiClient.getActiveUser();

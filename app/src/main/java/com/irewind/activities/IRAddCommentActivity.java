@@ -16,7 +16,7 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.CommentAddEvent;
 import com.irewind.sdk.api.event.CommentAddFailEvent;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -47,9 +47,6 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @InjectView(R.id.post)
     Button btnPost;
-
-    @Inject
-    ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +96,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
         apiClient.getEventBus().register(this);
 
         if (profileImage != null && profileImage.length() > 0) {
-            imageLoader.displayImage(profileImage, profileImageView);
+            Picasso.with(this).load(profileImage).into(profileImageView);
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
         }

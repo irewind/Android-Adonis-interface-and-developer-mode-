@@ -12,7 +12,7 @@ import com.irewind.R;
 import com.irewind.sdk.model.Comment;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,15 +28,13 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
     private List<Comment> comments;
     private int layout;
     private Context mContext;
-    private ImageLoader imageLoader;
     private String profileImage;
     private ActionListener actionListener;
 
-    public IRCommentsAdapter(Context context, int resource, ImageLoader imageLoader) {
+    public IRCommentsAdapter(Context context, int resource) {
         super(context, resource);
         mContext = context;
         layout = resource;
-        this.imageLoader = imageLoader;
     }
 
     @Override
@@ -86,7 +84,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             holder.childCommentHolder.rootViewGroup.setVisibility(View.GONE);
 
             if (profileImage != null && profileImage.length() > 0) {
-                imageLoader.displayImage(profileImage, holder.addCommentHolder.picture);
+                Picasso.with(mContext).load(profileImage).into(holder.addCommentHolder.picture);
             } else {
                 holder.addCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
             }
@@ -113,7 +111,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
                 holder.childCommentHolder.username.setText(comment.getUser().getDisplayName());
 
                 if (user.getPicture() != null && user.getPicture().length() > 0) {
-                    imageLoader.displayImage(user.getPicture(), holder.childCommentHolder.picture);
+                    Picasso.with(mContext).load(user.getPicture()).into(holder.childCommentHolder.picture);
                 } else {
                     holder.childCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
                 }
@@ -136,7 +134,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
                 holder.parentCommentHolder.username.setText(comment.getUser().getDisplayName());
 
                 if (user.getPicture() != null && user.getPicture().length() > 0) {
-                    imageLoader.displayImage(user.getPicture(), holder.parentCommentHolder.picture);
+                    Picasso.with(mContext).load(user.getPicture()).into(holder.parentCommentHolder.picture);
                 } else {
                     holder.parentCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
                 }

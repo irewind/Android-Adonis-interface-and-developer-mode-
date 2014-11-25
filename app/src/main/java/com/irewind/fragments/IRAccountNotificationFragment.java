@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
@@ -29,7 +28,7 @@ import com.irewind.sdk.api.event.NotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
@@ -60,9 +59,6 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     @Inject
     ApiClient apiClient;
-
-    @Inject
-    ImageLoader imageLoader;
 
     @InjectView(R.id.profileImageView)
     RoundedImageView profileImageView;
@@ -197,7 +193,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     private void updateUserInfo(User user) {
         if (user != null) {
             if (user.getPicture() != null && user.getPicture().length() > 0) {
-                imageLoader.displayImage(user.getPicture(), profileImageView);
+                Picasso.with(getActivity()).load(user.getPicture()).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }

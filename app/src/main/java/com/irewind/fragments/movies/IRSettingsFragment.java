@@ -146,7 +146,7 @@ public class IRSettingsFragment extends Fragment implements View.OnClickListener
         data.add(null);
         data.add(null);
 
-        mAdapterSearch = new IRSearchPeopleAdapter(getActivity(), R.layout.row_search_people_list, null);
+        mAdapterSearch = new IRSearchPeopleAdapter(getActivity(), R.layout.row_search_people_list);
         mAdapterSearch.setUsers(data);
         mListView.setAdapter(mAdapterSearch);
 

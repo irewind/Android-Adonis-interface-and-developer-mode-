@@ -11,27 +11,22 @@ import android.widget.TextView;
 
 import com.irewind.R;
 import com.irewind.sdk.model.Video;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by tzmst on 5/7/14.
- */
 public class IRRelatedAdapter extends ArrayAdapter<Video> {
 
     private List<Video> videos;
     private int layout;
     private Context mContext;
-    private ImageLoader imageLoader;
 
-    public IRRelatedAdapter(Context context, int resource, ImageLoader imageLoader) {
+    public IRRelatedAdapter(Context context, int resource) {
         super(context, resource);
         mContext = context;
         layout = resource;
-        this.imageLoader = imageLoader;
     }
 
     @Override
@@ -67,7 +62,7 @@ public class IRRelatedAdapter extends ArrayAdapter<Video> {
         Video video = videos.get(position);
 
         if (video.getThumbnail() != null && video.getThumbnail().length() > 0) {
-            imageLoader.displayImage(video.getThumbnail(), holder.picture);
+            Picasso.with(mContext).load(video.getThumbnail()).into(holder.picture);
         } else {
             holder.picture.setImageResource(R.drawable.ic_launcher);
         }
