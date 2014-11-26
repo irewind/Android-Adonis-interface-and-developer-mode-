@@ -29,11 +29,12 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRRegisterActivity extends IRBaseActivity implements View.OnClickListener {
 
-    @InjectView(R.id.login_progress)
-    View mProgressView;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
     @InjectView(R.id.first)
     EditText mFirst;
     @InjectView(R.id.last)
@@ -267,12 +268,12 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             }
         });
 
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressBar.animate().setDuration(shortAnimTime).alpha(
                 show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
     }

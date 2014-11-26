@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRAddCommentActivity extends IRBaseActivity {
 
@@ -47,6 +48,9 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @InjectView(R.id.post)
     Button btnPost;
+
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +114,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
     }
 
     void addComment() {
+        progressBar.setVisibility(View.VISIBLE);
         if (parentCommentId == -1) {
             apiClient.addComment(videoId, commentEdit.getText().toString());
         }
@@ -120,6 +125,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @Subscribe
     public void onEvent(CommentAddEvent event) {
+        progressBar.setVisibility(View.GONE);
 
         apiClient.listVideoComments(videoId, 0, 200);
 
@@ -130,6 +136,6 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
-
+        progressBar.setVisibility(View.GONE);
     }
 }

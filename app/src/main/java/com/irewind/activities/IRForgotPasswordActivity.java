@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnClickListener {
 
@@ -39,8 +40,8 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     Button mSubmit;
     @InjectView(R.id.login_form)
     View mRecoverForm;
-    @InjectView(R.id.login_progress)
-    View mProgressView;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,12 +154,12 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
             }
         });
 
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressBar.animate().setDuration(shortAnimTime).alpha(
                 show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
     }

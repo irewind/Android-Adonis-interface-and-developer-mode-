@@ -54,6 +54,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRLoginActivity extends SocialLoginActivity implements LoaderCallbacks<Cursor>, OnClickListener {
 
@@ -65,8 +66,8 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     // UI references.
     @InjectView(R.id.login_form)
     View mLoginFormView;
-    @InjectView(R.id.login_progress)
-    View mProgressView;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
     @InjectView(R.id.email)
     AutoCompleteTextView mEmailView;
     @InjectView(R.id.password)
@@ -215,12 +216,12 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             }
         });
 
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressBar.animate().setDuration(shortAnimTime).alpha(
                 show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
     }
