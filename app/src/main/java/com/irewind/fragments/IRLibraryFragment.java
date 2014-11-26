@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRLibraryFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -38,6 +39,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     PullToRefreshGridView mPullToRefreshGridView;
     @InjectView(R.id.emptyTextGrid)
     TextView emptyText;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     private GridView mGridView;
     private IRVideoGridAdapter mAdapter;
@@ -98,6 +101,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mGridView.setOnItemClickListener(this);
 
         mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid);
+
+        mGridView.setAdapter(mAdapter);
     }
 
     @Override
@@ -128,6 +133,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onPause() {
         super.onPause();
+
+        mGridView.setEmptyView(null);
 
         apiClient.getEventBus().unregister(this);
 
@@ -171,6 +178,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mGridView.setEmptyView(emptyText);
+
         List<Video> videos = event.videos;
         PageInfo pageInfo = event.pageInfo;
 
@@ -186,22 +196,15 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        if (mGridView.getAdapter() == null) {
-            mGridView.setAdapter(mAdapter);
-            mGridView.setEmptyView(emptyText);
-        }
     }
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mGridView.setEmptyView(emptyText);
+
         if (mPullToRefreshGridView.isRefreshing()) {
             mPullToRefreshGridView.onRefreshComplete();
-        }
-
-        if (mGridView.getAdapter() == null) {
-            mGridView.setAdapter(mAdapter);
-            mGridView.setEmptyView(emptyText);
         }
     }
 }

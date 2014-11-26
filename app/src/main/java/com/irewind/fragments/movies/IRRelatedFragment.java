@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,9 @@ import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
-import com.irewind.sdk.api.response.VideoListResponse;
-import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
-import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -37,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRRelatedFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -44,6 +41,8 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     PullToRefreshListView mPullToRefreshListView;
     @InjectView(R.id.emptyText)
     TextView emptyText;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     private ListView mListView;
     private IRRelatedAdapter mAdapter;
@@ -101,9 +100,10 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
                 }
             }
         });
+        mListView.setOnItemClickListener(this);
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
-        mListView.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -118,6 +118,8 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     public void onPause() {
         super.onPause();
 
+        mListView.setEmptyView(null);
+
         apiClient.getEventBus().unregister(this);
 
         apiClient.cancelListRelatedVideosTask();
@@ -125,42 +127,6 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
     void fetch(int page) {
         apiClient.listRelatedVideos(video.getId(), page, 200);
-    }
-
-    @Subscribe
-    public void onEvent(VideoListEvent event) {
-        List<Video> videos = event.videos;
-        PageInfo pageInfo = event.pageInfo;
-
-        if (pageInfo.getNumber() == 0) {
-            mAdapter.setVideos(videos);
-
-            if (mPullToRefreshListView.isRefreshing()) {
-                mPullToRefreshListView.onRefreshComplete();
-            }
-        } else {
-            mAdapter.appendVideos(videos);
-        }
-
-        lastPageListed = pageInfo.getNumber();
-        numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        if(mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
-        }
-    }
-
-    @Subscribe
-    public void onEvent(VideoListFailEvent event) {
-        if (mPullToRefreshListView.isRefreshing()) {
-            mPullToRefreshListView.onRefreshComplete();
-        }
-
-        if (mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
-        }
     }
 
     @Override
@@ -197,6 +163,40 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
             ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
                     .disallowAddToBackStack()
                     .commit();
+        }
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(VideoListEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
+
+        List<Video> videos = event.videos;
+        PageInfo pageInfo = event.pageInfo;
+
+        if (pageInfo.getNumber() == 0) {
+            mAdapter.setVideos(videos);
+
+            if (mPullToRefreshListView.isRefreshing()) {
+                mPullToRefreshListView.onRefreshComplete();
+            }
+        } else {
+            mAdapter.appendVideos(videos);
+        }
+
+        lastPageListed = pageInfo.getNumber();
+        numberOfPagesAvailable = pageInfo.getTotalPages();
+    }
+
+    @Subscribe
+    public void onEvent(VideoListFailEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
+
+        if (mPullToRefreshListView.isRefreshing()) {
+            mPullToRefreshListView.onRefreshComplete();
         }
     }
 }

@@ -23,11 +23,9 @@ import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
-import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
-import com.irewind.sdk.util.SafeAsyncTask;
 import com.irewind.ui.views.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
@@ -38,6 +36,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRPersonFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -54,6 +53,8 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     PullToRefreshListView mPullToRefreshListView;
     @InjectView(R.id.emptyText)
     TextView emptyText;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     private ListView mListView;
     private IRRelatedAdapter mAdapter;
@@ -110,9 +111,11 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
                 }
             }
         });
+        mListView.setOnItemClickListener(this);
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
-        mListView.setOnItemClickListener(this);
+
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -145,6 +148,8 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onPause() {
         super.onPause();
+
+        mListView.setEmptyView(null);
 
         apiClient.getEventBus().unregister(this);
 
@@ -192,6 +197,9 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
     @Subscribe
     public void onEvent(VideoListEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
+
         List<Video> videos = event.videos;
         PageInfo pageInfo = event.pageInfo;
 
@@ -207,18 +215,11 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        if (mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
-        }
     }
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
-        if (mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
-        }
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
     }
 }

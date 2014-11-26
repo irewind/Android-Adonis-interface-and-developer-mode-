@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -21,12 +21,10 @@ import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.CommentAddEvent;
 import com.irewind.sdk.api.event.CommentAddFailEvent;
 import com.irewind.sdk.api.event.CommentListEvent;
-import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.model.Comment;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
-import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -34,12 +32,17 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 
 public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.ActionListener {
 
     @InjectView(R.id.commentsListView)
     PullToRefreshListView mPullToRefreshListView;
+    @InjectView(R.id.emptyText)
+    TextView emptyText;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     private ListView mListView;
     private IRCommentsAdapter mAdapter;
@@ -105,6 +108,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         }
 
         mAdapter.setActionListener(this);
+
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -118,6 +123,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
     @Override
     public void onPause() {
         super.onPause();
+
+        mListView.setEmptyView(null);
 
         apiClient.getEventBus().unregister(this);
         apiClient.cancelListVideoCommentsTask();
@@ -156,6 +163,9 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Subscribe
     public void onEvent(CommentListEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
+
         List<Comment> comments = event.comments;
         PageInfo pageInfo = event.pageInfo;
 
@@ -171,10 +181,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        if(mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-        }
     }
 
     @Subscribe
@@ -184,8 +190,7 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
-        if(mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-        }
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
     }
 }

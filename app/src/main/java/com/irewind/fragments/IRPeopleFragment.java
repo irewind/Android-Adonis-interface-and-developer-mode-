@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -39,6 +40,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     PullToRefreshListView mPullToRefreshListView;
     @InjectView(R.id.emptyText)
     TextView emptyText;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     private ListView mListView;
     private IRPeopleAdapter mAdapter;
@@ -96,6 +99,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setOnItemClickListener(this);
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
+
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -125,6 +130,8 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onPause() {
         super.onPause();
+
+        mListView.setEmptyView(null);
 
         apiClient.getEventBus().unregister(this);
 
@@ -167,8 +174,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Subscribe
     public void onEvent(UserListEvent event) {
-        List<User> users = event.users;
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
 
+        List<User> users = event.users;
         PageInfo pageInfo = event.pageInfo;
 
         if (pageInfo.getNumber() == 0) {
@@ -183,22 +192,15 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        if (mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
-        }
     }
 
     @Subscribe
     public void onEvent(UserListFailEvent event) {
+        progressBar.setVisibility(View.INVISIBLE);
+        mListView.setEmptyView(emptyText);
+
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
-        }
-
-        if (mListView.getAdapter() == null) {
-            mListView.setAdapter(mAdapter);
-            mListView.setEmptyView(emptyText);
         }
     }
 }
