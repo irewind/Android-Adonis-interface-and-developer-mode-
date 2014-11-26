@@ -85,7 +85,7 @@ public class Session implements Serializable {
             this.tokenInfo = TokenCachingStrategy.createFromBundle(tokenState);
 
             if (state.isOpened()
-                    && (expirationTime == 0) || now.getTime() - lastRefreshDate.getTime() + expirationTime > TOKEN_EXTEND_RETRY_SECONDS * 1000) {
+                    && (expirationTime == 0) || now.getTime() - lastRefreshDate.getTime() > expirationTime) {
                 // If expired, mark it
                 this.state = SessionState.CREATED_TOKEN_LOADED;
             } else {
