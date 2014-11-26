@@ -72,7 +72,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ApiClient implements SessionRefresher {
+public class ApiClient {
     /**
      * The logging tag used by ApiClient.
      */
@@ -227,7 +227,7 @@ public class ApiClient implements SessionRefresher {
             return session;
         }
         else if(SessionState.OPENED_TOKEN_EXPIRED.equals(session.getState())) {
-            refreshSession(session);
+            refreshSession(session, null);
         }
         return session;
     }
@@ -277,18 +277,24 @@ public class ApiClient implements SessionRefresher {
         return session;
     }
 
-    public void refreshSession(Session session) {
+    public void refreshSession(Session session, final Callback<AccessToken> cb) {
         AccessToken accessToken = session.getTokenInfo();
         sessionService.refreshAccessToken(accessToken.getRefreshToken(), new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
                 accessToken.setLastRefreshDate(new Date());
                 openActiveSessionWithAccessToken(context, accessToken);
+                if (cb != null) {
+                    cb.success(accessToken, response);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials, null));
+                if (cb != null) {
+                    cb.failure(error);
+                }
             }
         });
     }
@@ -550,7 +556,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listUsers(page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new UserListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -599,7 +620,7 @@ public class ApiClient implements SessionRefresher {
     public void searchUsers(final String query, final int page, final int perPage) {
         cancelSearchUsersTask();
         cancelListUsersTask();
-        
+
         final Session session = getActiveSession();
         SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
             @Override
@@ -609,7 +630,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            searchUsers(query, page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new UserListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new UserListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -823,7 +859,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listVideos( page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -864,7 +915,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            searchVideos(query, page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -901,7 +967,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listRelatedVideos(videoId, page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -940,7 +1021,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listVideosForUser(userId, page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override
@@ -996,7 +1092,22 @@ public class ApiClient implements SessionRefresher {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                eventBus.post(new CommentListFailEvent((RetrofitError) e, page));
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listVideoComments(videoId, page, perPage);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new CommentListFailEvent(error, page));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new CommentListFailEvent((RetrofitError) e, page));
+                }
             }
 
             @Override

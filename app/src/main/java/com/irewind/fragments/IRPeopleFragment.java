@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +23,8 @@ import com.irewind.common.IOnSearchCallback;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
-import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
-import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -163,8 +160,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     void fetch(int page) {
         if (searchQuery != null && searchQuery.length() > 0) {
             apiClient.searchUsers(searchQuery, page, 200);
-        }
-        else {
+        } else {
             apiClient.listUsers(page, 200);
         }
     }
