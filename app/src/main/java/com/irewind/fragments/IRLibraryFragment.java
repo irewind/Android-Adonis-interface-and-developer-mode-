@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +22,8 @@ import com.irewind.common.IOnSearchCallback;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
-import com.irewind.sdk.api.response.VideoListResponse;
-import com.irewind.sdk.api.response.VideoListResponse2;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
-import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.util.List;
 
@@ -51,9 +47,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
-
-    private SafeAsyncTask<VideoListResponse> listTask;
-    private SafeAsyncTask<VideoListResponse2> searchTask;
 
     private String searchQuery = "";
 
@@ -138,7 +131,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         apiClient.getEventBus().unregister(this);
 
-        cancelTask();
+        apiClient.cancelListVideosTask();
+        apiClient.cancelSearchVideosTask();
     }
 
     @Override
@@ -168,25 +162,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     void fetch(int page) {
-        cancelTask();
-
         if (searchQuery != null && searchQuery.length() > 0) {
-            searchTask = apiClient.searchVideos(searchQuery, page, 200);
+            apiClient.searchVideos(searchQuery, page, 200);
         } else {
-            listTask = apiClient.listVideos(page, 200);
+            apiClient.listVideos(page, 200);
         }
-    }
-
-    void cancelTask() {
-        if (listTask != null) {
-            listTask.cancel(true);
-        }
-        listTask = null;
-
-        if (searchTask != null) {
-            searchTask.cancel(true);
-        }
-        searchTask = null;
     }
 
     @Subscribe
@@ -207,9 +187,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
-        listTask = null;
-        searchTask = null;
-
         if (mGridView.getAdapter() == null) {
             mGridView.setAdapter(mAdapter);
             mGridView.setEmptyView(emptyText);
@@ -218,9 +195,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
-        listTask = null;
-        searchTask = null;
-
         if (mPullToRefreshGridView.isRefreshing()) {
             mPullToRefreshGridView.onRefreshComplete();
         }

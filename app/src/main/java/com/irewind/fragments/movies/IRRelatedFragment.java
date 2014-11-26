@@ -57,8 +57,6 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
-    private SafeAsyncTask<VideoListResponse2> listTask;
-
     public static IRRelatedFragment newInstance() {
         IRRelatedFragment fragment = new IRRelatedFragment();
         return fragment;
@@ -121,20 +119,12 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
-        cancelTask();
+
+        apiClient.cancelListRelatedVideosTask();
     }
 
     void fetch(int page) {
-        cancelTask();
-
-        listTask = apiClient.listRelatedVideos(video.getId(), page, 200);
-    }
-
-    void cancelTask() {
-        if (listTask != null) {
-            listTask.cancel(true);
-        }
-        listTask = null;
+        apiClient.listRelatedVideos(video.getId(), page, 200);
     }
 
     @Subscribe
@@ -155,8 +145,6 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
-        listTask = null;
-
         if(mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
             mListView.setEmptyView(emptyText);
@@ -165,8 +153,6 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
-        listTask = null;
-
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
         }

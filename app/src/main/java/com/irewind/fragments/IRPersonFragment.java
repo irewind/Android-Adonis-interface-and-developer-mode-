@@ -66,8 +66,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
-    private SafeAsyncTask<VideoListResponse> listTask;
-
     public static IRPersonFragment newInstance() {
         IRPersonFragment fragment = new IRPersonFragment();
         return fragment;
@@ -149,7 +147,8 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
-        cancelTask();
+
+        apiClient.cancelListUserVideosTask();
     }
 
     @Override
@@ -188,16 +187,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     // --- Events --- //
 
     void fetch(int page) {
-        cancelTask();
-
-        listTask = apiClient.listVideosForUser(person.getId(), page, 200);
-    }
-
-    void cancelTask() {
-        if (listTask != null) {
-            listTask.cancel(true);
-        }
-        listTask = null;
+        apiClient.listVideosForUser(person.getId(), page, 200);
     }
 
     @Subscribe
@@ -217,8 +207,6 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        listTask = null;
 
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);

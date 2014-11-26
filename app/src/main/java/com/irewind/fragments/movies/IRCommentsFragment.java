@@ -51,8 +51,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
-    private SafeAsyncTask<CommentListResponse> listTask;
-
     public static IRCommentsFragment newInstance() {
         IRCommentsFragment fragment = new IRCommentsFragment();
         return fragment;
@@ -122,20 +120,11 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
-        cancelTask();
+        apiClient.cancelListVideoCommentsTask();
     }
 
     void fetch(int page) {
-        cancelTask();
-
-        listTask = apiClient.listVideoComments(video.getId(), page, 20);
-    }
-
-    void cancelTask() {
-        if (listTask != null) {
-            listTask.cancel(true);
-        }
-        listTask = null;
+        apiClient.listVideoComments(video.getId(), page, 20);
     }
 
     @Override
@@ -182,8 +171,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
-
-        listTask = null;
 
         if(mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);

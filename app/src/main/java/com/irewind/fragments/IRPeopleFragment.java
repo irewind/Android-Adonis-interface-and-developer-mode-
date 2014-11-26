@@ -52,8 +52,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
-    private SafeAsyncTask<UserListResponse> listTask;
-
     private String searchQuery = "";
 
     public static IRPeopleFragment newInstance() {
@@ -133,7 +131,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
         apiClient.getEventBus().unregister(this);
 
-        cancelTask();
+        apiClient.cancelListUsersTask();
     }
 
     @Override
@@ -162,21 +160,12 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     void fetch(int page) {
-        cancelTask();
-
         if (searchQuery != null && searchQuery.length() > 0) {
-            listTask = apiClient.searchUsers(searchQuery, page, 200);
+            apiClient.searchUsers(searchQuery, page, 200);
         }
         else {
-            listTask = apiClient.listUsers(page, 200);
+            apiClient.listUsers(page, 200);
         }
-    }
-
-    void cancelTask() {
-        if (listTask != null) {
-            listTask.cancel(true);
-        }
-        listTask = null;
     }
 
     @Subscribe
@@ -198,8 +187,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         lastPageListed = pageInfo.getNumber();
         numberOfPagesAvailable = pageInfo.getTotalPages();
 
-        listTask = null;
-
         if (mListView.getAdapter() == null) {
             mListView.setAdapter(mAdapter);
             mListView.setEmptyView(emptyText);
@@ -208,8 +195,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
 
     @Subscribe
     public void onEvent(UserListFailEvent event) {
-        listTask = null;
-
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
         }

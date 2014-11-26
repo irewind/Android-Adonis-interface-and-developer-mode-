@@ -536,7 +536,10 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public SafeAsyncTask<UserListResponse> listUsers(final int page, final int perPage) {
+    private SafeAsyncTask<UserListResponse> listUsersTask;
+    public void listUsers(final int page, final int perPage) {
+        cancelListUsersTask();
+
         final Session session = getActiveSession();
         SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
             @Override
@@ -580,7 +583,15 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        listUsersTask = task;
+    }
+
+    public void cancelListUsersTask() {
+        if (listUsersTask != null) {
+            listUsersTask.cancel(true);
+        }
+
+        listUsersTask = null;
     }
 
     public SafeAsyncTask<UserListResponse> searchUsers(final String query, final int page, final int perPage) {
@@ -784,7 +795,11 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public SafeAsyncTask<VideoListResponse> listVideos(final int page, final int perPage) {
+    private SafeAsyncTask<VideoListResponse> listVideosTask;
+    public void listVideos(final int page, final int perPage) {
+        cancelListVideosTask();
+        cancelSearchVideosTask();
+
         final Session session = getActiveSession();
 
         SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
@@ -812,10 +827,20 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        listVideosTask = task;
+    }
+    public void cancelListVideosTask() {
+        if (listVideosTask != null) {
+            listVideosTask.cancel(true);
+        }
+        listVideosTask = null;
     }
 
-    public SafeAsyncTask<VideoListResponse2> searchVideos(final String query, final int page, final int perPage) {
+    private SafeAsyncTask<VideoListResponse2> searchVideosTask;
+    public void searchVideos(final String query, final int page, final int perPage) {
+        cancelListVideosTask();
+        cancelSearchVideosTask();
+
         final Session session = getActiveSession();
 
         SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
@@ -841,10 +866,18 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        searchVideosTask = task;
     }
 
-    public SafeAsyncTask<VideoListResponse2> listRelatedVideos(final long videoId, final int page, final int perPage) {
+    public void cancelSearchVideosTask() {
+        if (searchVideosTask != null) {
+            searchVideosTask.cancel(true);
+        }
+        searchVideosTask = null;
+    }
+
+    private SafeAsyncTask<VideoListResponse2> listRelatedVideosTask;
+    public void listRelatedVideos(final long videoId, final int page, final int perPage) {
         final Session session = getActiveSession();
 
         SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
@@ -870,10 +903,20 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        listRelatedVideosTask = task;
     }
 
-    public SafeAsyncTask<VideoListResponse> listVideosForUser(final long userId, final int page, final int perPage) {
+    public void cancelListRelatedVideosTask() {
+        if (listRelatedVideosTask != null) {
+            listRelatedVideosTask.cancel(true);
+        }
+        listRelatedVideosTask = null;
+    }
+
+    private SafeAsyncTask<VideoListResponse> listUserVideosTask;
+    public void listVideosForUser(final long userId, final int page, final int perPage) {
+        cancelListUserVideosTask();
+
         final Session session = getActiveSession();
 
         SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
@@ -901,7 +944,14 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        listUserVideosTask = task;
+    }
+
+    public void cancelListUserVideosTask() {
+        if (listUserVideosTask != null) {
+            listUserVideosTask.cancel(true);
+        }
+        listUserVideosTask = null;
     }
 
     public void listVideoTags(long videoId) {
@@ -919,7 +969,10 @@ public class ApiClient implements SessionRefresher {
         });
     }
 
-    public SafeAsyncTask<CommentListResponse> listVideoComments(final long videoId, final int page, final int perPage) {
+    private SafeAsyncTask<CommentListResponse> listVideoCommentsTask;
+    public void listVideoComments(final long videoId, final int page, final int perPage) {
+        cancelListVideoCommentsTask();
+
         final Session session = getActiveSession();
 
         SafeAsyncTask<CommentListResponse> task = new SafeAsyncTask<CommentListResponse>() {
@@ -945,7 +998,14 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        listVideoCommentsTask = task;
+    }
+
+    public void cancelListVideoCommentsTask() {
+        if (listVideoCommentsTask != null) {
+            listVideoCommentsTask.cancel(true);
+        }
+        listVideoCommentsTask = null;
     }
 
     public void addComment(final long videoId, final String content) {
