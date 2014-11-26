@@ -176,7 +176,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getDisplayName());
-            date.setText(DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            date.setText("Joined: " + DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");
