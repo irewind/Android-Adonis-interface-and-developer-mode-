@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -440,7 +438,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
 
-        apiClient.getActiveUserByEmail(email);
+        apiClient.getUserByEmail(email);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
