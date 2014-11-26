@@ -129,6 +129,9 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         apiClient.loadActiveUserInfo();
         fetchUserNotificationSettings();
 
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
+
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -58,6 +58,8 @@ public class IRVideoGridAdapter extends BaseAdapter {
             holder.username = (TextView) v.findViewById(R.id.username);
             holder.date = (TextView) v.findViewById(R.id.date);
             holder.title = (EllipsingTextView) v.findViewById(R.id.titleGrid);
+            holder.likes = (TextView) v.findViewById(R.id.likes);
+            holder.views = (TextView) v.findViewById(R.id.views);
 
             v.setTag(holder);
         } else {
@@ -78,6 +80,8 @@ public class IRVideoGridAdapter extends BaseAdapter {
         holder.username.setText(video.getAuthorName() != null ? video.getAuthorName() : "");
 
         holder.date.setText(DateUtils.getRelativeTimeSpanString(video.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+        holder.likes.setText(video.getLikes().intValue() - video.getDislikes().intValue() + "");
+        holder.views.setText(video.getViews().intValue() + "");
 
         return v;
     }
@@ -86,6 +90,7 @@ public class IRVideoGridAdapter extends BaseAdapter {
         ImageView picture;
         TextView username, date;
         EllipsingTextView title;
+        TextView likes, views;
     }
 
     public void setVideos(List<Video> videos) {

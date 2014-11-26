@@ -120,6 +120,9 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
         apiClient.getEventBus().register(this);
         apiClient.loadActiveUserInfo();
 
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
+
         IRTabActivity.abBack.setVisibility(View.GONE);
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abAction.setVisibility(View.GONE);

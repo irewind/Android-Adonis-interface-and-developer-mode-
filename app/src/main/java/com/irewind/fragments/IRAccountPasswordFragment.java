@@ -108,6 +108,9 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         apiClient.getEventBus().register(this);
         apiClient.loadActiveUserInfo();
 
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
+
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override

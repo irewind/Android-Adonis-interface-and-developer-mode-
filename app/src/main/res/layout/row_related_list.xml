@@ -93,8 +93,8 @@
             android:layout_marginTop="4dp">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_eye" />
 
@@ -105,19 +105,20 @@
                 android:textColor="@color/text_red"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
+                android:textSize="12sp"
                 android:text="24"/>
             
             <View
                 android:layout_width="1dp"
-                android:layout_height="12dp"
+                android:layout_height="9dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:background="@color/text_red"/>
 
             <ImageView
                 android:layout_gravity="center_vertical"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_marginLeft="5dp"
                 android:src="@drawable/ic_hearth_red"/>
 
@@ -128,6 +129,7 @@
                 android:textColor="@color/text_red"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
+                android:textSize="12sp"
                 android:text="20"/>
         </LinearLayout>
     </LinearLayout>

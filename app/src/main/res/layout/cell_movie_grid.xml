@@ -22,6 +22,67 @@
             android:layout_height="28dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_play" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignBottom="@+id/movieImage">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:src="@drawable/bg_fade"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_eye_white"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:text="12"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:background="@android:color/white"
+                    android:layout_marginLeft="5dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_hearth_white"
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:text="12"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <com.irewind.ui.views.EllipsingTextView
@@ -30,12 +91,12 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:lines="2"
-        android:minLines="1"
+        android:minLines="2"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:textColor="@color/text_red"
-        android:textSize="13sp"/>
+        android:textSize="13sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +111,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/gray_light_grid"
             android:text="@string/by"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/username"
@@ -59,7 +120,7 @@
             android:textColor="@color/gray_dark_grid"
             android:text="virgilpana"
             android:layout_marginLeft="5dp"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
         <View
             android:layout_width="1dp"
@@ -77,5 +138,5 @@
         android:textColor="@color/gray_light_grid"
         android:layout_marginLeft="10dp"
         android:text="1 month ago"
-        android:textSize="13sp"/>
+        android:textSize="13sp" />
 </LinearLayout>

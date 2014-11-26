@@ -23,7 +23,7 @@ public class EllipsingTextView extends TextView {
 	}
 
 	CharSequence origText = "";
-	int maxLines = 1;
+	int maxLines = 2;
 	 
 	@Override 
 	public void setText(CharSequence text, BufferType type) {

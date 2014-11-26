@@ -101,7 +101,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
 
         txtTitle.setText(video.getTitle());
         txtDescription.setText(video.getDescription());
-        txtViews.setText("" + video.getViews());
+        txtViews.setText(video.getViews() + " views");
         txtUpVote.setText("" + video.getLikes());
         txtDownVote.setText("" + video.getDislikes());
 

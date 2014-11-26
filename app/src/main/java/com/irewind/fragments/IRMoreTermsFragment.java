@@ -52,6 +52,10 @@ public class IRMoreTermsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (IRTabActivity.searchItem != null)
+            IRTabActivity.searchItem.collapseActionView();
+
         IRTabActivity.abBack.setVisibility(View.VISIBLE);
         IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override

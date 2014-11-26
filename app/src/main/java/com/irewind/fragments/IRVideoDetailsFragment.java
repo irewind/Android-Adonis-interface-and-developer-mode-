@@ -36,6 +36,7 @@ import com.jazzyviewpager.JazzyViewPager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRVideoDetailsFragment extends Fragment implements View.OnClickListener {
 
@@ -53,10 +54,12 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     Button btnRelated;
     @InjectView(R.id.comments)
     Button btnComments;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBarVideo;
 
     private SeekBarV3Fragment seekBar;
     private int fadeTime = 3000;
-    boolean isPlaying = true;
+    boolean isPlaying = false;
     boolean autoPause;
 
     public Video video;
@@ -135,6 +138,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
             }
         });
 
+        playPause.setVisibility(View.INVISIBLE);
+
         seekBar.setVideo(video);
 
         String videoURI = video.getMp4HighResolutionURL();
@@ -160,9 +165,11 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     // Close the progress bar and play the video
                     public void onPrepared(MediaPlayer mp) {
-                        videoView.start();
-                        playPause.setImageResource(R.drawable.pause);
-                        isPlaying = true;
+//                        videoView.start();
+//                        playPause.setImageResource(R.drawable.pause);
+//                        isPlaying = true;
+                        progressBarVideo.setVisibility(View.INVISIBLE);
+                        playPause.setVisibility(View.VISIBLE);
                     }
                 });
                 videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -237,12 +244,12 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         IRTabActivity.abTitle.setText(getString(R.string.movies));
         IRTabActivity.abSearch.setVisibility(View.GONE);
         IRTabActivity.abAction.setVisibility(View.GONE);
-        if (autoPause && videoView.getCurrentPosition() != videoView.getDuration()) {
-            videoView.resume();
-            playPause.setImageResource(R.drawable.pause);
-            autoPause = false;
-            isPlaying = true;
-        }
+//        if (autoPause && videoView.getCurrentPosition() != videoView.getDuration()) {
+//            videoView.resume();
+//            playPause.setImageResource(R.drawable.pause);
+//            autoPause = false;
+//            isPlaying = true;
+//        }
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
     }
