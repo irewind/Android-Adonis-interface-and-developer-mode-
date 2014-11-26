@@ -104,6 +104,8 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
 
         mAdapter = new IRRelatedAdapter(getActivity(), R.layout.row_related_list);
         mListView.setAdapter(mAdapter);
+        mPullToRefreshListView.setVisibility(View.INVISIBLE);
+        emptyText.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -173,6 +175,9 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
 
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
+
         List<Video> videos = event.videos;
         PageInfo pageInfo = event.pageInfo;
 
@@ -194,6 +199,9 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     public void onEvent(VideoListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
+
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();

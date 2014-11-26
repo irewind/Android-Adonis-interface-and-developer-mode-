@@ -110,6 +110,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         mAdapter.setActionListener(this);
 
         mListView.setAdapter(mAdapter);
+        mPullToRefreshListView.setVisibility(View.INVISIBLE);
+        emptyText.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -166,6 +168,9 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
 
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
+
         List<Comment> comments = event.comments;
         PageInfo pageInfo = event.pageInfo;
 
@@ -192,5 +197,8 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
     public void onEvent(CommentAddFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
+
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
     }
 }

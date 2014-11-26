@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:visibility="invisible"/>
 
 
     <TextView
@@ -22,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@android:color/black"
-        android:text="@string/no_related_videos" />
+        android:text="@string/no_related_videos"
+        android:visibility="invisible"/>
 
     <fr.castorflex.android.circularprogressbar.CircularProgressBar
         xmlns:android="http://schemas.android.com/apk/res/android"

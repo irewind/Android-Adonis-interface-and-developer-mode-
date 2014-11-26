@@ -99,8 +99,9 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mListView.setOnItemClickListener(this);
 
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
-
         mListView.setAdapter(mAdapter);
+        mPullToRefreshListView.setVisibility(View.INVISIBLE);
+        emptyText.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -165,6 +166,11 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     void fetch(int page) {
+        if (mAdapter.getCount() == 0){
+            mPullToRefreshListView.setVisibility(View.INVISIBLE);
+            emptyText.setVisibility(View.INVISIBLE);
+        }
+
         if (searchQuery != null && searchQuery.length() > 0) {
             apiClient.searchUsers(searchQuery, page, 200);
         } else {
@@ -176,6 +182,9 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     public void onEvent(UserListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
+
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
 
         List<User> users = event.users;
         PageInfo pageInfo = event.pageInfo;
@@ -198,6 +207,9 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     public void onEvent(UserListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mListView.setEmptyView(emptyText);
+
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();

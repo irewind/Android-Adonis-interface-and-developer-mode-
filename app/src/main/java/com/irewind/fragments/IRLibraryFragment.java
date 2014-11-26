@@ -24,6 +24,7 @@ import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
+import com.irewind.utils.Log;
 
 import java.util.List;
 
@@ -103,6 +104,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         mAdapter = new IRVideoGridAdapter(getActivity(), R.layout.cell_movie_grid);
 
         mGridView.setAdapter(mAdapter);
+        mPullToRefreshGridView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -169,6 +171,10 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     void fetch(int page) {
+        if (mAdapter.getCount() == 0){
+            mPullToRefreshGridView.setVisibility(View.INVISIBLE);
+        }
+
         if (searchQuery != null && searchQuery.length() > 0) {
             apiClient.searchVideos(searchQuery, page, 200);
         } else {
@@ -178,7 +184,10 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListEvent event) {
+        Log.d("on_event", "normal");
         progressBar.setVisibility(View.INVISIBLE);
+        mPullToRefreshGridView.setVisibility(View.VISIBLE);
+
         mGridView.setEmptyView(emptyText);
 
         List<Video> videos = event.videos;
@@ -200,7 +209,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
+        Log.d("on_event", "fail");
         progressBar.setVisibility(View.INVISIBLE);
+        mPullToRefreshGridView.setVisibility(View.VISIBLE);
         mGridView.setEmptyView(emptyText);
 
         if (mPullToRefreshGridView.isRefreshing()) {
