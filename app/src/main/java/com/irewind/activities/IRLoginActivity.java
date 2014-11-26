@@ -69,7 +69,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     @InjectView(R.id.progress)
     CircularProgressBar progressBar;
     @InjectView(R.id.email)
-    AutoCompleteTextView mEmailView;
+    EditText mEmailView;
     @InjectView(R.id.password)
     EditText mPasswordView;
     @InjectView(R.id.email_login_form)
@@ -406,11 +406,11 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(IRLoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
+//        ArrayAdapter<String> adapter =
+//                new ArrayAdapter<String>(IRLoginActivity.this,
+//                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+//
+//        mEmailView.setAdapter(adapter);
     }
 
     // --- Facebook --- //
