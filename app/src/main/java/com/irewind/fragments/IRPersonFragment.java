@@ -153,7 +153,7 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Video video = mAdapter.getItem(position);
+        Video video = mAdapter.getItem(position - 1);
 
         IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
         fragment.video = video;
