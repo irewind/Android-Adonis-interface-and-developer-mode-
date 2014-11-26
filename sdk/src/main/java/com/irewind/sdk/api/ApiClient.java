@@ -33,7 +33,6 @@ import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
-import com.irewind.sdk.api.event.UserResponseEvent;
 import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
@@ -497,8 +496,8 @@ public class ApiClient {
         }
     }
 
-    public void getActiveUserByEmail(String email) {
-        Session session = getActiveSession();
+    public void getUserByEmail(final String email) {
+        final Session session = getActiveSession();
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
@@ -519,25 +518,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
-            }
-        });
-    }
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            getUserByEmail(email);
+                        }
 
-    public void getUserByEmail(String email) {
-        Session session = getActiveSession();
-        apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                List<User> users = userResponse.getEmbedded().getUsers();
-                if (users != null && users.size() > 0) {
-                    eventBus.post(new UserResponseEvent(users.get(0)));
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new RestErrorEvent(error));
+                        }
+                    });
                 }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                else {
+                    eventBus.post(new RestErrorEvent(error));
+                }
             }
         });
     }
@@ -673,15 +669,15 @@ public class ApiClient {
         searchUsersTask = null;
     }
 
-    public void updateUser(final User user, String firstname, String lastname) {
-        Session session = getActiveSession();
+    public void updateUser(final User user, final String firstname, final String lastname) {
+        final Session session = getActiveSession();
         apiService.updateUser(authHeader(session), user.getId(), firstname, lastname, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
                 if (success) {
                     eventBus.post(new UserInfoUpdateSuccessEvent());
 
-                    getActiveUserByEmail(user.getEmail());
+                    getUserByEmail(user.getEmail());
                 } else {
                     eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                 }
@@ -689,13 +685,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            updateUser(user, firstname, lastname);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
+                }
             }
         });
     }
 
-    public void changeUserPassword(final User user, String currentPassword, String newPassword) {
-        Session session = getActiveSession();
+    public void changeUserPassword(final User user, final String currentPassword, final String newPassword) {
+        final Session session = getActiveSession();
         apiService.changePassword(authHeader(session), user.getId(), currentPassword, newPassword, newPassword, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -708,13 +719,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            changeUserPassword(user, currentPassword, newPassword);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
+                }
             }
         });
     }
 
     public void deleteUser(final User user) {
-        Session session = getActiveSession();
+        final Session session = getActiveSession();
         apiService.deleteAccount(authHeader(session), user.getId(), new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -723,7 +749,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RestErrorEvent(error));
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            deleteUser(user);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new RestErrorEvent(error));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new RestErrorEvent(error));
+                }
             }
         });
     }
@@ -731,7 +772,7 @@ public class ApiClient {
     // --- Notification Settings --- //
 
     public void getUserNotificationSettings(final User user) {
-        Session session = getActiveSession();
+        final Session session = getActiveSession();
         apiService.userNotificationSettings(authHeader(session), user.getId(), new Callback<NotificationSettingsResponse>() {
             @Override
             public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
@@ -746,13 +787,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new NotificationSettingsListFailedEvent(error));
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            getUserNotificationSettings(user);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new NotificationSettingsListFailedEvent(error));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new NotificationSettingsListFailedEvent(error));
+                }
             }
         });
     }
 
-    public void toggleCommentNotifications(boolean status) {
-        Session session = getActiveSession();
+    public void toggleCommentNotifications(final boolean status) {
+        final Session session = getActiveSession();
         apiService.toggleCommentNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -765,13 +821,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new NotificationSettingsUpdateFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            toggleCommentNotifications(status);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new NotificationSettingsUpdateFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
+                }
             }
         });
     }
 
-    public void toggleShareNotifications(boolean status) {
-        Session session = getActiveSession();
+    public void toggleShareNotifications(final boolean status) {
+        final Session session = getActiveSession();
         apiService.toggleShareNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -784,13 +855,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new NotificationSettingsUpdateFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            toggleShareNotifications(status);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new NotificationSettingsUpdateFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
+                }
             }
         });
     }
 
-    public void toggleLikeNotifications(boolean status) {
-        Session session = getActiveSession();
+    public void toggleLikeNotifications(final boolean status) {
+        final Session session = getActiveSession();
         apiService.toggleLikeNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -803,13 +889,28 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new NotificationSettingsUpdateFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            toggleLikeNotifications(status);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new NotificationSettingsUpdateFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
+                }
             }
         });
     }
 
-    public void toggleMessageNotifications(boolean status) {
-        Session session = getActiveSession();
+    public void toggleMessageNotifications(final boolean status) {
+        final Session session = getActiveSession();
         apiService.toggleMessageNotifications(authHeader(session), status, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
@@ -822,15 +923,30 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new NotificationSettingsUpdateFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            toggleMessageNotifications(status);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new NotificationSettingsUpdateFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new NotificationSettingsUpdateFailEvent());
+                }
             }
         });
     }
 
     // --- Videos --- //
 
-    public void getVideoInfo(long videoID) {
-        Session session = getActiveSession();
+    public void getVideoInfo(final long videoID) {
+        final Session session = getActiveSession();
         apiService.videoInfo(authHeader(session), videoID, new Callback<VideoResponse>() {
             @Override
             public void success(VideoResponse videoResponse, Response response) {
@@ -839,7 +955,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new VideoInfoFailEvent(error));
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            getVideoInfo(videoID);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoInfoFailEvent(error));
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new VideoInfoFailEvent(error));
+                }
             }
         });
     }
@@ -1063,8 +1194,8 @@ public class ApiClient {
         listUserVideosTask = null;
     }
 
-    public void listVideoTags(long videoId) {
-        Session session = getActiveSession();
+    public void listVideoTags(final long videoId) {
+        final Session session = getActiveSession();
         apiService.tagsForVideo(authHeader(session), videoId, 0, 1000, new Callback<TagListResponse>() {
             @Override
             public void success(TagListResponse tagListResponse, Response response) {
@@ -1073,7 +1204,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new TagListResponse());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            listVideoTags(videoId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new TagListResponse());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new TagListResponse());
+                }
             }
         });
     }
@@ -1147,7 +1293,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new CommentAddFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            addComment(videoId, content);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new CommentAddFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
             }
         });
     }
@@ -1168,7 +1329,22 @@ public class ApiClient {
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new CommentAddFailEvent());
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            replyComment(videoId, content, parentCommentId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new CommentAddFailEvent());
+                        }
+                    });
+                }
+                else {
+                    eventBus.post(new CommentAddFailEvent());
+                }
             }
         });
     }
