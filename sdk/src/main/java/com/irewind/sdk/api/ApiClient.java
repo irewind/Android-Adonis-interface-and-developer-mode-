@@ -539,6 +539,7 @@ public class ApiClient implements SessionRefresher {
     private SafeAsyncTask<UserListResponse> listUsersTask;
     public void listUsers(final int page, final int perPage) {
         cancelListUsersTask();
+        cancelSearchUsersTask();
 
         final Session session = getActiveSession();
         SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
@@ -594,7 +595,11 @@ public class ApiClient implements SessionRefresher {
         listUsersTask = null;
     }
 
-    public SafeAsyncTask<UserListResponse> searchUsers(final String query, final int page, final int perPage) {
+    private SafeAsyncTask<UserListResponse> searchUsersTask;
+    public void searchUsers(final String query, final int page, final int perPage) {
+        cancelSearchUsersTask();
+        cancelListUsersTask();
+        
         final Session session = getActiveSession();
         SafeAsyncTask<UserListResponse> task = new SafeAsyncTask<UserListResponse>() {
             @Override
@@ -621,7 +626,15 @@ public class ApiClient implements SessionRefresher {
 
         task.execute();
 
-        return task;
+        searchUsersTask = task;
+    }
+
+    public void cancelSearchUsersTask() {
+        if (searchUsersTask != null) {
+            searchUsersTask.cancel(true);
+        }
+
+        searchUsersTask = null;
     }
 
     public void updateUser(final User user, String firstname, String lastname) {

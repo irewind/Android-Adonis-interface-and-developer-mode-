@@ -132,6 +132,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         apiClient.getEventBus().unregister(this);
 
         apiClient.cancelListUsersTask();
+        apiClient.cancelSearchVideosTask();
     }
 
     @Override
