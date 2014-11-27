@@ -37,6 +37,8 @@ import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
+import com.irewind.sdk.api.event.VideoPermissionListEvent;
+import com.irewind.sdk.api.event.VideoPermissionListFailedEvent;
 import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
@@ -50,6 +52,7 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoListResponse2;
+import com.irewind.sdk.api.response.VideoPermissionResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -57,6 +60,7 @@ import com.irewind.sdk.model.NotificationSettings;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
+import com.irewind.sdk.model.VideoPermission;
 import com.irewind.sdk.util.SafeAsyncTask;
 
 import java.io.ByteArrayInputStream;
@@ -1285,6 +1289,39 @@ public class ApiClient {
                 }
             }
         });
+    }
+
+    // --- Permissions --- //
+
+    public void listVideoViewPermissions(final long videoId) {
+        final Session session = getActiveSession();
+
+        apiService.videoPermission(authHeader(session), videoId, VideoPermission.PERMISSION_TYPE_VIEW,
+                new Callback<VideoPermissionResponse>() {
+                    @Override
+                    public void success(VideoPermissionResponse videoPermissionResponse, Response response) {
+                        eventBus.post(new VideoPermissionListEvent(videoPermissionResponse.getVideoPermission(), videoPermissionResponse.getUsers()));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if (ErrorUtils.isUnauthorized(error)) {
+                            refreshSession(session, new Callback<AccessToken>() {
+                                @Override
+                                public void success(AccessToken accessToken, Response response) {
+                                    listVideoViewPermissions(videoId);
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    eventBus.post(new VideoPermissionListFailedEvent());
+                                }
+                            });
+                        } else {
+                            eventBus.post(new VideoPermissionListFailedEvent());
+                        }
+                    }
+                });
     }
 
     // --- Comments --- //
