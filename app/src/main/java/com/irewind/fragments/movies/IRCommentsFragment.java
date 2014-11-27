@@ -101,7 +101,6 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
         mAdapter = new IRCommentsAdapter(getActivity(), R.layout.row_comments_list);
 
-        apiClient.loadActiveUserInfo();
         User user = apiClient.getActiveUser();
         if (user != null) {
             mAdapter.setProfileImage(user.getPicture());

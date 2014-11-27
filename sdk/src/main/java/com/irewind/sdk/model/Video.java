@@ -1,8 +1,9 @@
 package com.irewind.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.irewind.sdk.api.response.BaseResponse;
 
-public class Video {
+public class Video extends BaseResponse {
 
     @SerializedName("videoId")
     private long id;
@@ -104,6 +105,12 @@ public class Video {
 
     @Override
     public String toString() {
+        if (super.getError() != null) {
+            return "Video{" +
+                    "error='" + super.getError() + '\'' +
+                    ", errorDescription='" + super.getErrorDescription() + '\'' +
+                    '}';
+        }
         return "Video{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +

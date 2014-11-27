@@ -2,6 +2,7 @@ package com.irewind.sdk.api;
 
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
+import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
@@ -10,8 +11,8 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoListResponse2;
-import com.irewind.sdk.api.response.VideoResponse;
 import com.irewind.sdk.model.AccessToken;
+import com.irewind.sdk.model.Video;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -70,15 +71,23 @@ public interface ApiService {
                                  @Query("page") Integer page,
                                  @Query("size") Integer size);
 
-    @GET("/rest/user/")
+    @GET("/rest/user/{id}")
     void userById(@Header("Authorization") String authorization,
-                  @Path("idKeyword") long id,
+                  @Path("id") long id,
                   Callback<UserResponse> cb);
 
     @GET("/rest/user/search/findByEmail")
     void userByEmail(@Header("Authorization") String authorization,
                      @Query("email") String email,
                      Callback<UserResponse> cb);
+
+    @POST("/user/save-info")
+    @FormUrlEncoded
+    void updateUser(@Header("Authorization") String authorization,
+                    @Field("id") long userID,
+                    @Field("firstName") String firstName,
+                    @Field("lastName") String lastName,
+                    Callback<Boolean> cb);
 
     @GET("/user/changePassword")
     void changePassword(@Header("Authorization") String authorization,
@@ -94,20 +103,43 @@ public interface ApiService {
                        @Field("id") long id,
                        Callback<Boolean> cb);
 
-    @POST("/user/save-info")
+    // --- Notifications --- //
+
+    @GET("/rest/user-notification/search/findByUser")
+    void userNotificationSettings(@Header("Authorization") String authorization,
+                                  @Query("user") long userID,
+                                  Callback<NotificationSettingsResponse> cb);
+
+    @POST("/user/updateUserNotification?notificationType=comment")
     @FormUrlEncoded
-    void updateUser(@Header("Authorization") String authorization,
-                    @Field("id") long userID,
-                    @Field("firstName") String firstName,
-                    @Field("lastName") String lastName,
-                    Callback<Boolean> cb);
+    void toggleCommentNotifications(@Header("Authorization") String authorization,
+                                    @Field("status") boolean status,
+                                    Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=share")
+    @FormUrlEncoded
+    void toggleShareNotifications(@Header("Authorization") String authorization,
+                                  @Field("status") boolean status,
+                                  Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=like")
+    @FormUrlEncoded
+    void toggleLikeNotifications(@Header("Authorization") String authorization,
+                                 @Field("status") boolean status,
+                                 Callback<Boolean> cb);
+
+    @POST("/user/updateUserNotification?notificationType=msg")
+    @FormUrlEncoded
+    void toggleMessageNotifications(@Header("Authorization") String authorization,
+                                    @Field("status") boolean status,
+                                    Callback<Boolean> cb);
 
     // --- Videos --- //
 
-    @GET("/rest/video/")
-    void videoInfo(@Header("Authorization") String authorization,
-                   @Query("id") long videoID,
-                   Callback<VideoResponse> cb);
+    @GET("/rest/video/{id}")
+    void videoById(@Header("Authorization") String authorization,
+                   @Path("id") long videoID,
+                   Callback<Video> cb);
 
     @GET("/rest/video/search/findVideosWithPagination")
     VideoListResponse listVideos(@Header("Authorization") String authorization,
@@ -149,36 +181,13 @@ public interface ApiService {
                              @Query("videoId") long videoID,
                              Callback cb);
 
-    // --- Notifications --- //
+    // --- Votes --- //
 
-    @GET("/rest/user-notification/search/findByUser")
-    void userNotificationSettings(@Header("Authorization") String authorization,
-                                  @Query("user") long userID,
-                                  Callback<NotificationSettingsResponse> cb);
-
-    @POST("/user/updateUserNotification?notificationType=comment")
-    @FormUrlEncoded
-    void toggleCommentNotifications(@Header("Authorization") String authorization,
-                                    @Field("status") boolean status,
-                                    Callback<Boolean> cb);
-
-    @POST("/user/updateUserNotification?notificationType=share")
-    @FormUrlEncoded
-    void toggleShareNotifications(@Header("Authorization") String authorization,
-                                  @Field("status") boolean status,
-                                  Callback<Boolean> cb);
-
-    @POST("/user/updateUserNotification?notificationType=like")
-    @FormUrlEncoded
-    void toggleLikeNotifications(@Header("Authorization") String authorization,
-                                 @Field("status") boolean status,
-                                 Callback<Boolean> cb);
-
-    @POST("/user/updateUserNotification?notificationType=msg")
-    @FormUrlEncoded
-    void toggleMessageNotifications(@Header("Authorization") String authorization,
-                                    @Field("status") boolean status,
-                                    Callback<Boolean> cb);
+    @POST("/rest/user-video-vote")
+    @Headers("Content-Type: application/json")
+    void vote(@Header("Authorization") String authorization,
+                          @Body VoteRequest voteRequest,
+                          Callback<BaseResponse> cb);
 
     // --- Comments --- //
 

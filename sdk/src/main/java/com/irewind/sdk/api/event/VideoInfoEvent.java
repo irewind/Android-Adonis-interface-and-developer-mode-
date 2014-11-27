@@ -1,11 +1,11 @@
 package com.irewind.sdk.api.event;
 
-import com.irewind.sdk.api.response.VideoResponse;
+import com.irewind.sdk.model.Video;
 
 public class VideoInfoEvent {
-    public VideoResponse videoResponse;
+    public Video video;
 
-    public VideoInfoEvent(VideoResponse videoResponse) {
-        this.videoResponse = videoResponse;
+    public VideoInfoEvent(Video video) {
+        this.video = video;
     }
 }

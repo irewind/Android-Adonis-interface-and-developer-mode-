@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="com.irewind.fragments.movies.IRAboutFragment"
-    android:background="@android:color/transparent"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:background="@android:color/transparent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:clipToPadding="false">
@@ -25,7 +25,7 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@android:color/black"
                 android:text="Stockholm marathon" />
 
@@ -63,19 +63,22 @@
                     <LinearLayout
                         android:id="@+id/voteDown"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_height="match_parent"
                             android:src="@drawable/ic_arrow_down"
                             android:layout_gravity="center" />
 
                         <TextView
                             android:id="@+id/downVotes"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
                             android:textColor="@color/tab_gray_dots"
                             android:text="10" />
                     </LinearLayout>
@@ -83,23 +86,44 @@
                     <LinearLayout
                         android:id="@+id/voteUp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_marginLeft="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_height="match_parent"
                             android:src="@drawable/ic_arrow_up"
                             android:layout_gravity="center" />
 
                         <TextView
                             android:id="@+id/upVotes"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:textColor="@color/tab_gray_dots"
+                            android:gravity="center"
                             android:text="5" />
                     </LinearLayout>
+
+                    <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/progress"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:indeterminate="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        app:cpb_color="@color/text_red"
+                        app:cpb_rotation_speed="1.0"
+                        app:cpb_sweep_speed="1.0"
+                        app:cpb_stroke_width="4dp"
+                        app:cpb_min_sweep_angle="10"
+                        app:cpb_max_sweep_angle="300"
+                        android:visibility="gone"
+                        />
                 </LinearLayout>
             </LinearLayout>
 
@@ -182,7 +206,6 @@
                     android:scaleType="fitCenter"
                     android:background="@android:color/transparent"
                     android:visibility="gone"/>
-
             </RelativeLayout>
 
 

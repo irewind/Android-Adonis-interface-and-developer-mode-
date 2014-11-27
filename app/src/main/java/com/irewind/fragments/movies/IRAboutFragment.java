@@ -19,6 +19,9 @@ import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
 
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.VideoInfoEvent;
+import com.irewind.sdk.api.event.VideoInfoFailEvent;
+import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.model.Tag;
 
@@ -35,6 +38,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 
 public class IRAboutFragment extends Fragment implements View.OnClickListener{
@@ -61,6 +65,8 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     RoundedImageView profileImage;
     @InjectView(R.id.username)
     TextView txtAuthorName;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     public Video video;
 
@@ -99,19 +105,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         downVote.setOnClickListener(this);
         settings.setOnClickListener(this);
 
-        txtTitle.setText(video.getTitle());
-        txtDescription.setText(video.getDescription());
-        txtViews.setText(video.getViews() + " views");
-        txtUpVote.setText("" + video.getLikes());
-        txtDownVote.setText("" + video.getDislikes());
-
-        User user = video.getUser();
-        if (user != null && user.getPicture() != null && user.getPicture().length() > 0) {
-            Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImage);
-        } else {
-            profileImage.setImageResource(R.drawable.img_default_picture);
-        }
-        txtAuthorName.setText(video.getAuthorName());
+        updateVideoInfo(video);
     }
 
     @Override
@@ -134,10 +128,10 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.voteUp:
-                vote(true);
+                like();
                 break;
             case R.id.voteDown:
-                vote(false);
+                dislike();
                 break;
             case R.id.settings:
                 IRSettingsFragment fragment = IRSettingsFragment.newInstance();
@@ -153,12 +147,53 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void vote(boolean type){
-        if (type){
-            //TODO vote up
-        } else {
-            //TODO vote down
+    private void updateVideoInfo(Video video) {
+        txtTitle.setText(video.getTitle());
+        txtDescription.setText(video.getDescription());
+        txtViews.setText(video.getViews() + " views");
+        txtUpVote.setText("" + video.getLikes());
+        txtDownVote.setText("" + video.getDislikes());
+
+        User user = video.getUser();
+
+        if (user != null) {
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImage);
+            }
+            txtAuthorName.setText(user.getDisplayName());
+
+            if (apiClient.getActiveUser() != null && apiClient.getActiveUser().getId() == user.getId()) {
+                settings.setVisibility(View.VISIBLE);
+            }
+            else {
+                settings.setVisibility(View.GONE);
+            }
         }
+    }
+
+    private void like(){
+        progressBar.setVisibility(View.VISIBLE);
+        apiClient.likeVideo(video.getId());
+    }
+
+    private void dislike() {
+        progressBar.setVisibility(View.VISIBLE);
+        apiClient.dislikeVideo(video.getId());
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(VideoInfoEvent event) {
+        if (event.video != null) {
+            updateVideoInfo(event.video);
+        }
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    public void onEvent(VideoInfoFailEvent event) {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Subscribe
@@ -181,5 +216,10 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
                 tagView.setTags(tagArrayList, " ");
             }
         }
+    }
+
+    @Subscribe
+    public void onEvent(VoteEvent event) {
+        apiClient.videoById(video.getId());
     }
 }
