@@ -461,6 +461,9 @@ public class ApiClient {
     }
 
     public User getActiveUser() {
+        if (activeUser == null) {
+            loadActiveUserInfo();
+        }
         synchronized (this.lock) {
             return activeUser;
         }

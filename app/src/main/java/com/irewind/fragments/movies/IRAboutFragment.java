@@ -161,6 +161,13 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
                 Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImage);
             }
             txtAuthorName.setText(user.getDisplayName());
+
+            if (apiClient.getActiveUser() != null && apiClient.getActiveUser().getId() == user.getId()) {
+                settings.setVisibility(View.VISIBLE);
+            }
+            else {
+                settings.setVisibility(View.GONE);
+            }
         }
     }
 
