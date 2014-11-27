@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -183,6 +185,18 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
 
         searchItem = menu.findItem(R.id.menu_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+// traverse the view to the widget containing the hint text
+        try {
+            //This might fail for some reason. Cuz android thats why!!
+            LinearLayout ll = (LinearLayout) searchView.getChildAt(0);
+            LinearLayout ll2 = (LinearLayout) ll.getChildAt(2);
+            LinearLayout ll3 = (LinearLayout) ll2.getChildAt(1);
+            SearchView.SearchAutoComplete autoComplete = (SearchView.SearchAutoComplete) ll3.getChildAt(0);
+// set the hint text color
+            autoComplete.setHintTextColor(Color.WHITE);
+        } catch (Exception e){
+        }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchableInfo info = searchManager.getSearchableInfo(getComponentName());

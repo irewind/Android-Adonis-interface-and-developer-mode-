@@ -4,10 +4,18 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,19 +34,22 @@ import android.widget.VideoView;
 
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRFullScreenMovieActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRVideoPagerAdapter;
+import com.irewind.listeners.OrientationManager;
 import com.irewind.player.SeekBarV3Fragment;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
+import com.irewind.utils.Log;
 import com.jazzyviewpager.JazzyViewPager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
-public class IRVideoDetailsFragment extends Fragment implements View.OnClickListener {
+public class IRVideoDetailsFragment extends Fragment implements View.OnClickListener, OrientationManager.OrientationListener {
 
     @InjectView(R.id.videoView1)
     VideoView videoView;
@@ -65,8 +76,14 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     public Video video;
     public User person;
 
+    private SensorManager sensorManager;
+    private SensorEventListener sensorEvent;
+
     public static CountDownTimer sCt;
     public static VideoView sVideoView;
+
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     CountDownTimer ct = new CountDownTimer(20000000, 500) {
 
@@ -90,6 +107,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         }
 
     };
+    private OrientationManager orientationManager;
 
     public static IRVideoDetailsFragment newInstance() {
         IRVideoDetailsFragment fragment = new IRVideoDetailsFragment();
@@ -101,10 +119,69 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     }
 
     @Override
+    public void onOrientationChange(OrientationManager.ScreenOrientation screenOrientation) {
+        switch(screenOrientation){
+            case PORTRAIT:
+            case REVERSED_PORTRAIT:
+                Log.d("Sensor", "portrait");
+                mHandler.removeCallbacks(mRunnable);
+                break;
+            case REVERSED_LANDSCAPE:
+            case LANDSCAPE:
+                Log.d("Sensor", "landscape");
+                mHandler.postDelayed(mRunnable, 800);
+                break;
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Injector.inject(this);
+
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        sensorEvent = new SensorEventListener() {
+            int orientation = -1;
+            ;
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (event.values[1] < 6.5 && event.values[1] > -6.5) {
+                    if (orientation != 1) {
+                        Log.d("Sensor", "Landscape");
+                    }
+                    orientation = 1;
+                } else {
+                    if (orientation != 0) {
+                        Log.d("Sensor", "Portrait");
+                    }
+                    orientation = 0;
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                // TODO Auto-generated method stub
+
+            }
+        };
+
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
+                intent.putExtra("video", video.getMp4HighResolutionURL());
+                startActivity(intent);
+            }
+        };
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        orientationManager = new OrientationManager(getActivity(), SensorManager.SENSOR_DELAY_NORMAL, this);
     }
 
     @Override
@@ -252,6 +329,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 //        }
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
+
+        setSensorManager();
     }
 
     @Override
@@ -261,6 +340,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
             videoView.pause();
             autoPause = true;
         }
+        removeSensorManager();
     }
 
     @Override
@@ -273,6 +353,20 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         } catch (NullPointerException e) {
         }
         videoView = null;
+    }
+
+    private void setSensorManager(){
+//        if (sensorManager != null) {
+//            sensorManager.registerListener(sensorEvent,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+//        }
+        orientationManager.enable();
+    }
+
+    private void removeSensorManager(){
+//        if (sensorManager != null) {
+//            sensorManager.unregisterListener(sensorEvent, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+//        }
+        orientationManager.disable();
     }
 
     @SuppressLint("NewApi")

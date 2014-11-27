@@ -123,8 +123,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             }
         };
 
-        if (IRTabActivity.searchItem != null)
+        if (IRTabActivity.searchItem != null) {
             IRTabActivity.searchItem.collapseActionView();
+        }
 
         searchQuery = "";
 
@@ -165,6 +166,9 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_search:
+                if (IRTabActivity.searchView != null){
+                    IRTabActivity.searchView.setQueryHint(getString(R.string.search_videos));
+                }
                 IRTabActivity.searchItem.expandActionView();
                 break;
         }

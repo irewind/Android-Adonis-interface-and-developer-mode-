@@ -36,6 +36,10 @@
         <item name="android:track">@drawable/switch_ir_track</item>
     </style>
 
+    <style name="SearchView" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
     <style name="Widget"/>
     <style name="Widget.TagView" parent="@android:style/Widget.TextView">
         <item name="tagCornerRadius">6dp</item>

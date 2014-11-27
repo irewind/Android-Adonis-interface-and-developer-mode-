@@ -106,5 +106,7 @@
     <string name="email_address_small">email address</string>
     <string name="change_email">Change email</string>
     <string name="title_activity_irfull_screen_movie">IRFullScreenMovieActivity</string>
+    <string name="search_videos">Search videos</string>
+    <string name="search_people">Search people</string>
 
 </resources>

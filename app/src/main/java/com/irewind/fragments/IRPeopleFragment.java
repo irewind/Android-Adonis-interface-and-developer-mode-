@@ -119,6 +119,7 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
                 fetch(0);
             }
         };
+
         if (IRTabActivity.searchItem != null)
             IRTabActivity.searchItem.collapseActionView();
 
@@ -160,6 +161,9 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_search:
+                if (IRTabActivity.searchView != null){
+                    IRTabActivity.searchView.setQueryHint(getString(R.string.search_people));
+                }
                 IRTabActivity.searchItem.expandActionView();
                 break;
         }
