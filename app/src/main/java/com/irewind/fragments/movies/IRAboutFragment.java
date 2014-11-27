@@ -20,6 +20,7 @@ import com.irewind.activities.IRTabActivity;
 
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoInfoEvent;
+import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.model.Tag;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 
 public class IRAboutFragment extends Fragment implements View.OnClickListener{
@@ -63,6 +65,8 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     RoundedImageView profileImage;
     @InjectView(R.id.username)
     TextView txtAuthorName;
+    @InjectView(R.id.progress)
+    CircularProgressBar progressBar;
 
     public Video video;
 
@@ -161,10 +165,12 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     }
 
     private void like(){
+        progressBar.setVisibility(View.VISIBLE);
         apiClient.likeVideo(video.getId());
     }
 
     private void dislike() {
+        progressBar.setVisibility(View.VISIBLE);
         apiClient.dislikeVideo(video.getId());
     }
 
@@ -175,6 +181,12 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         if (event.video != null) {
             updateVideoInfo(event.video);
         }
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    public void onEvent(VideoInfoFailEvent event) {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Subscribe
