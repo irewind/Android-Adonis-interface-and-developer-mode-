@@ -37,8 +37,10 @@ import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
 import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
+import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
+import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
@@ -48,7 +50,6 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoListResponse2;
-import com.irewind.sdk.api.response.VideoResponse;
 import com.irewind.sdk.iRewindConfig;
 import com.irewind.sdk.iRewindException;
 import com.irewind.sdk.model.AccessToken;
@@ -224,8 +225,7 @@ public class ApiClient {
 
             eventBus.post(new SessionOpenedEvent());
             return session;
-        }
-        else if(SessionState.OPENED_TOKEN_EXPIRED.equals(session.getState())) {
+        } else if (SessionState.OPENED_TOKEN_EXPIRED.equals(session.getState())) {
             refreshSession(session, null);
         }
         return session;
@@ -530,8 +530,7 @@ public class ApiClient {
                             eventBus.post(new RestErrorEvent(error));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new RestErrorEvent(error));
                 }
             }
@@ -539,6 +538,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<UserListResponse> listUsersTask;
+
     public void listUsers(final int page, final int perPage) {
         cancelListUsersTask();
         cancelSearchUsersTask();
@@ -552,7 +552,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -564,8 +564,7 @@ public class ApiClient {
                             eventBus.post(new UserListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new UserListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -613,6 +612,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<UserListResponse> searchUsersTask;
+
     public void searchUsers(final String query, final int page, final int perPage) {
         cancelSearchUsersTask();
         cancelListUsersTask();
@@ -626,7 +626,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -638,8 +638,7 @@ public class ApiClient {
                             eventBus.post(new UserListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new UserListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -697,8 +696,7 @@ public class ApiClient {
                             eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new UserInfoUpdateFailEvent(UserInfoUpdateFailEvent.Reason.Unknown));
                 }
             }
@@ -731,8 +729,7 @@ public class ApiClient {
                             eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.Unknown));
                 }
             }
@@ -761,8 +758,7 @@ public class ApiClient {
                             eventBus.post(new RestErrorEvent(error));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new RestErrorEvent(error));
                 }
             }
@@ -799,8 +795,7 @@ public class ApiClient {
                             eventBus.post(new NotificationSettingsListFailedEvent(error));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsListFailedEvent(error));
                 }
             }
@@ -833,8 +828,7 @@ public class ApiClient {
                             eventBus.post(new NotificationSettingsUpdateFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
@@ -867,8 +861,7 @@ public class ApiClient {
                             eventBus.post(new NotificationSettingsUpdateFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
@@ -901,8 +894,7 @@ public class ApiClient {
                             eventBus.post(new NotificationSettingsUpdateFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
@@ -935,8 +927,7 @@ public class ApiClient {
                             eventBus.post(new NotificationSettingsUpdateFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new NotificationSettingsUpdateFailEvent());
                 }
             }
@@ -945,12 +936,12 @@ public class ApiClient {
 
     // --- Videos --- //
 
-    public void getVideoInfo(final long videoID) {
+    public void videoById(final long videoID) {
         final Session session = getActiveSession();
-        apiService.videoInfo(authHeader(session), videoID, new Callback<VideoResponse>() {
+        apiService.videoById(authHeader(session), videoID, new Callback<Video>() {
             @Override
-            public void success(VideoResponse videoResponse, Response response) {
-                eventBus.post(new VideoInfoEvent(videoResponse));
+            public void success(Video video, Response response) {
+                eventBus.post(new VideoInfoEvent(video));
             }
 
             @Override
@@ -959,7 +950,7 @@ public class ApiClient {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
-                            getVideoInfo(videoID);
+                            videoById(videoID);
                         }
 
                         @Override
@@ -967,8 +958,7 @@ public class ApiClient {
                             eventBus.post(new VideoInfoFailEvent(error));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new VideoInfoFailEvent(error));
                 }
             }
@@ -976,6 +966,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<VideoListResponse> listVideosTask;
+
     public void listVideos(final int page, final int perPage) {
         cancelListVideosTask();
         cancelSearchVideosTask();
@@ -990,11 +981,11 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
-                            listVideos( page, perPage);
+                            listVideos(page, perPage);
                         }
 
                         @Override
@@ -1002,8 +993,7 @@ public class ApiClient {
                             eventBus.post(new VideoListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -1024,6 +1014,7 @@ public class ApiClient {
 
         listVideosTask = task;
     }
+
     public void cancelListVideosTask() {
         if (listVideosTask != null) {
             listVideosTask.cancel(true);
@@ -1032,6 +1023,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<VideoListResponse2> searchVideosTask;
+
     public void searchVideos(final String query, final int page, final int perPage) {
         cancelListVideosTask();
         cancelSearchVideosTask();
@@ -1046,7 +1038,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -1058,8 +1050,7 @@ public class ApiClient {
                             eventBus.post(new VideoListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -1087,6 +1078,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<VideoListResponse2> listRelatedVideosTask;
+
     public void listRelatedVideos(final long videoId, final int page, final int perPage) {
         final Session session = getActiveSession();
 
@@ -1098,7 +1090,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -1110,8 +1102,7 @@ public class ApiClient {
                             eventBus.post(new VideoListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -1139,6 +1130,7 @@ public class ApiClient {
     }
 
     private SafeAsyncTask<VideoListResponse> listUserVideosTask;
+
     public void listVideosForUser(final long userId, final int page, final int perPage) {
         cancelListUserVideosTask();
 
@@ -1152,7 +1144,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -1164,8 +1156,7 @@ public class ApiClient {
                             eventBus.post(new VideoListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new VideoListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -1216,15 +1207,87 @@ public class ApiClient {
                             eventBus.post(new TagListResponse());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new TagListResponse());
                 }
             }
         });
     }
 
+    // --- Votes --- //
+
+    public void likeVideo(final long videoId) {
+        final Session session = getActiveSession();
+
+        VoteRequest voteRequest = new VoteRequest();
+        voteRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        voteRequest.voteType = VoteRequest.VOTE_TYPE_LIKE;
+
+        apiService.vote(authHeader(session), voteRequest, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                eventBus.post(new VoteEvent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            likeVideo(videoId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VoteEvent());
+                        }
+                    });
+                } else {
+                    eventBus.post(new VoteEvent());
+                }
+            }
+        });
+    }
+
+    public void dislikeVideo(final long videoId) {
+        final Session session = getActiveSession();
+
+        VoteRequest voteRequest = new VoteRequest();
+        voteRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        voteRequest.voteType = VoteRequest.VOTE_TYPE_DISLIKE;
+
+        apiService.vote(authHeader(session), voteRequest, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                eventBus.post(new VoteEvent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            likeVideo(videoId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VoteEvent());
+                        }
+                    });
+                } else {
+                    eventBus.post(new VoteEvent());
+                }
+            }
+        });
+    }
+
+    // --- Comments --- //
+
     private SafeAsyncTask<CommentListResponse> listVideoCommentsTask;
+
     public void listVideoComments(final long videoId, final int page, final int perPage) {
         cancelListVideoCommentsTask();
 
@@ -1238,7 +1301,7 @@ public class ApiClient {
 
             @Override
             protected void onException(Exception e) throws RuntimeException {
-                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError)e)) {
+                if ((e instanceof RetrofitError) && ErrorUtils.isUnauthorized((RetrofitError) e)) {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
@@ -1250,8 +1313,7 @@ public class ApiClient {
                             eventBus.post(new CommentListFailEvent(error, page));
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new CommentListFailEvent((RetrofitError) e, page));
                 }
             }
@@ -1305,8 +1367,7 @@ public class ApiClient {
                             eventBus.post(new CommentAddFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new CommentAddFailEvent());
                 }
             }
@@ -1341,8 +1402,7 @@ public class ApiClient {
                             eventBus.post(new CommentAddFailEvent());
                         }
                     });
-                }
-                else {
+                } else {
                     eventBus.post(new CommentAddFailEvent());
                 }
             }
