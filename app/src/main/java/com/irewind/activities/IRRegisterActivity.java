@@ -6,12 +6,14 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +67,10 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     TextView mLogin;
     @InjectView(R.id.titleSlide)
     TextView mTitleSlide;
+    @InjectView(R.id.errorLayout)
+    RelativeLayout errorLayout;
+    @InjectView(R.id.errorText)
+    TextView errorText;
 
     @Inject
     ApiClient apiClient;
@@ -100,6 +106,15 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         mClosePanel.setOnClickListener(this);
         mRegister.setOnClickListener(this);
         mLogin.setOnClickListener(this);
+        findViewById(R.id.login_form).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (errorLayout.getVisibility() == View.VISIBLE){
+                    errorLayout.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
 
         mSlidingUpLayout.setPanelHeight(0);
         mSlidingUpLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -213,31 +228,38 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(firstname)) {
-            mFirst.setError(getString(R.string.error_field_required));
+//            mFirst.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mFirst;
             cancel = true;
         } else if (TextUtils.isEmpty(lastname)) {
-            mLast.setError(getString(R.string.error_field_required));
+//            mLast.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mLast;
             cancel = true;
         } else if (TextUtils.isEmpty(email)) {
-            mEmail.setError(getString(R.string.error_field_required));
+//            mEmail.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mEmail;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
-            mEmail.setError(getString(R.string.error_invalid_email));
+//            mEmail.setError(getString(R.string.error_invalid_email));
+            errorText.setText(getString(R.string.error_invalid_email));
             focusView = mEmail;
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
-            mPassword.setError(getString(R.string.error_field_required));
+//            mPassword.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mPassword;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password)) {
-            mPassword.setError(getString(R.string.error_invalid_password));
+//            mPassword.setError(getString(R.string.error_invalid_password));
+            errorText.setText(getString(R.string.error_invalid_password));
             focusView = mPassword;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password, confirm)) {
-            mConfirm.setError(getString(R.string.error_match));
+//            mConfirm.setError(getString(R.string.error_match));
+            errorText.setText(getString(R.string.error_match));
             focusView = mConfirm;
             cancel = true;
         }
@@ -246,9 +268,10 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            errorLayout.setVisibility(View.VISIBLE);
         } else {
+            errorLayout.setVisibility(View.INVISIBLE);
             showProgress(true);
-
             apiClient.register(email, firstname, lastname, password);
         }
     }

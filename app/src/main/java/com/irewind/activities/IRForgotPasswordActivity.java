@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
@@ -42,6 +45,10 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     View mRecoverForm;
     @InjectView(R.id.progress)
     CircularProgressBar progressBar;
+    @InjectView(R.id.errorLayout)
+    RelativeLayout errorLayout;
+    @InjectView(R.id.errorText)
+    TextView errorText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,15 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         Injector.inject(this);
 
         mSubmit.setOnClickListener(this);
+        findViewById(R.id.login_form).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (errorLayout.getVisibility() == View.VISIBLE){
+                    errorLayout.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -117,11 +133,13 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmail.setError(getString(R.string.error_field_required));
+//            mEmail.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mEmail;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
-            mEmail.setError(getString(R.string.error_invalid_email));
+//            mEmail.setError(getString(R.string.error_invalid_email));
+            errorText.setText(getString(R.string.error_invalid_email));
             focusView = mEmail;
             cancel = true;
         }
@@ -130,11 +148,12 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            errorLayout.setVisibility(View.VISIBLE);
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-
+            errorLayout.setVisibility(View.INVISIBLE);
             apiClient.resetPassword(email);
         }
     }

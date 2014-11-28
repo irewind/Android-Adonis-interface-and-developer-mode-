@@ -15,6 +15,7 @@ import android.provider.ContactsContract;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
@@ -25,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +90,10 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     Button mSignGoogle;
     @InjectView(R.id.facebook_sign_in_button)
     LoginButton mFacebookLogin;
+    @InjectView(R.id.errorLayout)
+    RelativeLayout errorLayout;
+    @InjectView(R.id.errorText)
+    TextView errorText;
 
     private String email = "";
 
@@ -158,6 +164,15 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         mRegister.setOnClickListener(this);
         mSignFacebook.setOnClickListener(this);
         mSignGoogle.setOnClickListener(this);
+        findViewById(R.id.login_form).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (errorLayout.getVisibility() == View.VISIBLE){
+                    errorLayout.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
 
         final View activityRootView = findViewById(R.id.activityRoot);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -272,19 +287,23 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
+//            mEmailView.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+            errorText.setText(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
+//            mPasswordView.setError(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+//            mPasswordView.setError(getString(R.string.error_invalid_password));
+            errorText.setText(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -293,11 +312,12 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            errorLayout.setVisibility(View.VISIBLE);
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-
+            errorLayout.setVisibility(View.INVISIBLE);
             this.email = email;
             apiClient.openSession(email, password);
         }
