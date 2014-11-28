@@ -247,19 +247,20 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     }
 
     private void updatePermissionInfo(VideoPermission permission, List<User> people) {
-        if (permission == null) {
-            return;
+        String accessType = VideoPermission.ACCESS_TYPE_PUBLIC;
+
+        if (permission != null) {
+            accessType = permission.getAccessType();
         }
+
+        List<Boolean> accessTypeStates = new ArrayList<Boolean>();
+        accessTypeStates.add(accessType.equals(VideoPermission.ACCESS_TYPE_PUBLIC));
+        accessTypeStates.add(accessType.equals(VideoPermission.ACCESS_TYPE_PRIVATE));
+        accessTypeStates.add(accessType.equals(VideoPermission.ACCESS_TYPE_CUSTOM));
 
         if (people == null) {
             people = new ArrayList<User>();
         }
-
-        List<Boolean> accessTypeStates = new ArrayList<Boolean>();
-        accessTypeStates.add(permission.getAccessType().equals(VideoPermission.ACCESS_TYPE_PUBLIC));
-        accessTypeStates.add(permission.getAccessType().equals(VideoPermission.ACCESS_TYPE_PRIVATE));
-        accessTypeStates.add(permission.getAccessType().equals(VideoPermission.ACCESS_TYPE_CUSTOM));
-
         mOptionAdapter = new IRVideoSettingsAdapter(getActivity(), slidingUpPanelLayout, mOptionListView, accessTypeStates, people);
         mOptionListView.setAdapter(mOptionAdapter);
     }
@@ -281,10 +282,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
 
     @Subscribe
     public void onEvent(VideoPermissionListEvent event) {
-        VideoPermission videoPermission = event.videoPermission;
-        if (videoPermission != null) {
-            updatePermissionInfo(videoPermission, event.users);
-        }
+        updatePermissionInfo(event.videoPermission, event.users);
     }
 
     @Subscribe
