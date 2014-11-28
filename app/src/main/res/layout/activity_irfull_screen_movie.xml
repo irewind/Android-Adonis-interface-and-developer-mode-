@@ -6,10 +6,11 @@
     tools:context="com.irewind.activities.IRFullScreenMovieActivity"
     android:background="@android:color/black">
 
-    <VideoView
-        android:id="@+id/videoView"
+    <fragment
+        android:id="@+id/player_fragment"
+        android:name="com.irewind.fragments.VideoPlayerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

@@ -1,6 +1,5 @@
 package com.irewind.player;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.irewind.R;
-import com.irewind.activities.IRFullScreenMovieActivity;
-import com.irewind.sdk.model.Video;
 
 public class SeekBarV3Fragment extends Fragment {
 
@@ -24,10 +21,7 @@ public class SeekBarV3Fragment extends Fragment {
     ImageView seek, cursor;
     TextView tCurent, tTotal;
     onSeekBarEvent listener;
-    ImageButton fullScreen;
     double total_time;
-
-    private Video video;
 
     public void setOnSeekBarEventListener(onSeekBarEvent listener) {
         this.listener = listener;
@@ -91,16 +85,6 @@ public class SeekBarV3Fragment extends Fragment {
         seek = (ImageView) v.findViewById(R.id.seek);
         cursor = (ImageView) v.findViewById(R.id.imageViewCursor);
         seekPar = (LinearLayout.LayoutParams) seek.getLayoutParams();
-        fullScreen = (ImageButton) v.findViewById(R.id.fullScreen);
-
-        fullScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
-                intent.putExtra("video", video.getMp4HighResolutionURL());
-                startActivity(intent);
-            }
-        });
 
         seek_layout.setOnTouchListener(new OnTouchListener() {
 
@@ -125,9 +109,5 @@ public class SeekBarV3Fragment extends Fragment {
     public interface onSeekBarEvent {
         public void seek(double x);
 
-    }
-
-    public void setVideo(Video video){
-        this.video = video;
     }
 }

@@ -60,12 +60,12 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
 
-    <ImageButton
-        android:id="@+id/fullScreen"
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_full_screen"
-        android:scaleType="fitCenter"
-        android:background="@android:color/transparent"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/fullScreen"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@drawable/ic_full_screen"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:background="@android:color/transparent"/>-->
 
 </LinearLayout>

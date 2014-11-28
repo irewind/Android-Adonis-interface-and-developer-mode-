@@ -135,14 +135,14 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Video video = mAdapter.getItem(position - 1);
 
-        try {
-            IRVideoDetailsFragment.sCt.cancel();
-            IRVideoDetailsFragment.sVideoView.stopPlayback();
-            IRVideoDetailsFragment.sVideoView.clearAnimation();
-            IRVideoDetailsFragment.sVideoView = null;
-        } catch (Exception e) {
-
-        }
+//        try {
+//            IRVideoDetailsFragment.stop();
+//            IRVideoDetailsFragment.sVideoView.stopPlayback();
+//            IRVideoDetailsFragment.sVideoView.clearAnimation();
+//            IRVideoDetailsFragment.sVideoView = null;
+//        } catch (Exception e) {
+//
+//        }
 
         IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
         fragment.video = video;

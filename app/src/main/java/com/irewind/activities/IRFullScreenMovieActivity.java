@@ -1,39 +1,39 @@
 package com.irewind.activities;
 
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.MediaController;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.irewind.R;
+import com.irewind.fragments.VideoPlayerFragment;
 import com.irewind.listeners.OrientationManager;
 import com.irewind.utils.Log;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class IRFullScreenMovieActivity extends IRBaseActivity implements OrientationManager.OrientationListener {
 
-    private String videoUrl;
-    @InjectView(R.id.videoView)
-    VideoView videoView;
+    public final static String EXTRA_VIDEO_URI = "videoURI";
+    public final static String EXTRA_VIDEO_THUMBNAIL_URI = "videoThumbnailURI";
+
+    private VideoPlayerFragment videoPlayerFragment;
+
+    private String videoURI;
+    private String videoThumbnailURI;
+
     private Handler mHandler;
     private Runnable mRunnable;
     private OrientationManager orientationListener;
 
     @Override
     public void onOrientationChange(OrientationManager.ScreenOrientation screenOrientation) {
-        switch(screenOrientation){
+        switch (screenOrientation) {
             case PORTRAIT:
             case REVERSED_PORTRAIT:
                 Log.d("Sensor", "landscape");
                 try {
                     mHandler.postDelayed(mRunnable, 800);
-                } catch (Exception e){
+                } catch (Exception e) {
 
                 }
                 break;
@@ -42,7 +42,7 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
                 Log.d("Sensor", "portrait");
                 try {
                     mHandler.removeCallbacks(mRunnable);
-                } catch (Exception e){
+                } catch (Exception e) {
 
                 }
                 break;
@@ -68,34 +68,13 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
 
         orientationListener = new OrientationManager(this, SensorManager.SENSOR_DELAY_NORMAL, this);
 
-        videoUrl = getIntent().getStringExtra("video");
+        videoURI = getIntent().getStringExtra(EXTRA_VIDEO_URI);
+        videoThumbnailURI = getIntent().getStringExtra(EXTRA_VIDEO_THUMBNAIL_URI);
 
-        if (videoUrl != null && videoUrl.length() > 0) {
-//            videoView.setVideoURI(Uri.parse(videoURI));
-            // Start the MediaController
-            try {
-                MediaController mediacontroller = new MediaController(this);
-                mediacontroller.setAnchorView(videoView);
-                // Get the URL from String VideoURL
-                videoView.setMediaController(mediacontroller);
-                videoView.setVideoURI(Uri.parse(videoUrl));
-                videoView.requestFocus();
-                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    // Close the progress bar and play the video
-                    public void onPrepared(MediaPlayer mp) {
-                        videoView.start();
-                    }
-                });
-                videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                    @Override
-                    public boolean onError(MediaPlayer mp, int what, int extra) {
-                        Toast.makeText(IRFullScreenMovieActivity.this, "Player-ul nu se poate initializa", Toast.LENGTH_LONG).show();
-                        return true;
-                    }
-                });
-            } catch (Exception e) {
-            }
-        }
+        videoPlayerFragment = (VideoPlayerFragment) getSupportFragmentManager().findFragmentById(R.id.player_fragment);
+        videoPlayerFragment.setVideoURI(videoURI);
+        videoPlayerFragment.setVideoThumbnailURI(videoThumbnailURI);
+        videoPlayerFragment.autoplay = true;
     }
 
     @Override
@@ -113,10 +92,6 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (videoView != null){
-            videoView.stopPlayback();
-            videoView.clearAnimation();
-            videoView = null;
-        }
+        videoPlayerFragment.stop();
     }
 }
