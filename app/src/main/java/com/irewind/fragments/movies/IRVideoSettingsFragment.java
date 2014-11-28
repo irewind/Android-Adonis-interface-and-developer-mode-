@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,10 @@ import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.model.VideoPermission;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +49,15 @@ import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRVideoSettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, IRVideoSettingsAdapter.OptionDelegate {
+
+    @InjectView(R.id.videoTitle)
+    TextView videoTitle;
+
+    @InjectView(R.id.videoCreatedDate)
+    TextView videoCreatedDate;
+
+//    @InjectView(R.id.videoDuration)
+//    TextView videoDuration;
 
     @InjectView(R.id.sliding_layout)
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -113,7 +125,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             public void onPanelCollapsed(View view) {
                 slidingUpPanelLayout.setSlidingEnabled(true);
                 IRTabActivity.abTitle.setText(getString(R.string.movie_settings));
-                IRTabActivity.abAction.setText(getString(R.string.save));
+                IRTabActivity.abAction.setText("");
                 IRTabActivity.abSearch.setVisibility(View.GONE);
                 IRTabActivity.abAction.setVisibility(View.VISIBLE);
             }
@@ -216,6 +228,8 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             }
         });
 
+        updateVideoInfo(video);
+
         apiClient.getEventBus().register(this);
 
         apiClient.listVideoViewPermissions(video.getId());
@@ -269,6 +283,15 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         mOptionAdapter = new IRVideoSettingsAdapter(getActivity(), slidingUpPanelLayout, mOptionListView, accessTypeStates, people);
         mOptionAdapter.setOptionDelegate(this);
         mOptionListView.setAdapter(mOptionAdapter);
+    }
+
+    private void updateVideoInfo(Video video) {
+        videoTitle.setText(video.getTitle());
+        if (video.getCreatedDate() > 0) {
+            videoCreatedDate.setText(DateUtils.getRelativeTimeSpanString(video.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+        } else {
+            videoCreatedDate.setText("");
+        }
     }
 
     void fetchPeople(int page) {

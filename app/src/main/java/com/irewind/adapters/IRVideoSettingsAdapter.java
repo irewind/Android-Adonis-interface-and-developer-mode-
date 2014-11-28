@@ -14,6 +14,7 @@ import com.irewind.R;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -60,9 +61,9 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.expandable_list_row_child, null);
             holder = new UserHolder();
-            holder.username = (TextView) convertView.findViewById(R.id.childTitle);
-            holder.profileImage = (RoundedImageView) convertView.findViewById(R.id.profileExpandablePicture);
-            holder.addPeople = (Button) convertView.findViewById(R.id.childButton);
+            holder.username = (TextView) convertView.findViewById(R.id.username);
+            holder.profileImage = (RoundedImageView) convertView.findViewById(R.id.profileImage);
+            holder.addPeople = (Button) convertView.findViewById(R.id.addButton);
 
             convertView.setTag(holder);
         } else {
@@ -81,6 +82,11 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
             });
         } else {
             User user = getChild(groupPosition, childPosition);
+            if (user.getPicture() != null && user.getPicture().length() > 0) {
+                Picasso.with(mContext).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(holder.profileImage);
+            } else {
+                holder.profileImage.setImageResource(R.drawable.img_default_picture);
+            }
             holder.username.setTextColor(mContext.getResources().getColor(android.R.color.black));
             holder.username.setText(user.getDisplayName());
         }
@@ -97,8 +103,6 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         TextView username;
         Button addPeople;
     }
-
-
 
     @Override
     public String getGroup(int groupPosition) {

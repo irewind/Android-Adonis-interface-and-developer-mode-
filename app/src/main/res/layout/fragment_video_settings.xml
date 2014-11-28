@@ -34,7 +34,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/titleList"
+                    android:id="@+id/videoTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -56,40 +56,30 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/date"
+                        android:id="@+id/videoCreatedDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10 days ago"
                         android:textColor="@color/gray_dark_grid"
                         android:textSize="13sp" />
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:background="@color/divider_gray" />
+                    <!--<View-->
+                        <!--android:layout_width="1dp"-->
+                        <!--android:layout_height="10dp"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:layout_marginLeft="10dp"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:background="@color/divider_gray" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/videoDuration"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="2 hours"-->
+                        <!--android:textColor="@color/gray_light_grid"-->
+                        <!--android:textSize="13sp" />-->
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/hour"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="2 hours"
-                    android:textColor="@color/gray_light_grid"
-                    android:textSize="13sp" />
-
-
-                <TextView
-                    android:id="@+id/views"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="No movies"
-                    android:textColor="@color/text_red" />
             </LinearLayout>
         </LinearLayout>
 
