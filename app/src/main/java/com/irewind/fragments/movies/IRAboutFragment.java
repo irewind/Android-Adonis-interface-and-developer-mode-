@@ -134,7 +134,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
                 dislike();
                 break;
             case R.id.settings:
-                IRSettingsFragment fragment = IRSettingsFragment.newInstance();
+                IRVideoSettingsFragment fragment = IRVideoSettingsFragment.newInstance();
                 fragment.video = video;
                 IRTabActivity.mLibraryFragment = fragment;
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

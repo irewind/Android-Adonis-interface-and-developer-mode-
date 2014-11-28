@@ -7,7 +7,7 @@
     android:gravity="bottom"
     sothree:panelHeight="68dp"
     sothree:shadowHeight="4dp"
-    tools:context="com.irewind.fragments.movies.IRSettingsFragment">
+    tools:context="com.irewind.fragments.movies.IRVideoSettingsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,38 +37,38 @@
                     android:id="@+id/titleList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:lines="2"
-                    android:minLines="2"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
-                    android:textColor="@android:color/black"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:minLines="2"
                     android:text="Prima Evadare Marathon 2014"
+                    android:textColor="@android:color/black"
                     android:textSize="13sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray_dark_grid"
                         android:text="10 days ago"
+                        android:textColor="@color/gray_dark_grid"
                         android:textSize="13sp" />
 
                     <View
                         android:layout_width="1dp"
                         android:layout_height="10dp"
-                        android:background="@color/divider_gray"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/divider_gray" />
 
                 </LinearLayout>
 
@@ -76,9 +76,9 @@
                     android:id="@+id/hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/gray_light_grid"
                     android:layout_marginLeft="10dp"
                     android:text="2 hours"
+                    android:textColor="@color/gray_light_grid"
                     android:textSize="13sp" />
 
 
@@ -86,10 +86,10 @@
                     android:id="@+id/views"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_red"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
-                    android:text="No movies" />
+                    android:text="No movies"
+                    android:textColor="@color/text_red" />
             </LinearLayout>
         </LinearLayout>
 
@@ -97,6 +97,7 @@
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     </LinearLayout>
 
     <RelativeLayout
@@ -113,7 +114,22 @@
             android:id="@+id/emptySettingsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_people"/>
+            android:text="@string/no_people" />
+
+        <fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/peopleProgress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true"
+            app:cpb_color="@color/text_red"
+            app:cpb_max_sweep_angle="300"
+            app:cpb_min_sweep_angle="10"
+            app:cpb_rotation_speed="1.0"
+            app:cpb_stroke_width="4dp"
+            app:cpb_sweep_speed="1.0" />
 
     </RelativeLayout>
 
