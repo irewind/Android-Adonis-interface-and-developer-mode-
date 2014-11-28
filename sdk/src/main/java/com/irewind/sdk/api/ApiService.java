@@ -11,6 +11,7 @@ import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
 import com.irewind.sdk.api.response.VideoListResponse;
 import com.irewind.sdk.api.response.VideoListResponse2;
+import com.irewind.sdk.api.response.VideoPermissionResponse;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.model.Video;
 
@@ -141,10 +142,10 @@ public interface ApiService {
                    @Path("id") long videoID,
                    Callback<Video> cb);
 
-    @GET("/rest/video/search/findVideosWithPagination")
-    VideoListResponse listVideos(@Header("Authorization") String authorization,
-                                 @Query("pageNo") Integer page,
-                                 @Query("pageSize") Integer size);
+    @GET("/rest/v2/search-videos")
+    VideoListResponse2 listVideos(@Header("Authorization") String authorization,
+                                  @Query("pageNo") Integer page,
+                                  @Query("pageSize") Integer size);
 
     @GET("/rest/v2/search-videos")
     VideoListResponse2 searchVideos(@Header("Authorization") String authorization,
@@ -176,18 +177,38 @@ public interface ApiService {
 
     // --- Permissions --- //
 
-    @GET("/rest/v2/get-video-access/?permission=VIEW")
-    void videoPermissionView(@Header("Authorization") String authorization,
-                             @Query("videoId") long videoID,
-                             Callback cb);
+    @GET("/rest/v2/get-video-access/")
+    void videoPermission(@Header("Authorization") String authorization,
+                         @Query("videoId") long videoID,
+                         @Query("permission") String accessType,
+                         Callback<VideoPermissionResponse> cb);
+
+    @POST("/rest/v2/make-video-public/?view=true&rate=true&comment=true")
+    @FormUrlEncoded
+    void makeVideoPublic(@Header("Authorization") String authorization,
+                         @Field("videoId") long videoID,
+                         Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/make-video-private/?view=false&rate=false&comment=false")
+    @FormUrlEncoded
+    void makeVideoPrivate(@Header("Authorization") String authorization,
+                          @Field("videoId") long videoID,
+                          Callback<BaseResponse> cb);
+
+    @POST("/rest/v2/grant-user-video-access/?view=true&rate=true&comment=true")
+    @FormUrlEncoded
+    void grantUserVideoAccess(@Header("Authorization") String authorization,
+                              @Field("userEmail") String userEmail,
+                              @Field("videoId") long videoID,
+                              Callback<BaseResponse> cb);
 
     // --- Votes --- //
 
     @POST("/rest/user-video-vote")
     @Headers("Content-Type: application/json")
     void vote(@Header("Authorization") String authorization,
-                          @Body VoteRequest voteRequest,
-                          Callback<BaseResponse> cb);
+              @Body VoteRequest voteRequest,
+              Callback<BaseResponse> cb);
 
     // --- Comments --- //
 
