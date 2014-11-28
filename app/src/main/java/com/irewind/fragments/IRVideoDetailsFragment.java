@@ -44,6 +44,7 @@ import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
 import com.irewind.utils.Log;
 import com.jazzyviewpager.JazzyViewPager;
+import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -67,6 +68,12 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
     Button btnComments;
     @InjectView(R.id.progress)
     CircularProgressBar progressBarVideo;
+    @InjectView(R.id.playerLayout)
+    RelativeLayout playerLayout;
+    @InjectView(R.id.holder)
+    RelativeLayout holderLayout;
+    @InjectView(R.id.videoPlaceholder)
+    ImageView videoPlaceholder;
 
     private SeekBarV3Fragment seekBar;
     private int fadeTime = 3000;
@@ -216,49 +223,9 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         });
 
         playPause.setVisibility(View.INVISIBLE);
+        Picasso.with(getActivity()).load(video.getThumbnail()).into(videoPlaceholder);
 
         seekBar.setVideo(video);
-
-        String videoURI = video.getMp4HighResolutionURL();
-        if (videoURI == null || videoURI.length() == 0) {
-            videoURI = video.getOggHighResolutionURL();
-        }
-        if (videoURI == null || videoURI.length() == 0) {
-            videoURI = video.getOggLowResolutionURL();
-        }
-
-        if (videoURI != null && videoURI.length() > 0) {
-//            videoView.setVideoURI(Uri.parse(videoURI));
-            // Start the MediaController
-            try {
-                MediaController mediacontroller = new MediaController(
-                        getActivity());
-                mediacontroller.setAnchorView(videoView);
-                mediacontroller.setVisibility(View.INVISIBLE);
-                // Get the URL from String VideoURL
-                videoView.setMediaController(mediacontroller);
-                videoView.setVideoURI(Uri.parse(videoURI));
-                videoView.requestFocus();
-                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    // Close the progress bar and play the video
-                    public void onPrepared(MediaPlayer mp) {
-//                        videoView.start();
-//                        playPause.setImageResource(R.drawable.pause);
-//                        isPlaying = true;
-                        progressBarVideo.setVisibility(View.INVISIBLE);
-                        playPause.setVisibility(View.VISIBLE);
-                    }
-                });
-                videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                    @Override
-                    public boolean onError(MediaPlayer mp, int what, int extra) {
-                        Toast.makeText(getActivity(), "Player-ul nu se poate initializa", Toast.LENGTH_LONG).show();
-                        return true;
-                    }
-                });
-            } catch (Exception e) {
-            }
-        }
 
 //        videoView.start();
 
@@ -280,6 +247,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
         sCt = ct;
         sVideoView = videoView;
+        holderLayout.setOnClickListener(this);
     }
 
     @Override
@@ -575,6 +543,50 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
             case R.id.comments:
                 if (mJazzyViewPager.getCurrentItem() != 2) {
                     mJazzyViewPager.setCurrentItem(2, false);
+                }
+                break;
+            case R.id.holder:
+                holderLayout.setVisibility(View.INVISIBLE);
+                playerLayout.setVisibility(View.VISIBLE);
+                String videoURI = video.getMp4HighResolutionURL();
+                if (videoURI == null || videoURI.length() == 0) {
+                    videoURI = video.getOggHighResolutionURL();
+                }
+                if (videoURI == null || videoURI.length() == 0) {
+                    videoURI = video.getOggLowResolutionURL();
+                }
+
+                if (videoURI != null && videoURI.length() > 0) {
+//            videoView.setVideoURI(Uri.parse(videoURI));
+                    // Start the MediaController
+                    try {
+                        MediaController mediacontroller = new MediaController(
+                                getActivity());
+                        mediacontroller.setAnchorView(videoView);
+                        mediacontroller.setVisibility(View.INVISIBLE);
+                        // Get the URL from String VideoURL
+                        videoView.setMediaController(mediacontroller);
+                        videoView.setVideoURI(Uri.parse(videoURI));
+                        videoView.requestFocus();
+                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            // Close the progress bar and play the video
+                            public void onPrepared(MediaPlayer mp) {
+                                videoView.start();
+                                playPause.setImageResource(R.drawable.pause);
+                                isPlaying = true;
+                                progressBarVideo.setVisibility(View.INVISIBLE);
+                                playPause.setVisibility(View.VISIBLE);
+                            }
+                        });
+                        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                            @Override
+                            public boolean onError(MediaPlayer mp, int what, int extra) {
+                                Toast.makeText(getActivity(), "Player-ul nu se poate initializa", Toast.LENGTH_LONG).show();
+                                return true;
+                            }
+                        });
+                    } catch (Exception e) {
+                    }
                 }
                 break;
         }
