@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,10 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
     RelativeLayout errorLayout;
     @InjectView(R.id.errorText)
     TextView errorText;
+    @InjectView(R.id.textBy)
+    TextView textBy;
+    @InjectView(R.id.linearPopup)
+    LinearLayout linearLayout;
 
     @Inject
     ApiClient apiClient;
@@ -126,6 +131,8 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             @Override
             public void onPanelCollapsed(View view) {
                 mSlidingUpLayout.setSlidingEnabled(true);
+                textBy.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
 
             @Override

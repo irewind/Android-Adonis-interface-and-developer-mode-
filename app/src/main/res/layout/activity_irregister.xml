@@ -36,7 +36,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/media"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:paddingBottom="20dp"
+            android:clipToPadding="false">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -55,7 +57,7 @@
                         android:layout_width="@dimen/login_logo_size"
                         android:layout_height="@dimen/login_logo_size"
                         android:src="@drawable/logo"
-                        android:layout_marginTop="@dimen/login_logo_top"
+                        android:layout_marginTop="10dp"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center" />
 
@@ -175,6 +177,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/textBy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="By Joining iRewind you agree to our"
@@ -184,6 +187,7 @@
                         android:layout_marginTop="20dp" />
 
                     <LinearLayout
+                        android:id="@+id/linearPopup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
