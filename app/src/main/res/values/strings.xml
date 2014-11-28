@@ -108,5 +108,11 @@
     <string name="title_activity_irfull_screen_movie">IRFullScreenMovieActivity</string>
     <string name="search_videos">Search videos</string>
     <string name="search_people">Search people</string>
+    <string name="error_email_missing">Please enter your email</string>
+    <string name="error_password_missing">Password should have at least six characters.</string>
+    <string name="error_missing_firstname">Please enter your first name</string>
+    <string name="error_missing_lastname">Please enter your last name</string>
+    <string name="error_invalid_password_2">Password must have at least six characters.</string>
+    <string name="error_bad_email">There is no account associated with this email addresss.</string>
 
 </resources>
