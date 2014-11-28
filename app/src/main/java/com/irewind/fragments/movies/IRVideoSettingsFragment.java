@@ -28,6 +28,8 @@ import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
 import com.irewind.sdk.api.event.VideoPermissionListEvent;
 import com.irewind.sdk.api.event.VideoPermissionListFailedEvent;
+import com.irewind.sdk.api.event.VideoPermissionUpdateEvent;
+import com.irewind.sdk.api.event.VideoPermissionUpdateFailedEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
@@ -43,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
-public class IRVideoSettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class IRVideoSettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, IRVideoSettingsAdapter.OptionDelegate {
 
     @InjectView(R.id.sliding_layout)
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -59,7 +61,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     TextView emptyText;
     private IRPeopleAdapter mPeopleAdapter;
 
-    @InjectView(R.id.progress)
+    @InjectView(R.id.peopleProgress)
     CircularProgressBar peopleProgressBar;
 
     @Inject
@@ -244,10 +246,13 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         slidingUpPanelLayout.setSlidingEnabled(true);
         slidingUpPanelLayout.collapsePanel();
+
+        User user = mPeopleAdapter.getItem(position - 1);
+        addPerson(user);
     }
 
     private void updatePermissionInfo(VideoPermission permission, List<User> people) {
-        String accessType = VideoPermission.ACCESS_TYPE_PUBLIC;
+        String accessType = VideoPermission.ACCESS_TYPE_PRIVATE;
 
         if (permission != null) {
             accessType = permission.getAccessType();
@@ -262,6 +267,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             people = new ArrayList<User>();
         }
         mOptionAdapter = new IRVideoSettingsAdapter(getActivity(), slidingUpPanelLayout, mOptionListView, accessTypeStates, people);
+        mOptionAdapter.setOptionDelegate(this);
         mOptionListView.setAdapter(mOptionAdapter);
     }
 
@@ -278,6 +284,18 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         }
     }
 
+    public void setOption(int optionIndex) {
+        if (optionIndex == 0) {
+            apiClient.makeVideoPublic(video.getId());
+        } else if (optionIndex == 1) {
+            apiClient.makeVideoPrivate(video.getId());
+        }
+    }
+
+    public void addPerson(User user) {
+        apiClient.grantUserVideoAccess(video.getId(), user.getEmail());
+    }
+
     // --- Events --- //
 
     @Subscribe
@@ -287,7 +305,16 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
 
     @Subscribe
     public void onEvent(VideoPermissionListFailedEvent event) {
+    }
 
+    @Subscribe
+    public void onEvent(VideoPermissionUpdateEvent event) {
+        apiClient.listVideoViewPermissions(video.getId());
+    }
+
+    @Subscribe
+    public void onEvent(VideoPermissionUpdateFailedEvent event) {
+        apiClient.listVideoViewPermissions(video.getId());
     }
 
     @Subscribe

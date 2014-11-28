@@ -27,6 +27,8 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
 
     private String[] GROUP = {"Public", "Private", "Some People"};
 
+    private OptionDelegate optionDelegate;
+
     public IRVideoSettingsAdapter(Context context, SlidingUpPanelLayout slidingUpPanelLayout,
                                   ExpandableListView expandableListView, List<Boolean> accessTypeStates, List<User> people) {
         mContext = context;
@@ -70,7 +72,13 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         if (groupPosition == 2 && childPosition == people.size()) {
             holder.username.setText(mContext.getString(R.string.add_another_underline));
             holder.username.setTextColor(mContext.getResources().getColor(R.color.text_red));
-            holder.addPeople.setOnClickListener(new AddPeopleListener());
+            holder.addPeople.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    slidingUpPanelLayout.setSlidingEnabled(true);
+                    slidingUpPanelLayout.expandPanel();
+                }
+            });
         } else {
             User user = getChild(groupPosition, childPosition);
             holder.username.setTextColor(mContext.getResources().getColor(android.R.color.black));
@@ -90,13 +98,7 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         Button addPeople;
     }
 
-    private class AddPeopleListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            slidingUpPanelLayout.setSlidingEnabled(true);
-            slidingUpPanelLayout.expandPanel();
-        }
-    }
+
 
     @Override
     public String getGroup(int groupPosition) {
@@ -126,7 +128,23 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         holder.optionCheckBox = (CheckBox) view.findViewById(R.id.groupCheckbox);
         holder.optionSelectButton = (Button) view.findViewById(R.id.groupSelect);
 
-        holder.optionSelectButton.setOnClickListener(new OptionClickListener(groupPosition));
+        holder.optionSelectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < 3; i++) {
+                    if (i == groupPosition) {
+                        accessTypeStates.set(i, true);
+                    } else {
+                        accessTypeStates.set(i, false);
+                    }
+                }
+                notifyDataSetChanged();
+
+                if (optionDelegate != null) {
+                    optionDelegate.setOption(groupPosition);
+                }
+            }
+        });
 
         if (groupPosition == 2 && accessTypeStates.get(groupPosition)) {
             expandableListView.expandGroup(groupPosition);
@@ -156,24 +174,15 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    private class OptionClickListener implements View.OnClickListener {
+    public OptionDelegate getOptionDelegate() {
+        return optionDelegate;
+    }
 
-        int optionPosition;
+    public void setOptionDelegate(OptionDelegate optionDelegate) {
+        this.optionDelegate = optionDelegate;
+    }
 
-        public OptionClickListener(int groupPosition) {
-            this.optionPosition = groupPosition;
-        }
-
-        @Override
-        public void onClick(View v) {
-            for (int i = 0; i < 3; i++) {
-                if (i == optionPosition) {
-                    accessTypeStates.set(i, true);
-                } else {
-                    accessTypeStates.set(i, false);
-                }
-            }
-            notifyDataSetChanged();
-        }
+    public interface OptionDelegate {
+        void setOption(int optionIndex);
     }
 }
