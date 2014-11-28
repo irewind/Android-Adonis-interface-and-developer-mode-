@@ -288,7 +288,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
 //            mEmailView.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_email_missing));
             focusView = mEmailView;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
@@ -298,7 +298,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
 //            mPasswordView.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_password_missing));
             focusView = mPasswordView;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password)) {
@@ -473,7 +473,9 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         showProgress(false);
 
         if (event.reason == SessionOpenFailEvent.Reason.BadCredentials) {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
+            errorText.setText(getString(R.string.error_bad_credentials));
+            errorLayout.setVisibility(View.VISIBLE);
         } else if (event.reason == SessionOpenFailEvent.Reason.Unknown) {
             if (event.message != null) {
                 Toast.makeText(getApplicationContext(), event.message, Toast.LENGTH_LONG).show();

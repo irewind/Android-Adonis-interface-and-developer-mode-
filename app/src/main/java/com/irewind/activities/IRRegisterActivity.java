@@ -236,17 +236,17 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         // Check for a valid email address.
         if (TextUtils.isEmpty(firstname)) {
 //            mFirst.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_missing_firstname));
             focusView = mFirst;
             cancel = true;
         } else if (TextUtils.isEmpty(lastname)) {
 //            mLast.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_missing_lastname));
             focusView = mLast;
             cancel = true;
         } else if (TextUtils.isEmpty(email)) {
 //            mEmail.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_email_missing));
             focusView = mEmail;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
@@ -256,12 +256,12 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
 //            mPassword.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_password_missing));
             focusView = mPassword;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password)) {
 //            mPassword.setError(getString(R.string.error_invalid_password));
-            errorText.setText(getString(R.string.error_invalid_password));
+            errorText.setText(getString(R.string.error_invalid_password_2));
             focusView = mPassword;
             cancel = true;
         } else if (!CheckUtil.isPasswordValid(password, confirm)) {

@@ -134,7 +134,7 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
 //            mEmail.setError(getString(R.string.error_field_required));
-            errorText.setText(getString(R.string.error_field_required));
+            errorText.setText(getString(R.string.error_email_missing));
             focusView = mEmail;
             cancel = true;
         } else if (!CheckUtil.isEmailValid(email)) {
@@ -201,7 +201,9 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         showProgress(false);
 
         if (event.reason == ResetPasswordFailEvent.Reason.NoUser) {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
+            errorText.setText(getString(R.string.error_bad_email));
+            errorLayout.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
         }
