@@ -25,6 +25,7 @@ android {
         targetSdkVersion 21
         versionCode 13
         versionName "1.0.0.13"
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -87,4 +88,7 @@ dependencies {
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.github.castorflex.smoothprogressbar:library:1.0.0'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.0.1'
+
+    // Multi-dex Lib
+    compile 'com.android.support:multidex:1.0.0'
 }
