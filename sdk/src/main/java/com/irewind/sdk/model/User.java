@@ -37,6 +37,9 @@ public class User {
     @SerializedName("lastLoginDate")
     private long lastLoginDate;
 
+    @SerializedName("vpsId")
+    private long vpsId;
+
     public long getId() {
         return id;
     }
@@ -81,6 +84,10 @@ public class User {
         return lastLoginDate;
     }
 
+    public long getVpsId() {
+        return vpsId;
+    }
+
     public String getDisplayName() {
         String name = "";
         if (getFirstname() != null && getFirstname().length() > 0) {
@@ -105,8 +112,9 @@ public class User {
         return name;
     }
 
-    public User(long id, String email, String firstname, String lastname, String fullname, long createdDate, String status, String authProvider, String role, String picture, long lastLoginDate) {
+    public User(long id, long vpsId, String email, String firstname, String lastname, String fullname, long createdDate, String status, String authProvider, String role, String picture, long lastLoginDate) {
         this.id = id;
+        this.vpsId = vpsId;
         this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -133,6 +141,7 @@ public class User {
                 ", role='" + role + '\'' +
                 ", picture='" + picture + '\'' +
                 ", lastLoginDate=" + lastLoginDate +
+                ", vpsId=" + vpsId +
                 '}';
     }
 }

@@ -154,15 +154,6 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (IrewindBackend.Instance != null) {
-            mCircleButton.setSelected(IrewindBackend.Instance.recordingState);
-        }
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.library:
@@ -198,13 +189,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 }
                 break;
             case R.id.circle:
-                if (!IrewindBackend.Instance.recordingState) {
-                    IrewindBackend.Instance.startRecording();
-                    mCircleButton.setSelected(true);
-                } else {
-                    IrewindBackend.Instance.stopRecording();
-                    mCircleButton.setSelected(false);
-                }
+                toggleCheckIn();
                 break;
         }
     }
@@ -307,50 +292,76 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 .commit();
     }
 
+    public boolean isCheckInEnabled() {
+        return IrewindBackend.Instance != null && IrewindBackend.Instance.recordingState;
+    }
+
     public void setupCheckIn() {
         User currentUser = apiClient.getActiveUser();
         if (currentUser != null) {
+
+            IrewindGpsUpdatesListener gpsUpdatesListener = new IrewindGpsUpdatesListener() {
+                @Override
+                public void noGPS() {
+                    Log.d(TAG, "noGPS");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void initEnded(String s) {
+                    Log.d(TAG, "initEnded");
+                }
+
+                @Override
+                public void locationChanged(iLocation iLocation) {
+                    Log.d(TAG, "locationChanged");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "locationChanged", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void notInAnIrwLocation(String s) {
+                    Log.d(TAG, "notInAnIrwLocation");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "notInAnIrwLocation", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            };
+
             if (IrewindBackend.Instance == null) {
-                IrewindBackend.Instance = new IrewindBackend(this, currentUser.getEmail(), "" + currentUser.getId(), new IrewindGpsUpdatesListener() {
-                    @Override
-                    public void noGPS() {
-                        Log.d(TAG, "noGPS");
-
-                        IRTabActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                IRTabActivity.this.mCircleButton.setSelected(false);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void initEnded(String s) {
-                        Log.d(TAG, "initEnded");
-                    }
-
-                    @Override
-                    public void locationChanged(iLocation iLocation) {
-                        Log.d(TAG, "locationChanged");
-                        Toast.makeText(getApplicationContext(), "locationChanged", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void notInAnIrwLocation(String s) {
-                        Log.d(TAG, "notInAnIrwLocation");
-                        Toast.makeText(getApplicationContext(), "notInAnIrwLocation", Toast.LENGTH_LONG).show();
-                        IRTabActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                IRTabActivity.this.mCircleButton.setSelected(false);
-                            }
-                        });
-                    }
-                });
-
-                IrewindBackend.Instance.init();
-                IrewindBackend.Instance.recordingState = false;
+                IrewindBackend.Instance = new IrewindBackend(this, currentUser.getEmail(), "" + currentUser.getVpsId(), "" + currentUser.getId(), gpsUpdatesListener);
+            }
+            else {
+                IrewindBackend.Instance.setContext(this);
+                IrewindBackend.Instance.setGpsUpdatesListener(gpsUpdatesListener);
             }
         }
+
+        mCircleButton.setSelected(isCheckInEnabled());
+    }
+
+    public void toggleCheckIn() {
+        if (isCheckInEnabled()) {
+            IrewindBackend.Instance.stopRecording();
+        } else {
+            IrewindBackend.Instance.startRecording();
+        }
+
+        mCircleButton.setSelected(isCheckInEnabled());
     }
 }
