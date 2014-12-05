@@ -114,12 +114,17 @@ public class IRAddCommentActivity extends IRBaseActivity {
     }
 
     void addComment() {
+        String content = commentEdit.getText().toString();
+        if (content == null || content.trim().length() == 0) {
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         if (parentCommentId == -1) {
-            apiClient.addComment(videoId, commentEdit.getText().toString());
+            apiClient.addComment(videoId, content);
         }
         else {
-            apiClient.replyComment(videoId, commentEdit.getText().toString(), parentCommentId);
+            apiClient.replyComment(videoId, content, parentCommentId);
         }
     }
 
