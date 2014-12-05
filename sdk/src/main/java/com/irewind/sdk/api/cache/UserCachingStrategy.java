@@ -3,10 +3,10 @@ package com.irewind.sdk.api.cache;
 import android.os.Bundle;
 
 import com.irewind.sdk.model.User;
-import com.irewind.sdk.util.BundleUtil;
 
 public abstract class UserCachingStrategy {
     public static final String USER_ID_KEY = "com.irewind.UserCachingStrategy.UserId";
+    public static final String USER_VPS_ID_KEY = "com.irewind.UserCachingStrategy.UserVpsId";
     public static final String EMAIL_KEY = "com.irewind.UserCachingStrategy.Email";
     public static final String FIRSTNAME_KEY = "com.irewind.UserCachingStrategy.Firstname";
     public static final String LASTNAME_KEY = "com.irewind.TokenCachingStrategy.Lastname";
@@ -27,6 +27,7 @@ public abstract class UserCachingStrategy {
     public static User createFromBundle(Bundle bundle) {
         return new User(
                 bundle.getLong(UserCachingStrategy.USER_ID_KEY),
+                bundle.getLong(UserCachingStrategy.USER_VPS_ID_KEY),
                 bundle.getString(UserCachingStrategy.EMAIL_KEY),
                 bundle.getString(UserCachingStrategy.FIRSTNAME_KEY),
                 bundle.getString(UserCachingStrategy.LASTNAME_KEY),
@@ -44,6 +45,7 @@ public abstract class UserCachingStrategy {
         Bundle bundle = new Bundle();
 
         bundle.putLong(UserCachingStrategy.USER_ID_KEY, user.getId());
+        bundle.putLong(UserCachingStrategy.USER_VPS_ID_KEY, user.getVpsId());
         bundle.putString(UserCachingStrategy.EMAIL_KEY, user.getEmail());
         bundle.putString(UserCachingStrategy.FIRSTNAME_KEY, user.getFirstname());
         bundle.putString(UserCachingStrategy.LASTNAME_KEY, user.getLastname());

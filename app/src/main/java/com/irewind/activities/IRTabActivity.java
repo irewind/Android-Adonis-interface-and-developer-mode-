@@ -28,21 +28,32 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.common.IOnSearchCallback;
 import com.irewind.fragments.IRAccountFragment;
 import com.irewind.fragments.IRLibraryFragment;
 import com.irewind.fragments.IRMoreFragment;
 import com.irewind.fragments.IRPeopleFragment;
-import com.irewind.fragments.IRRewindFunctionalityFragment;
+import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.model.User;
+import com.irewind.utils.Log;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import javax.inject.Inject;
 
 import at.markushi.ui.CircleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import myClass.IrewindGpsUpdatesListener;
+import myClass.iLocation;
+import utils.IrewindBackend;
 
 public class IRTabActivity extends IRBaseActivity implements View.OnClickListener {
+
+    public final static String TAG = IRTabActivity.class.getCanonicalName();
 
     @InjectView(R.id.circle)
     CircleButton mCircleButton;
@@ -54,6 +65,9 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     ImageButton mAccount;
     @InjectView(R.id.more)
     ImageButton mMore;
+
+    @Inject
+    ApiClient apiClient;
 
     public static ImageButton abBack, abSearch;
     public static TextView abTitle;
@@ -79,6 +93,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setNavigationBarTintEnabled(true);
 
+        Injector.inject(this);
         ButterKnife.inject(this);
 
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.nav_bar));
@@ -134,6 +149,8 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                         }
                     }
                 });
+
+        setupCheckIn();
     }
 
     @Override
@@ -172,9 +189,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 }
                 break;
             case R.id.circle:
-                if (switchSelectionMiddle(mCircleButton)) {
-                    switchFragment(IRRewindFunctionalityFragment.newInstance());
-                }
+                toggleCheckIn();
                 break;
         }
     }
@@ -195,7 +210,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
             SearchView.SearchAutoComplete autoComplete = (SearchView.SearchAutoComplete) ll3.getChildAt(0);
 // set the hint text color
             autoComplete.setHintTextColor(Color.WHITE);
-        } catch (Exception e){
+        } catch (Exception e) {
         }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -264,19 +279,6 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
             if (btn != mPeople) {
                 mPeople.setSelected(false);
             }
-            mCircleButton.setSelected(false);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean switchSelectionMiddle(CircleButton btn) {
-        if (!btn.isSelected()) {
-            btn.setSelected(true);
-            mAccount.setSelected(false);
-            mLibrary.setSelected(false);
-            mMore.setSelected(false);
-            mPeople.setSelected(false);
             return true;
         }
         return false;
@@ -288,5 +290,78 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
         ft.replace(R.id.container, fragment)
                 .disallowAddToBackStack()
                 .commit();
+    }
+
+    public boolean isCheckInEnabled() {
+        return IrewindBackend.Instance != null && IrewindBackend.Instance.recordingState;
+    }
+
+    public void setupCheckIn() {
+        User currentUser = apiClient.getActiveUser();
+        if (currentUser != null) {
+
+            IrewindGpsUpdatesListener gpsUpdatesListener = new IrewindGpsUpdatesListener() {
+                @Override
+                public void noGPS() {
+                    Log.d(TAG, "noGPS");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void initEnded(String s) {
+                    Log.d(TAG, "initEnded");
+                }
+
+                @Override
+                public void locationChanged(iLocation iLocation) {
+                    Log.d(TAG, "locationChanged");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "locationChanged", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void notInAnIrwLocation(String s) {
+                    Log.d(TAG, "notInAnIrwLocation");
+
+                    IRTabActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "notInAnIrwLocation", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            };
+
+            if (IrewindBackend.Instance == null) {
+                IrewindBackend.Instance = new IrewindBackend(this, currentUser.getEmail(), "" + currentUser.getVpsId(), "" + currentUser.getId(), gpsUpdatesListener);
+            }
+            else {
+                IrewindBackend.Instance.setContext(this);
+                IrewindBackend.Instance.setGpsUpdatesListener(gpsUpdatesListener);
+            }
+        }
+
+        mCircleButton.setSelected(isCheckInEnabled());
+    }
+
+    public void toggleCheckIn() {
+        if (isCheckInEnabled()) {
+            IrewindBackend.Instance.stopRecording();
+        } else {
+            IrewindBackend.Instance.startRecording();
+        }
+
+        mCircleButton.setSelected(isCheckInEnabled());
     }
 }
