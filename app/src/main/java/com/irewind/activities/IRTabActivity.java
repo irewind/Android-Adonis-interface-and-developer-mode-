@@ -308,7 +308,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -325,7 +325,8 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "locationChanged", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.checked_in), Toast.LENGTH_LONG).show();
+                            mCircleButton.setSelected(true);
                         }
                     });
                 }
@@ -337,7 +338,8 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "notInAnIrwLocation", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.not_in_area), Toast.LENGTH_LONG).show();
+                            mCircleButton.setSelected(false);
                         }
                     });
                 }

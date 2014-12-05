@@ -30,6 +30,9 @@
     <string name="confirm_password">Confirm password</string>
     <string name="error_match">Passwords doesn\'t match</string>
 
+    <string name="not_in_area">You are not in an iRewind enabled area.\n\n Based on your location this functionality will be automatically made available.</string>
+    <string name="checked_in">You are now checked in.\n\n Enjoy your journey! When you are done, check out to receive your iRewind movie.</string>
+
     <string-array name="jazzy_effects">
         <item>Standard</item>
         <item>Tablet</item>
