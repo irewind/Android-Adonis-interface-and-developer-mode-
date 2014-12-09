@@ -29,7 +29,7 @@ android {
     }
     buildTypes {
         debug {
-            runProguard false
+            minifyEnabled false
             // zipAlign false // this is default for debug
         }
         release {
@@ -48,26 +48,31 @@ android {
         exclude 'META-INF/NOTICE'
     }
     applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def apk = output.outputFile;
+            def newName;
 
-        def apk = variant.outputFile;
-        def newName;
+            if (variant.buildType.name == "release") {
+                newName = apk.name.replace(".apk", "-release-irewind" + "-v" + defaultConfig.versionName + ".apk");
+            } else {
+                newName = apk.name.replace(".apk", "-irewind" + "-v" + defaultConfig.versionName + ".apk");
+            }
 
-        if (variant.buildType.name == "release") {
-            newName = apk.name.replace(".apk", "-release-irewind" + "-v" + defaultConfig.versionName + ".apk");
-        } else {
-            newName = apk.name.replace(".apk", "-irewind" + "-v" + defaultConfig.versionName + ".apk");
+
+            output.outputFile = new File(apk.parentFile, newName);
+
+            if (variant.buildType.zipAlignEnabled) {
+                output.outputFile = new File(apk.parentFile, newName.replace("-unaligned", ""));
+            }
+
+            logger.info('INFO: Set outputFile to ' + output.outputFile + " for [" + variant.name + "]");
         }
-
-
-        variant.outputFile = new File(apk.parentFile, newName);
-
-        if (variant.zipAlign) {
-            variant.outputFile = new File(apk.parentFile, newName.replace("-unaligned", ""));
-        }
-
-        logger.info('INFO: Set outputFile to ' + variant.outputFile + " for [" + variant.name + "]");
     }
     sourceSets { main { jni.srcDirs = ['src/main/jni', 'jni/'] } }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {

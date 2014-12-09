@@ -5,7 +5,6 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.irewind.sdk"
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
@@ -13,7 +12,7 @@ android {
     }
     buildTypes {
         debug {
-            runProguard false
+            minifyEnabled false
             // zipAlign false // this is default for debug
         }
         release {
