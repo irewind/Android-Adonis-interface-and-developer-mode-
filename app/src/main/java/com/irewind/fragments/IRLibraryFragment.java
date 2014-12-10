@@ -1,5 +1,6 @@
 package com.irewind.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRMovieActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRVideoGridAdapter;
 import com.irewind.common.IOnSearchCallback;
@@ -150,16 +152,10 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
         Video video = mAdapter.getItem(position);
 
-        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
-        fragment.video = video;
-
-        IRTabActivity.mLibraryFragment = fragment;
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-        ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                .disallowAddToBackStack()
-                .commit();
+        Intent movieIntent = new Intent(getActivity(), IRMovieActivity.class);
+        movieIntent.putExtra("video", video);
+        startActivity(movieIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
     @Override
