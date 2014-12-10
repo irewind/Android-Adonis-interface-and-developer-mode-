@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -23,7 +21,6 @@ import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRLoginActivity;
-import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserDeleteFailEvent;
@@ -113,26 +110,6 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
 
         apiClient.getEventBus().register(this);
         apiClient.loadActiveUserInfo();
-
-        if (IRTabActivity.searchItem != null)
-            IRTabActivity.searchItem.collapseActionView();
-
-        IRTabActivity.abBack.setVisibility(View.VISIBLE);
-        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IRTabActivity.mAccountFragment = IRAccountFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                ft.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
-            }
-        });
-        IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(getString(R.string.personal_data));
-        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
     @Override

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
-import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.NotificationSettingsListSuccessEvent;
@@ -128,26 +125,6 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
         apiClient.getEventBus().register(this);
         apiClient.loadActiveUserInfo();
         fetchUserNotificationSettings();
-
-        if (IRTabActivity.searchItem != null)
-            IRTabActivity.searchItem.collapseActionView();
-
-        IRTabActivity.abBack.setVisibility(View.VISIBLE);
-        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IRTabActivity.mAccountFragment = IRAccountFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                ft.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
-            }
-        });
-        IRTabActivity.abTitle.setText(getString(R.string.notif_email));
-        IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abAction.setVisibility(View.GONE);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRTabActivity;
+import com.irewind.activities.IRWebViewActivity;
 import com.irewind.adapters.IRMoreAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
@@ -125,22 +126,18 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                IRTabActivity.mMoreFragment = IRMoreTermsFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft.replace(R.id.container, IRTabActivity.mMoreFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent termsIntent = new Intent(getActivity(), IRWebViewActivity.class);
+                termsIntent.putExtra("url", getString(R.string.terms_link));
+                termsIntent.putExtra("title", getString(R.string.term_cond));
+                startActivity(termsIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case 1:
-                IRTabActivity.mMoreFragment = IRMorePrivacyFragment.newInstance();
-                FragmentManager fragmentManager2 = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft2 = fragmentManager2.beginTransaction();
-                ft2.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft2.replace(R.id.container, IRTabActivity.mMoreFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent privacyIntent = new Intent(getActivity(), IRWebViewActivity.class);
+                privacyIntent.putExtra("url", getString(R.string.privacy_policy));
+                privacyIntent.putExtra("title", getString(R.string.policy_s));
+                startActivity(privacyIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case 2:
                 PackageInfo pInfo = null;

@@ -11,8 +11,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.IntentCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -27,6 +25,9 @@ import android.widget.TextView;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRAccountNotificationActivity;
+import com.irewind.activities.IRAccountPasswordActivity;
+import com.irewind.activities.IRAccountPersonalActivity;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
@@ -146,31 +147,19 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
                 attemptChangePhoto();
                 break;
             case R.id.editNotifs:
-                IRTabActivity.mAccountFragment = IRAccountNotificationFragment.newInstance();
-                FragmentManager fragmentManager3 = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft3 = fragmentManager3.beginTransaction();
-                ft3.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft3.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent notifIntent = new Intent(getActivity(), IRAccountNotificationActivity.class);
+                startActivity(notifIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case R.id.changeName:
-                IRTabActivity.mAccountFragment = IRAccountPersonalFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent personalIntent = new Intent(getActivity(), IRAccountPersonalActivity.class);
+                startActivity(personalIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case R.id.changePassword:
-                IRTabActivity.mAccountFragment = IRAccountPasswordFragment.newInstance();
-                FragmentManager fragmentManager2 = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft2 = fragmentManager2.beginTransaction();
-                ft2.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft2.replace(R.id.container, IRTabActivity.mAccountFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent passwordIntent = new Intent(getActivity(), IRAccountPasswordActivity.class);
+                startActivity(passwordIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
         }
     }
