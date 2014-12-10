@@ -1,5 +1,6 @@
 package com.irewind.fragments.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRMovieActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.fragments.IRVideoDetailsFragment;
@@ -135,37 +137,10 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Video video = mAdapter.getItem(position - 1);
 
-//        try {
-//            IRVideoDetailsFragment.stop();
-//            IRVideoDetailsFragment.sVideoView.stopPlayback();
-//            IRVideoDetailsFragment.sVideoView.clearAnimation();
-//            IRVideoDetailsFragment.sVideoView = null;
-//        } catch (Exception e) {
-//
-//        }
-
-        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
-        fragment.video = video;
-
-        if (person != null) {
-            fragment.person = person;
-
-            IRTabActivity.mPeopleFragment = fragment;
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-            ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
-                    .disallowAddToBackStack()
-                    .commit();
-        } else {
-            IRTabActivity.mLibraryFragment = fragment;
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-            ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                    .disallowAddToBackStack()
-                    .commit();
-        }
+        Intent movieIntent = new Intent(getActivity(), IRMovieActivity.class);
+        movieIntent.putExtra("video", video);
+        startActivity(movieIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
     // --- Events --- //

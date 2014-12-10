@@ -3,7 +3,9 @@ package com.irewind.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.irewind.sdk.api.response.BaseResponse;
 
-public class Video extends BaseResponse {
+import java.io.Serializable;
+
+public class Video extends BaseResponse implements Serializable{
 
     @SerializedName("videoId")
     private long id;

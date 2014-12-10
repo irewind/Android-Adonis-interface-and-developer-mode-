@@ -15,13 +15,11 @@ public class IRVideoPagerAdapter extends FragmentPagerAdapter {
 
     private NonSwipeableViewPager mJazzyViewPager;
     private Video video;
-    private User person;
 
-    public IRVideoPagerAdapter(FragmentManager fm, NonSwipeableViewPager jazzy, Video video, User person) {
+    public IRVideoPagerAdapter(FragmentManager fm, NonSwipeableViewPager jazzy, Video video) {
         super(fm);
         this.mJazzyViewPager = jazzy;
         this.video = video;
-        this.person = person;
     }
 
     @Override
@@ -35,7 +33,6 @@ public class IRVideoPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = IRRelatedFragment.newInstance();
                 ((IRRelatedFragment)fragment).video = video;
-                ((IRRelatedFragment)fragment).person = person;
                 break;
             case 2:
                 fragment = IRCommentsFragment.newInstance();

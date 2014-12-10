@@ -112,19 +112,29 @@
             android:label="@string/title_activity_iraccount_notification"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.IRAccountPersonalActivity"
             android:label="@string/title_activity_iraccount_personal_fragment"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.IRAccountPasswordActivity"
             android:label="@string/title_activity_iraccount_password"
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRPersonActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRMovieActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
     </application>
 
 </manifest>

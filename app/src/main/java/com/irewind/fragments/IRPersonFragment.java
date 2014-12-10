@@ -1,5 +1,6 @@
 package com.irewind.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRMovieActivity;
+import com.irewind.activities.IRPersonActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.sdk.api.ApiClient;
@@ -127,22 +130,17 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
         apiClient.getEventBus().register(this);
         fetch(0);
 
-        IRTabActivity.abBack.setVisibility(View.VISIBLE);
-        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
+        IRPersonActivity.abBack.setVisibility(View.VISIBLE);
+        IRPersonActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IRTabActivity.mPeopleFragment = IRPeopleFragment.newInstance();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
             }
         });
-        IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abAction.setVisibility(View.GONE);
-        IRTabActivity.abTitle.setText(person.getDisplayName());
+        IRPersonActivity.abSearch.setVisibility(View.GONE);
+        IRPersonActivity.abAction.setVisibility(View.GONE);
+        IRPersonActivity.abTitle.setText(person.getDisplayName());
     }
 
     @Override
@@ -160,17 +158,10 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Video video = mAdapter.getItem(position - 1);
 
-        IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
-        fragment.video = video;
-        fragment.person = person;
-
-        IRTabActivity.mPeopleFragment = fragment;
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-        ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
-                .disallowAddToBackStack()
-                .commit();
+        Intent movieIntent = new Intent(getActivity(), IRMovieActivity.class);
+        movieIntent.putExtra("video", video);
+        startActivity(movieIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
     private void updateUserInfo(User user) {

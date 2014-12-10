@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRFullScreenMovieActivity;
+import com.irewind.activities.IRMovieActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRVideoPagerAdapter;
 import com.irewind.listeners.OrientationManager;
@@ -155,44 +157,41 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
         setupViewPager(JazzyViewPager.TransitionEffect.Standard);
         setupButtons(0);
+
+        getView().setFocusableInTouchMode(true);
+
+        getView().setOnKeyListener( new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey( View v, int keyCode, KeyEvent event )
+            {
+                if( keyCode == KeyEvent.KEYCODE_BACK )
+                {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                    stopPlayback();
+                    return true;
+                }
+                return false;
+            }
+        } );
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        IRTabActivity.abBack.setVisibility(View.VISIBLE);
-        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
+        IRMovieActivity.abBack.setVisibility(View.VISIBLE);
+        IRMovieActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (person != null) {
-                    IRPersonFragment fragment = IRPersonFragment.newInstance();
-                    fragment.person = person;
-
-                    IRTabActivity.mPeopleFragment = fragment;
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                    ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
-                            .disallowAddToBackStack()
-                            .commit();
-                } else {
-                    stopPlayback();
-
-                    IRTabActivity.mLibraryFragment = IRLibraryFragment.newInstance();
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                    ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                            .disallowAddToBackStack()
-                            .commit();
-                }
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                stopPlayback();
             }
         });
-        IRTabActivity.abTitle.setText(getString(R.string.movies));
-        IRTabActivity.abSearch.setVisibility(View.GONE);
-        IRTabActivity.abAction.setVisibility(View.GONE);
-        if (IRTabActivity.searchItem != null)
-            IRTabActivity.searchItem.collapseActionView();
+        IRMovieActivity.abTitle.setText(getString(R.string.movies));
+        IRMovieActivity.abSearch.setVisibility(View.GONE);
+        IRMovieActivity.abAction.setVisibility(View.GONE);
 
         setSensorManager();
     }
@@ -213,7 +212,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
     private void setupViewPager(JazzyViewPager.TransitionEffect effect) {
         mViewPager.setTransitionEffect(effect);
-        mViewPager.setAdapter(new IRVideoPagerAdapter(getChildFragmentManager(), mViewPager, video, person));
+        mViewPager.setAdapter(new IRVideoPagerAdapter(getChildFragmentManager(), mViewPager, video));
         mViewPager.setPageMargin(0);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

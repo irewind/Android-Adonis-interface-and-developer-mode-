@@ -1,5 +1,6 @@
 package com.irewind.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRPersonActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.common.IOnSearchCallback;
@@ -145,16 +147,10 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         User user = mAdapter.getItem(position - 1);
 
-        IRPersonFragment fragment = IRPersonFragment.newInstance();
-        fragment.person = user;
-
-        IRTabActivity.mPeopleFragment = fragment;
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-        ft.replace(R.id.container, IRTabActivity.mPeopleFragment)
-                .disallowAddToBackStack()
-                .commit();
+        Intent personIntent = new Intent(getActivity(), IRPersonActivity.class);
+        personIntent.putExtra("user", user);
+        startActivity(personIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
     @Override
