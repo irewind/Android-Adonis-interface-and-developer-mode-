@@ -184,12 +184,12 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             slidingUpPanelLayout.setSlidingEnabled(false);
             IRMovieSettingsActivity.abTitle.setText(getString(R.string.add_another));
             IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
-            IRMovieSettingsActivity.abSearch.setVisibility(View.VISIBLE);
+            IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
         } else {
             IRMovieSettingsActivity.abTitle.setText(getString(R.string.movie_settings));
             IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
             IRMovieSettingsActivity.abAction.setText(getString(R.string.save));
-            IRMovieSettingsActivity.abAction.setVisibility(View.VISIBLE);
+            IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
         }
         IRMovieSettingsActivity.abBack.setVisibility(View.VISIBLE);
         IRMovieSettingsActivity.abSearch.setOnClickListener(this);
