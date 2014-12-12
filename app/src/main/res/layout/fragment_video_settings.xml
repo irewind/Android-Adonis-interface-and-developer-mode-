@@ -22,11 +22,24 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <ImageView
+            <RelativeLayout
+                android:id="@+id/placeholderLayout"
                 android:layout_width="120dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher" />
+                android:layout_height="100dp">
+
+                <ImageView
+                    android:id="@+id/videoPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/ic_placeholder"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_play" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

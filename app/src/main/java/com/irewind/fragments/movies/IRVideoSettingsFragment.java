@@ -3,14 +3,13 @@ package com.irewind.fragments.movies;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,11 +19,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRMovieSettingsActivity;
-import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.adapters.IRVideoSettingsAdapter;
 import com.irewind.common.IOnSearchCallback;
-import com.irewind.fragments.IRVideoDetailsFragment;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
@@ -80,6 +77,9 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     @Inject
     ApiClient apiClient;
 
+    @InjectView(R.id.videoPlaceholder)
+    ImageView placeHolder;
+
     public Video video;
 
     private int lastPageListed = 0;
@@ -125,18 +125,18 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             @Override
             public void onPanelCollapsed(View view) {
                 slidingUpPanelLayout.setSlidingEnabled(true);
-                IRTabActivity.abTitle.setText(getString(R.string.movie_settings));
-                IRTabActivity.abAction.setText("");
-                IRTabActivity.abSearch.setVisibility(View.GONE);
-                IRTabActivity.abAction.setVisibility(View.VISIBLE);
+                IRMovieSettingsActivity.abTitle.setText(getString(R.string.movie_settings));
+                IRMovieSettingsActivity.abAction.setText("");
+                IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
+                IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
             }
 
             @Override
             public void onPanelExpanded(View view) {
                 slidingUpPanelLayout.setSlidingEnabled(false);
-                IRTabActivity.abTitle.setText(getString(R.string.add_another));
-                IRTabActivity.abAction.setVisibility(View.GONE);
-                IRTabActivity.abSearch.setVisibility(View.VISIBLE);
+                IRMovieSettingsActivity.abTitle.setText(getString(R.string.add_another));
+                IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
+                IRMovieSettingsActivity.abSearch.setVisibility(View.VISIBLE);
 
                 fetchPeople(0);
             }
@@ -175,6 +175,8 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         mPullToRefreshListView.setVisibility(View.INVISIBLE);
         emptyText.setVisibility(View.INVISIBLE);
         mPeopleListView.setEmptyView(emptyText);
+
+        Picasso.with(getActivity()).load(video.getThumbnail()).into(placeHolder);
     }
 
     @Override
@@ -184,7 +186,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             slidingUpPanelLayout.setSlidingEnabled(false);
             IRMovieSettingsActivity.abTitle.setText(getString(R.string.add_another));
             IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
-            IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
+            IRMovieSettingsActivity.abSearch.setVisibility(View.VISIBLE);
         } else {
             IRMovieSettingsActivity.abTitle.setText(getString(R.string.movie_settings));
             IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
@@ -245,7 +247,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_search:
-                IRTabActivity.searchItem.expandActionView();
+                IRMovieSettingsActivity.searchItem.expandActionView();
                 break;
         }
     }
