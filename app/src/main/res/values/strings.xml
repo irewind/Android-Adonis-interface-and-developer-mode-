@@ -120,5 +120,6 @@
     <string name="title_activity_iraccount_notification">IRAccountNotificationActivity</string>
     <string name="title_activity_iraccount_personal_fragment">IRAccountPersonalFragment</string>
     <string name="title_activity_iraccount_password">IRAccountPasswordActivity</string>
+    <string name="title_activity_irmovie_settings">IRMovieSettingsActivity</string>
 
 </resources>

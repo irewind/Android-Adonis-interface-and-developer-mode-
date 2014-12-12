@@ -133,7 +133,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     @Override
                     public void onGlobalLayout() {
                         int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                        if (heightDiff > 160) { // if more than 100 pixels, its probably a keyboard...
+                        if (heightDiff > 180) { // if more than 100 pixels, its probably a keyboard...
                             findViewById(R.id.tabLayout).setVisibility(View.GONE);
                             FrameLayout v = (FrameLayout) findViewById(R.id.container);
                             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();

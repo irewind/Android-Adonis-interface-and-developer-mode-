@@ -1,5 +1,6 @@
 package com.irewind.fragments.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 
+import com.irewind.activities.IRMovieActivity;
+import com.irewind.activities.IRMovieSettingsActivity;
 import com.irewind.activities.IRTabActivity;
 
 import com.irewind.sdk.api.ApiClient;
@@ -134,15 +137,10 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
                 dislike();
                 break;
             case R.id.settings:
-                IRVideoSettingsFragment fragment = IRVideoSettingsFragment.newInstance();
-                fragment.video = video;
-                IRTabActivity.mLibraryFragment = fragment;
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
-                ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                        .disallowAddToBackStack()
-                        .commit();
+                Intent movieIntent = new Intent(getActivity(), IRMovieSettingsActivity.class);
+                movieIntent.putExtra("video", video);
+                startActivity(movieIntent);
+                getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
         }
     }

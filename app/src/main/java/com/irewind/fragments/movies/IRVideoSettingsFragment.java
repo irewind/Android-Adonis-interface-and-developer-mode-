@@ -19,6 +19,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRMovieSettingsActivity;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.adapters.IRVideoSettingsAdapter;
@@ -79,7 +80,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     @Inject
     ApiClient apiClient;
 
-    Video video;
+    public Video video;
 
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
@@ -181,25 +182,25 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         super.onResume();
         if (slidingUpPanelLayout.isPanelExpanded()) {
             slidingUpPanelLayout.setSlidingEnabled(false);
-            IRTabActivity.abTitle.setText(getString(R.string.add_another));
-            IRTabActivity.abAction.setVisibility(View.GONE);
-            IRTabActivity.abSearch.setVisibility(View.VISIBLE);
+            IRMovieSettingsActivity.abTitle.setText(getString(R.string.add_another));
+            IRMovieSettingsActivity.abAction.setVisibility(View.GONE);
+            IRMovieSettingsActivity.abSearch.setVisibility(View.VISIBLE);
         } else {
-            IRTabActivity.abTitle.setText(getString(R.string.movie_settings));
-            IRTabActivity.abSearch.setVisibility(View.GONE);
-            IRTabActivity.abAction.setText(getString(R.string.save));
-            IRTabActivity.abAction.setVisibility(View.VISIBLE);
+            IRMovieSettingsActivity.abTitle.setText(getString(R.string.movie_settings));
+            IRMovieSettingsActivity.abSearch.setVisibility(View.GONE);
+            IRMovieSettingsActivity.abAction.setText(getString(R.string.save));
+            IRMovieSettingsActivity.abAction.setVisibility(View.VISIBLE);
         }
-        IRTabActivity.abBack.setVisibility(View.VISIBLE);
-        IRTabActivity.abSearch.setOnClickListener(this);
-        IRTabActivity.onSearchCallback = new IOnSearchCallback() {
+        IRMovieSettingsActivity.abBack.setVisibility(View.VISIBLE);
+        IRMovieSettingsActivity.abSearch.setOnClickListener(this);
+        IRMovieSettingsActivity.onSearchCallback = new IOnSearchCallback() {
             @Override
             public void execute(String query) {
                 searchQuery = query;
                 fetchPeople(0);
             }
         };
-        IRTabActivity.abAction.setOnClickListener(new View.OnClickListener() {
+        IRMovieSettingsActivity.abAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (slidingUpPanelLayout.isPanelExpanded()) {
@@ -208,22 +209,15 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
                 }
             }
         });
-        IRTabActivity.abBack.setOnClickListener(new View.OnClickListener() {
+        IRMovieSettingsActivity.abBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (slidingUpPanelLayout.isPanelExpanded()) {
                     slidingUpPanelLayout.setSlidingEnabled(true);
                     slidingUpPanelLayout.collapsePanel();
                 } else {
-                    IRVideoDetailsFragment fragment = IRVideoDetailsFragment.newInstance();
-                    fragment.video = video;
-                    IRTabActivity.mLibraryFragment = fragment;
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
-                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
-                    ft.replace(R.id.container, IRTabActivity.mLibraryFragment)
-                            .disallowAddToBackStack()
-                            .commit();
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 }
             }
         });
