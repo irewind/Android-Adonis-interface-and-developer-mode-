@@ -137,7 +137,10 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.IRMovieSettingsActivity"
-            android:label="@string/title_activity_irmovie_settings" >
+            android:label="@string/title_activity_irmovie_settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
     </application>
 
