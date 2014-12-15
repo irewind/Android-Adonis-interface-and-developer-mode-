@@ -39,7 +39,8 @@ public class IRModule {
     @Singleton
     @Provides
     iRewindConfig provideConfig() {
-        return new iRewindConfig("http://web01.dev.irewind.com/api", "web-client", "web-client-secret");
+//        return new iRewindConfig("http://web01.dev.irewind.com/api", "web-client", "web-client-secret");
+        return new iRewindConfig("http://video.irewind.com/api", "web-client", "web-client-secret");
     }
 
     @Singleton

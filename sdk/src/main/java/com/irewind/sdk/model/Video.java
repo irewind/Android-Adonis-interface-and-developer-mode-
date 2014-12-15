@@ -37,6 +37,9 @@ public class Video extends BaseResponse implements Serializable{
     @SerializedName("mp4HighResolutionURL")
     private String mp4HighResolutionURL;
 
+    @SerializedName("mp4LowResolutionURL")
+    private String mp4LowResolutionURL;
+
     @SerializedName("thumbnail")
     private String thumbnail;
 
@@ -89,6 +92,10 @@ public class Video extends BaseResponse implements Serializable{
         return mp4HighResolutionURL;
     }
 
+    public String getMp4LowResolutionURL() {
+        return mp4LowResolutionURL;
+    }
+
     public String getThumbnail() {
         return thumbnail;
     }
@@ -124,6 +131,7 @@ public class Video extends BaseResponse implements Serializable{
                 ", oggHighResolutionURL='" + oggHighResolutionURL + '\'' +
                 ", oggLowResolutionURL='" + oggLowResolutionURL + '\'' +
                 ", mp4HighResolutionURL='" + mp4HighResolutionURL + '\'' +
+                ", mp4LowResolutionURL='" + mp4LowResolutionURL + '\'' +
                 ", thumbnail='" + thumbnail + '\'' +
                 ", user=" + user +
                 ", authorName='" + authorName + '\'' +
