@@ -259,17 +259,17 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
             playPause.setLayoutParams(params3);
 
 
-            int mUIFlag = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(mUIFlag);   //undocumented
-            getActivity().getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-
-                @Override
-                public void onSystemUiVisibilityChange(int visibility) {
-                    // TODO Auto-generated method stub
-                    if (visibility == 0) hideShow();
-                }
-            });
+//            int mUIFlag = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+//
+//            getActivity().getWindow().getDecorView().setSystemUiVisibility(mUIFlag);   //undocumented
+//            getActivity().getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+//
+//                @Override
+//                public void onSystemUiVisibilityChange(int visibility) {
+//                    // TODO Auto-generated method stub
+//                    if (visibility == 0) hideShow();
+//                }
+//            });
             //getWindowManager().getDefaultDisplay().getre
 
         } catch (NoSuchMethodError e) {
@@ -382,8 +382,10 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         if (fadeTime > 0) {
             fadeTime = 0;
         } else {
-            fadeTime = 30000;
+            fadeTime = 5000;
             show();
+            ct.cancel();
+            ct.start();
         }
     }
 
@@ -406,7 +408,9 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
                             videoView.pause();
                         } catch (IllegalStateException e) {
                         }
-                        fadeTime = 30000;
+                        fadeTime = 5000;
+                        ct.cancel();
+                        ct.start();
                     }
                 } else {
                     hideShow();
