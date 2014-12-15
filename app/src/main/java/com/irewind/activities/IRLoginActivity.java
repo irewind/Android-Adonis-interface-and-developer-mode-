@@ -42,6 +42,7 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
@@ -274,6 +275,10 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
      * errors are presented and no actual login attempt is made.
      */
     public void signIn() {
+        if (!AppStatus.getInstance(this).isOnline()){
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);

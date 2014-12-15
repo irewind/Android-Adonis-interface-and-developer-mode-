@@ -30,6 +30,7 @@ import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateSuccessEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.squareup.picasso.Picasso;
 
@@ -157,6 +158,10 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     }
 
     public void change() {
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
         View focusView = null;
         boolean cancel = false;
 
@@ -184,6 +189,10 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
     }
 
     public void delete() {
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
         showProgress(true);
 
         apiClient.deleteUser(apiClient.getActiveUser());

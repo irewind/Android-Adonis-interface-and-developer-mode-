@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -25,6 +26,7 @@ import com.irewind.sdk.api.event.NotificationSettingsUpdateSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -149,15 +151,31 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switchCommentNotifications:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 apiClient.toggleCommentNotifications(isChecked);
                 break;
             case R.id.switchLikeNotifications:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 apiClient.toggleLikeNotifications(isChecked);
                 break;
             case R.id.switchShareNotifications:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 apiClient.toggleShareNotifications(isChecked);
                 break;
             case R.id.switchMessageNotifications:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 apiClient.toggleMessageNotifications(isChecked);
                 break;
         }

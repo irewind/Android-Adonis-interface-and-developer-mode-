@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -29,6 +30,7 @@ import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -126,6 +128,10 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 Intent termsIntent = new Intent(getActivity(), IRWebViewActivity.class);
                 termsIntent.putExtra("url", getString(R.string.terms_link));
                 termsIntent.putExtra("title", getString(R.string.term_cond));
@@ -133,6 +139,10 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
                 getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case 1:
+                if (!AppStatus.getInstance(getActivity()).isOnline()){
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 Intent privacyIntent = new Intent(getActivity(), IRWebViewActivity.class);
                 privacyIntent.putExtra("url", getString(R.string.privacy_policy));
                 privacyIntent.putExtra("title", getString(R.string.policy_s));

@@ -23,6 +23,7 @@ import android.widget.VideoView;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.player.SeekBarV3Fragment;
+import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     public String videoURI;
     public String videoThumbnailURI;
     public boolean autoplay = false;
+    public int startPosition;
 
     CountDownTimer ct = new CountDownTimer(20000000, 500) {
 
@@ -95,6 +97,14 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
     public void setVideoThumbnailURI(String videoThumbnailURI) {
         this.videoThumbnailURI = videoThumbnailURI;
+    }
+
+    public int getVideoPosition(){
+        return videoView != null ? videoView.getCurrentPosition():0;
+    }
+
+    public boolean isPlaying(){
+        return videoView != null ? videoView.isPlaying() : false;
     }
 
     @Override
@@ -168,6 +178,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         super.onPause();
         if (videoView != null) {
             videoView.pause();
+            playPause.setImageResource(R.drawable.play);
             autoPause = true;
         }
     }
@@ -203,6 +214,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
                         isPlaying = true;
                         progressBarVideo.setVisibility(View.INVISIBLE);
                         playPause.setVisibility(View.VISIBLE);
+                        videoView.seekTo(startPosition);
                     }
                 });
                 videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -401,6 +413,10 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
                 }
                 break;
             case R.id.placeholderLayout:
+                if (!AppStatus.getInstance(getActivity()).isOnline()) {
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    break;
+                }
                 play();
                 break;
         }

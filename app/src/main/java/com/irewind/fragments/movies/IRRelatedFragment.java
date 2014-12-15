@@ -28,6 +28,7 @@ import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
+import com.irewind.utils.AppStatus;
 
 import java.util.List;
 
@@ -148,10 +149,17 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     @Subscribe
     public void onEvent(VideoListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
-        mListView.setEmptyView(emptyText);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
+        if (mAdapter.getCount() == 0){
+            mListView.setEmptyView(emptyText);
+            emptyText.setVisibility(View.VISIBLE);
+        }
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.VISIBLE);
 
         List<Video> videos = event.videos;
         PageInfo pageInfo = event.pageInfo;
@@ -173,10 +181,17 @@ public class IRRelatedFragment extends Fragment implements AdapterView.OnItemCli
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
-        mListView.setEmptyView(emptyText);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
+        if (mAdapter.getCount() == 0){
+            mListView.setEmptyView(emptyText);
+            emptyText.setVisibility(View.VISIBLE);
+        }
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.VISIBLE);
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();

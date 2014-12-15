@@ -1,5 +1,6 @@
 package com.irewind.activities;
 
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,6 +63,11 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                Intent data = new Intent();
+                data.putExtra("video_pos", videoPlayerFragment.getVideoPosition());
+                if (videoPlayerFragment.isPlaying()) {
+                    setResult(RESULT_OK, data);
+                }
                 finish();
             }
         };
@@ -75,6 +81,8 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
         videoPlayerFragment.setVideoURI(videoURI);
         videoPlayerFragment.setVideoThumbnailURI(videoThumbnailURI);
         videoPlayerFragment.autoplay = true;
+        videoPlayerFragment.startPosition = getIntent().getIntExtra("video_pos", 0);
+        Log.d("VIDEO_POS", getIntent().getIntExtra("video_pos", 0) + "");
     }
 
     @Override
@@ -93,5 +101,14 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
     protected void onDestroy() {
         super.onDestroy();
         videoPlayerFragment.stop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent data = new Intent();
+        data.putExtra("video_pos", videoPlayerFragment.getVideoPosition());
+        setResult(RESULT_OK, data);
+        finish();
     }
 }

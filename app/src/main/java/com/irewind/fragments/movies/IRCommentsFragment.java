@@ -25,6 +25,7 @@ import com.irewind.sdk.model.Comment;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
+import com.irewind.utils.AppStatus;
 
 import java.util.List;
 
@@ -165,6 +166,11 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
     @Subscribe
     public void onEvent(CommentListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_comments));
+        }
         mListView.setEmptyView(emptyText);
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);
@@ -195,6 +201,11 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_comments));
+        }
         mListView.setEmptyView(emptyText);
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);

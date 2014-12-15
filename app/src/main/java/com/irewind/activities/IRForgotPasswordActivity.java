@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -23,6 +25,7 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -82,6 +85,17 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
                 return false;
             }
         });
+
+        mEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.email || id == EditorInfo.IME_NULL) {
+                    attemptRecover();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -121,6 +135,10 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
     }
 
     public void attemptRecover() {
+        if (!AppStatus.getInstance(this).isOnline()){
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         // Reset errors.
         mEmail.setError(null);

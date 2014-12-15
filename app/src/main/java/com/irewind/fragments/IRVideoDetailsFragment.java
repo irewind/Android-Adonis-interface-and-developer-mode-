@@ -1,5 +1,6 @@
 package com.irewind.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -68,6 +69,8 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         // Required empty public constructor
     }
 
+    private int resumePosition;
+
     @Override
     public void onOrientationChange(OrientationManager.ScreenOrientation screenOrientation) {
         switch (screenOrientation) {
@@ -121,12 +124,29 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
-                intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_URI, video.getMp4HighResolutionURL());
-                intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_THUMBNAIL_URI, video.getThumbnail());
-                startActivity(intent);
+                if (!getActivity().isFinishing()) {
+                    Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
+                    intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_URI, video.getMp4HighResolutionURL());
+                    intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_THUMBNAIL_URI, video.getThumbnail());
+                    if (videoPlayerFragment.isPlaying()) {
+                        intent.putExtra("video_pos", videoPlayerFragment.getVideoPosition());
+                    }
+                    startActivityForResult(intent, 100);
+                }
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK){
+            resumePosition = data.getIntExtra("video_pos", 0);
+            if (videoPlayerFragment != null) {
+                videoPlayerFragment.autoplay = true;
+                videoPlayerFragment.startPosition = resumePosition;
+            }
+        }
     }
 
     @Override

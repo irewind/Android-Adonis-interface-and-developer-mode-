@@ -11,7 +11,7 @@ import com.irewind.BuildConfig;
 import java.util.ArrayList;
 
 public class Log {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final StringBuilder msFormatBuilder = new StringBuilder(1024);
     private static final java.util.Formatter msFormatter =  new java.util.Formatter(msFormatBuilder);

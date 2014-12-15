@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.activities.IRMovieActivity;
 import com.irewind.activities.IRPersonActivity;
-import com.irewind.activities.IRTabActivity;
 import com.irewind.adapters.IRRelatedAdapter;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoListEvent;
@@ -30,6 +27,7 @@ import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -43,40 +41,33 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 public class IRPersonFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    public User person;
     @InjectView(R.id.profileImageView)
     RoundedImageView profileImageView;
-
     @InjectView(R.id.nameTextView)
     TextView nameTextView;
-
     @InjectView(R.id.date)
     TextView date;
-
     @InjectView(R.id.videoListView)
     PullToRefreshListView mPullToRefreshListView;
     @InjectView(R.id.emptyText)
     TextView emptyText;
     @InjectView(R.id.progress)
     CircularProgressBar progressBar;
-
-    private ListView mListView;
-    private IRRelatedAdapter mAdapter;
-
     @Inject
     ApiClient apiClient;
-
-    public User person;
-
+    private ListView mListView;
+    private IRRelatedAdapter mAdapter;
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
+
+    public IRPersonFragment() {
+        // Required empty public constructor
+    }
 
     public static IRPersonFragment newInstance() {
         IRPersonFragment fragment = new IRPersonFragment();
         return fragment;
-    }
-
-    public IRPersonFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -189,6 +180,11 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(VideoListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
         mListView.setEmptyView(emptyText);
 
         List<Video> videos = event.videos;
@@ -211,6 +207,11 @@ public class IRPersonFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
         mListView.setEmptyView(emptyText);
     }
 }

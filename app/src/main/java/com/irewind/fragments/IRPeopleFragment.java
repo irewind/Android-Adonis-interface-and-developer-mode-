@@ -27,6 +27,7 @@ import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
+import com.irewind.utils.AppStatus;
 
 import java.util.List;
 
@@ -181,6 +182,11 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(UserListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_people));
+        }
         mListView.setEmptyView(emptyText);
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);
@@ -206,6 +212,11 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(UserListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_people));
+        }
         mListView.setEmptyView(emptyText);
 
         mPullToRefreshListView.setVisibility(View.VISIBLE);

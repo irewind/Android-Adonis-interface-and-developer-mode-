@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -26,6 +27,7 @@ import com.irewind.sdk.api.event.VideoListEvent;
 import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.Log;
 
 import java.util.List;
@@ -187,7 +189,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         Log.d("on_event", "normal");
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
-
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
         mGridView.setEmptyView(emptyText);
 
         List<Video> videos = event.videos;
@@ -212,6 +218,11 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
         Log.d("on_event", "fail");
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
+        if (!AppStatus.getInstance(getActivity()).isOnline()){
+            emptyText.setText(getString(R.string.no_internet_connection));
+        } else {
+            emptyText.setText(getString(R.string.no_videos));
+        }
         mGridView.setEmptyView(emptyText);
 
         if (mPullToRefreshGridView.isRefreshing()) {

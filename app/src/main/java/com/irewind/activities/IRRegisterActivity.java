@@ -6,10 +6,12 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import com.irewind.R;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.RegisterFailEvent;
 import com.irewind.sdk.api.event.RegisterSuccessEvent;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -150,6 +153,16 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
             }
         });
+        mConfirm.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.confirm || id == EditorInfo.IME_NULL) {
+                    attemptRegister();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -214,6 +227,10 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 //        if (mAuthTask != null) {
 //            return;
 //        }
+        if (!AppStatus.getInstance(this).isOnline()){
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         // Reset errors.
         mEmail.setError(null);

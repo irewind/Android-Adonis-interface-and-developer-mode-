@@ -121,5 +121,9 @@
     <string name="title_activity_iraccount_personal_fragment">IRAccountPersonalFragment</string>
     <string name="title_activity_iraccount_password">IRAccountPasswordActivity</string>
     <string name="title_activity_irmovie_settings">IRMovieSettingsActivity</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="next">Next</string>
+    <string name="register_short">Reg.</string>
+    <string name="recover_short">Rec.</string>
 
 </resources>

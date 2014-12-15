@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -35,6 +36,7 @@ import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.model.User;
 import com.irewind.ui.views.RoundedImageView;
+import com.irewind.utils.AppStatus;
 import com.irewind.utils.Util;
 import com.squareup.picasso.Picasso;
 
@@ -177,6 +179,10 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
     }
 
     private void attemptLogout() {
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
+            Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            return;
+        }
         apiClient.closeSessionAndClearTokenInformation();
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
