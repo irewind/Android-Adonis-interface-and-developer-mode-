@@ -92,18 +92,18 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
         setContentView(R.layout.activity_irregister);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
-            findViewById(R.id.sliding_layout).setPadding(0, statusBarHeight, 0, 0);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-        }
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
+//            findViewById(R.id.sliding_layout).setPadding(0, statusBarHeight, 0, 0);
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            setTranslucentStatus(true);
+//        }
+//
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
         Injector.inject(this);

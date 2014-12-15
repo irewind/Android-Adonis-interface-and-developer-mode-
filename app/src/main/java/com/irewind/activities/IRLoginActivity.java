@@ -7,6 +7,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -101,6 +102,8 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     @Inject
     protected ApiClient apiClient;
 
+    private int currentHeight, prevHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,15 +121,15 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
-            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
-        }
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            setTranslucentStatus(true);
+//            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
+//            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
+//        }
+//
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
         Injector.inject(this);
@@ -181,10 +184,19 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
                     @Override
                     public void onGlobalLayout() {
                         int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                        if (heightDiff > 180) { // if more than 100 pixels, its probably a keyboard...
-                            findViewById(R.id.media).setVisibility(View.GONE);
-                        } else {
-                            findViewById(R.id.media).setVisibility(View.VISIBLE);
+                        currentHeight = heightDiff;
+//                        if (heightDiff > 180) { // if more than 100 pixels, its probably a keyboard...
+//                            findViewById(R.id.media).setVisibility(View.GONE);
+//                        } else {
+//                            findViewById(R.id.media).setVisibility(View.VISIBLE);
+//                        }
+                        if (currentHeight != prevHeight) {
+                            if (currentHeight > prevHeight && prevHeight != 0) {
+                                findViewById(R.id.media).setVisibility(View.GONE);
+                            } else {
+                                findViewById(R.id.media).setVisibility(View.VISIBLE);
+                            }
+                            prevHeight = currentHeight;
                         }
                     }
                 });
@@ -215,6 +227,17 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+            Toast.makeText(this, "keyboard visible", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.hardKeyboardHidden ==
+                Configuration.HARDKEYBOARDHIDDEN_YES) {
+            Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

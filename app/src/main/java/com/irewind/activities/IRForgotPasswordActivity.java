@@ -62,15 +62,15 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
 
         setContentView(R.layout.activity_irforgot_password);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
-            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
-        }
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            setTranslucentStatus(true);
+//            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
+//            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
+//        }
+//
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
         Injector.inject(this);

@@ -77,21 +77,22 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     public static MenuItem searchItem;
     public static SearchView searchView;
     public static IOnSearchCallback onSearchCallback;
+    private int currentHeight, prevHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_irtab);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-            int statusBarHeight = (int) Math.ceil(80 * getResources().getDisplayMetrics().density);
-            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
-        }
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            setTranslucentStatus(true);
+//            int statusBarHeight = (int) Math.ceil(80 * getResources().getDisplayMetrics().density);
+//            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
+//        }
+//
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setNavigationBarTintEnabled(true);
 
         Injector.inject(this);
         ButterKnife.inject(this);
@@ -133,19 +134,28 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     @Override
                     public void onGlobalLayout() {
                         int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                        currentHeight = heightDiff;
+                        if (currentHeight != prevHeight) {
+                            if (currentHeight > prevHeight && prevHeight != 0) {
+                                findViewById(R.id.tabLayout).setVisibility(View.GONE);
+                                FrameLayout v = (FrameLayout) findViewById(R.id.container);
+                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                                params.setMargins(0, 0, 0, 0);
+                                v.setLayoutParams(params);
+                            } else {
+                                findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
+                                Resources r = IRTabActivity.this.getResources();
+                                int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -20, r.getDisplayMetrics());
+                                FrameLayout v = (FrameLayout) findViewById(R.id.container);
+                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                                params.setMargins(0, 0, 0, px);
+                            }
+                            prevHeight = currentHeight;
+                        }
                         if (heightDiff > 180) { // if more than 100 pixels, its probably a keyboard...
-                            findViewById(R.id.tabLayout).setVisibility(View.GONE);
-                            FrameLayout v = (FrameLayout) findViewById(R.id.container);
-                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
-                            params.setMargins(0, 0, 0, 0);
-                            v.setLayoutParams(params);
+
                         } else {
-                            findViewById(R.id.tabLayout).setVisibility(View.VISIBLE);
-                            Resources r = IRTabActivity.this.getResources();
-                            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -20, r.getDisplayMetrics());
-                            FrameLayout v = (FrameLayout) findViewById(R.id.container);
-                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
-                            params.setMargins(0, 0, 0, px);
+
                         }
                     }
                 });

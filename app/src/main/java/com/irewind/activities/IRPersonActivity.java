@@ -30,15 +30,15 @@ public class IRPersonActivity extends IRBaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iraccount_general_layout);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus(true);
-            int statusBarHeight = (int) Math.ceil(80 * getResources().getDisplayMetrics().density);
-            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
-        }
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            setTranslucentStatus(true);
+//            int statusBarHeight = (int) Math.ceil(80 * getResources().getDisplayMetrics().density);
+//            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
+//        }
+//
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setNavigationBarTintEnabled(true);
 
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.nav_bar));
         getSupportActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
