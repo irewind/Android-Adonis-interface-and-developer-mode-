@@ -324,7 +324,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(), "noGPS", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -341,7 +341,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), getString(R.string.checked_in), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.checked_in), Toast.LENGTH_SHORT).show();
                             mCircleButton.setSelected(true);
                         }
                     });
@@ -354,7 +354,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                     IRTabActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), getString(R.string.not_in_area), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.not_in_area), Toast.LENGTH_SHORT).show();
                             mCircleButton.setSelected(false);
                         }
                     });
@@ -377,7 +377,7 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
             mCircleButton.setSelected(false);
         } else {
             IrewindBackend.Instance.startRecording();
-            Toast.makeText(getApplicationContext(), getString(R.string.waiting_location), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.waiting_location), Toast.LENGTH_SHORT).show();
         }
     }
 }
