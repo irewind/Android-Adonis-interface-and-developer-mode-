@@ -303,12 +303,18 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
     }
 
     public boolean isCheckInEnabled() {
+        return IrewindBackend.Instance != null && IrewindBackend.Instance.getCurentLocation() != null;
+    }
+
+    public boolean isRecordingEnabled() {
         return IrewindBackend.Instance != null && IrewindBackend.Instance.recordingState;
     }
 
     public void setupCheckIn() {
         User currentUser = apiClient.getActiveUser();
         if (currentUser != null) {
+
+            mCircleButton.setSelected(isCheckInEnabled());
 
             IrewindGpsUpdatesListener gpsUpdatesListener = new IrewindGpsUpdatesListener() {
                 @Override
@@ -363,17 +369,15 @@ public class IRTabActivity extends IRBaseActivity implements View.OnClickListene
                 IrewindBackend.Instance.setGpsUpdatesListener(gpsUpdatesListener);
             }
         }
-
-        mCircleButton.setSelected(isCheckInEnabled());
     }
 
     public void toggleCheckIn() {
-        if (isCheckInEnabled()) {
+        if (isRecordingEnabled()) {
             IrewindBackend.Instance.stopRecording();
+            mCircleButton.setSelected(false);
         } else {
             IrewindBackend.Instance.startRecording();
+            Toast.makeText(getApplicationContext(), getString(R.string.waiting_location), Toast.LENGTH_LONG).show();
         }
-
-        mCircleButton.setSelected(isCheckInEnabled());
     }
 }
