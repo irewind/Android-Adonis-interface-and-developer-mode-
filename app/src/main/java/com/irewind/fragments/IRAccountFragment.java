@@ -48,6 +48,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import utils.IrewindBackend;
 
 public class IRAccountFragment extends Fragment implements View.OnClickListener {
 
@@ -178,12 +179,20 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
         }, 100);
     }
 
+    public boolean isCheckInEnabled() {
+        return IrewindBackend.Instance != null && IrewindBackend.Instance.recordingState;
+    }
+
     private void attemptLogout() {
         if (!AppStatus.getInstance(getActivity()).isOnline()) {
             Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
             return;
         }
         apiClient.closeSessionAndClearTokenInformation();
+
+        if (isCheckInEnabled()) {
+            IrewindBackend.Instance.stopRecording();
+        }
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
         intent.putExtra(IRLoginActivity.EXTRA_SHOULD_LOGOUT_FIRST, true);
