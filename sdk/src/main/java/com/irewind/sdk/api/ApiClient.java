@@ -176,8 +176,10 @@ public class ApiClient {
         }
     }
 
-    private static final String adminUsername = "tremend@mailinator.com";
-    private static final String adminSecret = "tremend.admin";
+//    private static final String adminUsername = "tremend@mailinator.com";
+    private static final String adminUsername = "admin@irewind.ro";
+//    private static final String adminSecret = "tremend.admin";
+    private static final String adminSecret = "iRewind_123";
 
     private void getAccessToken(String username, String password, final Callback<AccessToken> cb) {
         sessionService.getAccessToken(username, password, new Callback<AccessToken>() {
