@@ -2,17 +2,10 @@ package com.irewind.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
+import android.content.IntentSender;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -20,22 +13,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -47,11 +45,8 @@ import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.irewind.utils.Log;
 import com.irewind.utils.ProjectFonts;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -60,12 +55,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
-public class IRLoginActivity extends SocialLoginActivity implements LoaderCallbacks<Cursor>, OnClickListener {
+public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
 
-    private static final String TAG = "Login";
+    private static final String TAG = IRLoginActivity.class.getSimpleName();
 
     public static final String EXTRA_SHOULD_LOGOUT_FIRST = "should_logout_first";
-    private boolean shouldLogoutFirst;
 
     // UI references.
     @InjectView(R.id.login_form)
@@ -97,86 +91,45 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     @InjectView(R.id.errorText)
     TextView errorText;
 
-    private String email = "";
+    private int currentHeight, prevHeight;
+
+    private String userEmail = "";
+    private boolean shouldLogoutFirst;
+
+    // --- Facebook --- //
+
+    private UiLifecycleHelper fbUIHelper;
+
+    // --- Google --- //
+
+    // A magic number we will use to know that our sign-in error resolution activity has completed
+    private static final int GPLUS_RESOLUTION_REQ_CODE = 49404;
+
+    // A flag to stop multiple dialogues appearing for the user
+    private boolean gPlusAutoResolveOnFail;
+
+    // This is the helper object that connects to Google Play Services.
+    private PlusClient gPlusClient;
+    // The saved result from {@link #onConnectionFailed(ConnectionResult)}.  If a connection
+    // attempt has been made, this is non-null.
+    // If this IS null, then the connect method is still running.
+    private ConnectionResult gPlusConnectionResult;
 
     @Inject
     protected ApiClient apiClient;
-
-    private int currentHeight, prevHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        Bundle extraBundle = intent.getExtras();
-
-        shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
-        if (shouldLogoutFirst) {
-            signOutFacebook();
-            signOutPlusClient();
-            shouldLogoutFirst = false;
-        }
-
         getSupportActionBar().hide();
         setContentView(R.layout.activity_irlogin);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            setTranslucentStatus(true);
-//            int statusBarHeight = (int) Math.ceil(25 * getResources().getDisplayMetrics().density);
-//            findViewById(R.id.activityRoot).setPadding(0, statusBarHeight, 0, 0);
-//        }
-//
-//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//        tintManager.setStatusBarTintEnabled(true);
-//        tintManager.setNavigationBarTintEnabled(true);
 
         ButterKnife.inject(this);
         Injector.inject(this);
 
-        mFacebookLogin.setReadPermissions(Arrays.asList("email"));
-
-        if (supportsGooglePlayServices()) {
-            // Set a listener to connect the user when the G+ button is clicked.
-            mPlusSignInButton.setOnClickListener(this);
-        } else {
-            // Don't offer G+ sign in if the app's version is too low to support Google Play
-            // Services.
-            mPlusSignInButton.setVisibility(View.GONE);
-            return;
-        }
-        populateAutoComplete();
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    signIn();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        mSignFacebook.setTypeface(ProjectFonts.newInstance(this).getNormal());
-        mSignGoogle.setTypeface(ProjectFonts.newInstance(this).getNormal());
-        mEmailView.setTypeface(ProjectFonts.newInstance(this).getNormal());
-        mPasswordView.setTypeface(ProjectFonts.newInstance(this).getNormal());
-        mSignButton.setTypeface(ProjectFonts.newInstance(this).getNormal());
-
-        mSignButton.setOnClickListener(this);
-        mForgotPassword.setOnClickListener(this);
-        mRegister.setOnClickListener(this);
-        mSignFacebook.setOnClickListener(this);
-        mSignGoogle.setOnClickListener(this);
-        findViewById(R.id.login_form).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (errorLayout.getVisibility() == View.VISIBLE){
-                    errorLayout.setVisibility(View.INVISIBLE);
-                }
-                return false;
-            }
-        });
+        Intent intent = getIntent();
+        Bundle extraBundle = intent.getExtras();
 
         final View activityRootView = findViewById(R.id.activityRoot);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -200,11 +153,74 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
                         }
                     }
                 });
+
+        findViewById(R.id.login_form).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (errorLayout.getVisibility() == View.VISIBLE) {
+                    errorLayout.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
+
+        mEmailView.setTypeface(ProjectFonts.newInstance(this).getNormal());
+
+        mPasswordView.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    signIn();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mSignButton.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mSignButton.setOnClickListener(this);
+
+        mForgotPassword.setOnClickListener(this);
+
+        mRegister.setOnClickListener(this);
+
+        mSignFacebook.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mSignFacebook.setOnClickListener(this);
+
+        mSignGoogle.setTypeface(ProjectFonts.newInstance(this).getNormal());
+        mSignGoogle.setOnClickListener(this);
+
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            // Set a listener to connect the user when the G+ button is clicked.
+            mPlusSignInButton.setOnClickListener(this);
+        } else {
+            // Don't offer G+ sign in if the app's version is too low to support Google Play
+            // Services.
+            mPlusSignInButton.setVisibility(View.GONE);
+        }
+
+        setupFB(savedInstanceState);
+        setupGPlus();
+
+        shouldLogoutFirst = extraBundle != null && extraBundle.getBoolean(EXTRA_SHOULD_LOGOUT_FIRST);
+        if (shouldLogoutFirst) {
+            signOutFacebook();
+            signOutPlusClient();
+            shouldLogoutFirst = false;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        Session fbSession = Session.getActiveSession();
+        if (fbSession != null) {
+            onFBSessionStateChange(fbSession, fbSession.getState(), null);
+        }
+
+        fbUIHelper.onResume();
 
         apiClient.getEventBus().register(this);
     }
@@ -213,20 +229,29 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     protected void onPause() {
         super.onPause();
 
+        fbUIHelper.onPause();
+
         apiClient.getEventBus().unregister(this);
     }
 
-    @TargetApi(19)
-    private void setTranslucentStatus(boolean on) {
-        Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        gPlusDisconnect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        fbUIHelper.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        fbUIHelper.onSaveInstanceState(outState);
     }
 
     @Override
@@ -237,6 +262,49 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         } else if (newConfig.hardKeyboardHidden ==
                 Configuration.HARDKEYBOARDHIDDEN_YES) {
             Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        Session.getActiveSession().onActivityResult(this, requestCode, responseCode, intent);
+
+        updateGPlusButtonState();
+        if (requestCode == GPLUS_RESOLUTION_REQ_CODE && responseCode == RESULT_OK) {
+            // If we have a successful result, we will want to be able to resolve any further
+            // errors, so turn on resolution with our flag.
+            gPlusAutoResolveOnFail = true;
+            // If we have a successful result, let's call connect() again. If there are any more
+            // errors to resolve we'll get our onConnectionFailed, but if not,
+            // we'll get onConnected.
+            gPlusConnect();
+        } else if (requestCode == GPLUS_RESOLUTION_REQ_CODE && responseCode != RESULT_OK) {
+            // If we've got an error we can't resolve, we're no longer in the midst of signing
+            // in, so we can stop the progress spinner.
+            showProgress(false);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.email_sign_in_button:
+                signIn();
+                break;
+            case R.id.forgot_password:
+                Intent intentForgot = new Intent(this, IRForgotPasswordActivity.class);
+                startActivity(intentForgot);
+                break;
+            case R.id.register:
+                Intent intentRegister = new Intent(this, IRRegisterActivity.class);
+                startActivity(intentRegister);
+                break;
+            case R.id.email_sign_in_google:
+                signInGoogle();
+                break;
+            case R.id.email_sign_in_facebook:
+                mFacebookLogin.performClick();
+                break;
         }
     }
 
@@ -265,31 +333,9 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.email_sign_in_button:
-                signIn();
-                break;
-            case R.id.forgot_password:
-                Intent intentForgot = new Intent(this, IRForgotPasswordActivity.class);
-                startActivity(intentForgot);
-                break;
-            case R.id.register:
-                Intent intentRegister = new Intent(this, IRRegisterActivity.class);
-                startActivity(intentRegister);
-                break;
-            case R.id.email_sign_in_google:
-                signInGoogle();
-                break;
-            case R.id.email_sign_in_facebook:
-                mFacebookLogin.performClick();
-                break;
-        }
-    }
-
-    private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
+    protected void updateGPlusButtonState() {
+        boolean connected = gPlusClient.isConnected();
+        mEmailLoginFormView.setVisibility(connected ? View.GONE : View.VISIBLE);
     }
 
     /**
@@ -298,7 +344,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
      * errors are presented and no actual login attempt is made.
      */
     public void signIn() {
-        if (!AppStatus.getInstance(this).isOnline()){
+        if (!AppStatus.getInstance(this).isOnline()) {
             Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
             return;
         }
@@ -346,139 +392,223 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
             // perform the user login attempt.
             showProgress(true);
             errorLayout.setVisibility(View.INVISIBLE);
-            this.email = email;
+            this.userEmail = email;
             apiClient.openSession(email, password);
         }
     }
 
-    // --- Google Plus --- //
+    // --- FACEBOOK --- //
 
-    @Override
-    protected void onPlusClientSignIn() {
+    private void setupFB(Bundle savedInstanceState) {
+        fbUIHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
+            @Override
+            public void call(final Session session, final SessionState state, final Exception exception) {
+                onFBSessionStateChange(session, state, exception);
+            }
+        });
+        fbUIHelper.onCreate(savedInstanceState);
+
+        mFacebookLogin.setReadPermissions(Arrays.asList("email"));
+    }
+
+    protected boolean isFacebookLoggedIn() {
+        Session session = Session.getActiveSession();
+        return session != null && session.isOpened();
+    }
+
+    protected void signOutFacebook() {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            if (!session.isClosed()) {
+                session.closeAndClearTokenInformation();
+                //clear your preferences if saved
+            }
+        }
+    }
+
+    private void onFBSessionStateChange(Session session, SessionState state, Exception exception) {
+        if (state.isOpened()) {
+            com.irewind.utils.Log.i(TAG, "Logged in...");
+            Request request = Request.newMeRequest(session,
+                    new Request.GraphUserCallback() {
+                        // callback after Graph API response with user object
+
+                        @Override
+                        public void onCompleted(GraphUser user,
+                                                Response response) {
+                            if (user != null) {
+                                Map<String, Object> userMap = user.asMap();
+                                if (userMap != null) {
+                                    String email = (String) userMap.get("email");
+                                    String firstname = (String) userMap.get("first_name");
+                                    String lastname = (String) userMap.get("last_name");
+                                    String id = (String) userMap.get("id");
+                                    String picture = "http://graph.facebook.com/" + id + "/picture?type=large";
+
+                                    userEmail = email;
+
+                                    apiClient.loginFACEBOOK(userEmail, id, firstname, lastname, picture);
+                                }
+                            }
+                        }
+                    });
+            Request.executeBatchAsync(request);
+        } else if (state.isClosed()) {
+            com.irewind.utils.Log.i(TAG, "Logged out...");
+        }
+    }
+
+    // --- GOOGLE --- //
+
+    private void setupGPlus() {
+        // Initialize the PlusClient connection.
+        // Scopes indicate the information about the user your application will be able to access.
+        PlusClient.Builder gPlusBuilder = new PlusClient.Builder(this, new GooglePlayServicesClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle bundle) {
+                updateGPlusButtonState();
+                showProgress(false);
+                onGPlusSignIn();
+            }
+
+            @Override
+            public void onDisconnected() {
+                updateGPlusButtonState();
+                onGPlusSignOut();
+            }
+        }, new GoogleApiClient.OnConnectionFailedListener() {
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+                updateGPlusButtonState();
+
+                // Most of the time, the connection will fail with a user resolvable result. We can store
+                // that in our gPlusConnectionResult property ready to be used when the user clicks the
+                // sign-in button.
+                if (connectionResult.hasResolution()) {
+                    gPlusConnectionResult = connectionResult;
+                    if (gPlusAutoResolveOnFail) {
+                        // This is a local helper function that starts the resolution of the problem,
+                        // which may be showing the user an account chooser or similar.
+                        startGPlusResolution();
+                    }
+                }
+            }
+        });
+        gPlusBuilder.setScopes(Scopes.PLUS_LOGIN, Scopes.PLUS_ME, Scopes.PROFILE, "https://www.googleapis.com/auth/userinfo.email");
+        gPlusClient = gPlusBuilder.build();
+    }
+
+    /**
+     * Try to sign in the user.
+     */
+    public void signInGoogle() {
+        if (!gPlusClient.isConnected()) {
+            // Show the dialog as we are now signing in.
+            showProgress(true);
+            // Make sure that we will start the resolution (e.g. fire the intent and pop up a
+            // dialog for the user) for any errors that come in.
+            gPlusAutoResolveOnFail = true;
+            // We should always have a connection result ready to resolve,
+            // so we can start that process.
+            if (gPlusConnectionResult != null) {
+                startGPlusResolution();
+            } else {
+                // If we don't have one though, we can start connect in
+                // order to retrieve one.
+                gPlusConnect();
+            }
+
+            updateGPlusButtonState();
+        }
+    }
+
+    /**
+     * Connect the {@link PlusClient} only if a connection isn't already in progress.  This will
+     * call back to { onConnected(android.os.Bundle)} or
+     * { #onConnectionFailed(com.google.android.gms.common.ConnectionResult)}.
+     */
+    private void gPlusConnect() {
+        if (!gPlusClient.isConnected() && !gPlusClient.isConnecting()) {
+            gPlusClient.connect();
+        }
+    }
+
+    /**
+     * A helper method to flip the gPlusResolveOnFail flag and start the resolution
+     * of the ConnectionResult from the failed connect() call.
+     */
+    private void startGPlusResolution() {
+        try {
+            // Don't start another resolution now until we have a result from the activity we're
+            // about to start.
+            gPlusAutoResolveOnFail = false;
+            // If we can resolve the error, then call start resolution and pass it an integer tag
+            // we can use to track.
+            // This means that when we get the onActivityResult callback we'll know it's from
+            // being started here.
+            gPlusConnectionResult.startResolutionForResult(this, GPLUS_RESOLUTION_REQ_CODE);
+        } catch (IntentSender.SendIntentException e) {
+            // Any problems, just try to connect() again so we get a new ConnectionResult.
+            gPlusConnectionResult = null;
+            gPlusConnect();
+        }
+    }
+
+    protected void onGPlusSignIn() {
 
         //Set up sign out and disconnect buttons.
-        if (getPlusClient() != null && getPlusClient().getCurrentPerson() != null) {
+        if (gPlusClient != null && gPlusClient.getCurrentPerson() != null) {
 
-            Log.d("PLUS_INFO", getPlusClient().getAccountName() + " " + getPlusClient().getCurrentPerson().getId() + " " + getPlusClient().getCurrentPerson().getDisplayName() + " " + getPlusClient().getCurrentPerson().getImage());
+            Log.d("PLUS_INFO", gPlusClient.getAccountName() + " " + gPlusClient.getCurrentPerson().getId() + " " + gPlusClient.getCurrentPerson().getDisplayName() + " " + gPlusClient.getCurrentPerson().getImage());
 
-            Person person = getPlusClient().getCurrentPerson();
-            String email = getPlusClient().getAccountName();
+            Person person = gPlusClient.getCurrentPerson();
+            String email = gPlusClient.getAccountName();
             String socialId = person.getId();
             String firstname = person.getName().getGivenName();
             String lastname = person.getName().getFamilyName();
             String pictureUrl = person.getImage().getUrl();
 
-            this.email = email;
-            apiClient.loginGOOGLE(email, socialId, firstname, lastname, pictureUrl);
+            userEmail = email;
+
+            apiClient.loginGOOGLE(userEmail, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
         }
     }
 
-    @Override
-    protected void onPlusClientBlockingUI(boolean show) {
-        showProgress(show);
-    }
+    /**
+     * Sign out the user (so they can switch to another account).
+     */
+    public void signOutPlusClient() {
 
-    @Override
-    protected void onPlusClientRevokeAccess() {
+        // We only want to sign out if we're connected.
+        if (gPlusClient.isConnected()) {
+            // Clear the default account in order to allow the user to potentially choose a
+            // different account from the account chooser.
+            gPlusClient.clearDefaultAccount();
 
-    }
+            // Disconnect from Google Play Services, then reconnect in order to restart the
+            // process from scratch.
+            gPlusDisconnect();
 
-    @Override
-    protected void onPlusClientSignOut() {
+            android.util.Log.v(TAG, "Sign out successful!");
 
-    }
-
-    @Override
-    protected void updateGPlusButtonState() {
-        boolean connected = getPlusClient().isConnected();
-
-        mEmailLoginFormView.setVisibility(connected ? View.GONE : View.VISIBLE);
+            updateGPlusButtonState();
+        }
     }
 
     /**
-     * Check if the device supports Google Play Services.  It's best
-     * practice to check first rather than handling this as an error case.
-     *
-     * @return whether the device supports Google Play Services
+     * Disconnect the {@link PlusClient} only if it is connected (otherwise, it can throw an error.)
+     * This will call back to { #onDisconnected()}.
      */
-    private boolean supportsGooglePlayServices() {
-        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) ==
-                ConnectionResult.SUCCESS;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
+    private void gPlusDisconnect() {
+        if (gPlusClient.isConnected()) {
+            gPlusClient.disconnect();
         }
-
-        addEmailsToAutoComplete(emails);
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    protected void onGPlusSignOut() {
 
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-//        ArrayAdapter<String> adapter =
-//                new ArrayAdapter<String>(IRLoginActivity.this,
-//                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-//
-//        mEmailView.setAdapter(adapter);
-    }
-
-    // --- Facebook --- //
-
-    @Override
-    protected void onGraphUserLoaded(GraphUser user) {
-        if (user != null) {
-            Map<String, Object> userMap = user.asMap();
-            if (userMap != null) {
-                String email = (String)userMap.get("email");
-                String firstname = (String)userMap.get("first_name");
-                String lastname = (String)userMap.get("last_name");
-                String id = (String)userMap.get("id");
-                String picture = "http://graph.facebook.com/"+id+"/picture?type=large";
-
-                this.email = email;
-
-                apiClient.loginFACEBOOK(email, id, firstname, lastname, picture);
-            }
-        }
     }
 
     // --- Events --- //
@@ -487,7 +617,7 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
     public void onEvent(SessionOpenedEvent event) {
         showProgress(false);
 
-        apiClient.getUserByEmail(email);
+        apiClient.getUserByEmail(userEmail);
 
         Intent intent = new Intent(IRLoginActivity.this, IRTabActivity.class);
         intent.addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
@@ -516,6 +646,3 @@ public class IRLoginActivity extends SocialLoginActivity implements LoaderCallba
         signOutPlusClient();
     }
 }
-
-
-
