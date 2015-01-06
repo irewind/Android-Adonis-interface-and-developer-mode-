@@ -976,7 +976,7 @@ public class ApiClient {
         });
     }
 
-    private SafeAsyncTask<VideoListResponse2> listVideosTask;
+    private SafeAsyncTask<VideoListResponse> listVideosTask;
 
     public void listVideos(final int page, final int perPage) {
         cancelListVideosTask();
@@ -984,9 +984,9 @@ public class ApiClient {
 
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
+        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
             @Override
-            public VideoListResponse2 call() throws Exception {
+            public VideoListResponse call() throws Exception {
                 return apiService.listVideos(authHeader(session), page, perPage);
             }
 
@@ -1010,12 +1010,14 @@ public class ApiClient {
             }
 
             @Override
-            public void onSuccess(VideoListResponse2 videoListResponse) {
-                PageInfo pageInfo = new PageInfo();
-                pageInfo.setNumber(page);
-                pageInfo.setSize(videoListResponse.getContent().size());
-                pageInfo.setTotalPages(videoListResponse.getTotal());
-                eventBus.post(new VideoListEvent(videoListResponse.getContent(), pageInfo));
+            public void onSuccess(VideoListResponse videoListResponse) {
+                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
+                if (embeddedResponse != null) {
+                    List<Video> videos = embeddedResponse.getVideos();
+                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
+                } else {
+                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
+                }
             }
         };
 
