@@ -193,6 +193,7 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
         if (isCheckInEnabled()) {
             IrewindBackend.Instance.stopRecording();
         }
+        IrewindBackend.Instance = null;
 
         Intent intent = new Intent(getActivity(), IRLoginActivity.class);
         intent.putExtra(IRLoginActivity.EXTRA_SHOULD_LOGOUT_FIRST, true);

@@ -40,6 +40,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import utils.IrewindBackend;
 
 
 public class IRAccountPersonalFragment extends Fragment implements View.OnClickListener {
@@ -196,6 +197,15 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
         showProgress(true);
 
         apiClient.deleteUser(apiClient.getActiveUser());
+
+        if (isCheckInEnabled()) {
+            IrewindBackend.Instance.stopRecording();
+        }
+        IrewindBackend.Instance = null;
+    }
+
+    public boolean isCheckInEnabled() {
+        return IrewindBackend.Instance != null && IrewindBackend.Instance.recordingState;
     }
 
     private void updateUserInfo(User user) {
