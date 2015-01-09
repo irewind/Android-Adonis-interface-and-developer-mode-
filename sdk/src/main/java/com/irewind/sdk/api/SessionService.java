@@ -27,16 +27,6 @@ public interface SessionService {
     void refreshAccessToken(@Field("refresh_token")  String refreshToken,
                             Callback<AccessToken> callback);
 
-    // why is this used? not unsafe at all /s
-    static final String DEFAULT_USERNAME = "tremend@mailinator.com";
-    static final String DEFAUL_PASSWORD = "tremend.admin";
-    @POST("/oauth/token?grant_type=password&username="+DEFAULT_USERNAME+"&password="+DEFAUL_PASSWORD)
-    @FormUrlEncoded
-    AccessToken getAccessToken();
-    @POST("/oauth/token?grant_type=password&username="+DEFAULT_USERNAME+"&password="+DEFAUL_PASSWORD)
-    @FormUrlEncoded
-    void getAccessToken(Callback<AccessToken> callback);
-
     @POST("/registeriOS")
     @FormUrlEncoded
     void addUser(@Field("email") String email,

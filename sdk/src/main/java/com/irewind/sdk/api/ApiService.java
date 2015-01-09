@@ -147,7 +147,7 @@ public interface ApiService {
                                   @Query("pageNo") Integer page,
                                   @Query("pageSize") Integer size);
 
-    @GET("/rest/v2/search-videos")
+    @GET("/rest/v2/search-videos?myMoviesOnly=false")
     VideoListResponse2 searchVideos(@Header("Authorization") String authorization,
                                     @Query("searchTerm") String query,
                                     @Query("pageNo") Integer page,
