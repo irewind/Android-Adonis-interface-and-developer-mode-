@@ -976,7 +976,7 @@ public class ApiClient {
         });
     }
 
-    private SafeAsyncTask<VideoListResponse> listVideosTask;
+    private SafeAsyncTask<VideoListResponse2> listVideosTask;
 
     public void listVideos(final int page, final int perPage) {
         cancelListVideosTask();
@@ -984,9 +984,9 @@ public class ApiClient {
 
         final Session session = getActiveSession();
 
-        SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
+        SafeAsyncTask<VideoListResponse2> task = new SafeAsyncTask<VideoListResponse2>() {
             @Override
-            public VideoListResponse call() throws Exception {
+            public VideoListResponse2 call() throws Exception {
                 return apiService.listVideos(authHeader(session), page, perPage);
             }
 
@@ -1010,14 +1010,12 @@ public class ApiClient {
             }
 
             @Override
-            public void onSuccess(VideoListResponse videoListResponse) {
-                VideoListResponse.EmbeddedResponse embeddedResponse = videoListResponse.getEmbeddedResponse();
-                if (embeddedResponse != null) {
-                    List<Video> videos = embeddedResponse.getVideos();
-                    eventBus.post(new VideoListEvent(videos, videoListResponse.getPageInfo()));
-                } else {
-                    eventBus.post(new VideoListEvent(null, videoListResponse.getPageInfo()));
-                }
+            public void onSuccess(VideoListResponse2 videoListResponse) {
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setNumber(page);
+                pageInfo.setSize(videoListResponse.getContent().size());
+                pageInfo.setTotalPages(videoListResponse.getTotal());
+                eventBus.post(new VideoListEvent(videoListResponse.getContent(), pageInfo));
             }
         };
 
@@ -1231,7 +1229,7 @@ public class ApiClient {
         final Session session = getActiveSession();
 
         VoteRequest voteRequest = new VoteRequest();
-        voteRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        voteRequest.video = config.getBaseURL() + "/rest/video/" + videoId;
         voteRequest.voteType = VoteRequest.VOTE_TYPE_LIKE;
 
         apiService.vote(authHeader(session), voteRequest, new Callback<BaseResponse>() {
@@ -1265,7 +1263,7 @@ public class ApiClient {
         final Session session = getActiveSession();
 
         VoteRequest voteRequest = new VoteRequest();
-        voteRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        voteRequest.video = config.getBaseURL() + "/rest/video/" + videoId;
         voteRequest.voteType = VoteRequest.VOTE_TYPE_DISLIKE;
 
         apiService.vote(authHeader(session), voteRequest, new Callback<BaseResponse>() {
@@ -1481,7 +1479,7 @@ public class ApiClient {
         final Session session = getActiveSession();
 
         CreateCommentRequest commentRequest = new CreateCommentRequest();
-        commentRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        commentRequest.video = config.getBaseURL() + "/rest/video/" + videoId;
         commentRequest.content = content;
 
         apiService.postVideoComment(authHeader(session), commentRequest, new Callback<BaseResponse>() {
@@ -1515,9 +1513,9 @@ public class ApiClient {
         final Session session = getActiveSession();
 
         ReplyCommentRequest commentRequest = new ReplyCommentRequest();
-        commentRequest.video = "http://web01.dev.irewind.com/api/rest/video/" + videoId;
+        commentRequest.video = config.getBaseURL() + "/rest/video/" + videoId;
         commentRequest.content = content;
-        commentRequest.parentVideoComment = "http://web01.dev.irewind.com/api/rest/video-comment/" + parentCommentId;
+        commentRequest.parentVideoComment = config.getBaseURL() + "/rest/video-comment/" + parentCommentId;
 
         apiService.replyVideoComment(authHeader(session), commentRequest, new Callback<BaseResponse>() {
             @Override

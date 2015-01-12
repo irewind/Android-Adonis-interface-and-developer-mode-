@@ -142,8 +142,8 @@ public interface ApiService {
                    @Path("id") long videoID,
                    Callback<Video> cb);
 
-    @GET("/rest/video")
-    VideoListResponse listVideos(@Header("Authorization") String authorization,
+    @GET("/rest/v2/search-videos?myMoviesOnly=false")
+    VideoListResponse2 listVideos(@Header("Authorization") String authorization,
                                   @Query("pageNo") Integer page,
                                   @Query("pageSize") Integer size);
 
