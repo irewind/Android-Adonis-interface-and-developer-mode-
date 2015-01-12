@@ -29,7 +29,7 @@ import de.greenrobot.event.EventBus;
         library = true
 )
 
-public class IRModule {
+public class SDKModule {
     @Singleton
     @Provides
     EventBus provideBus() {

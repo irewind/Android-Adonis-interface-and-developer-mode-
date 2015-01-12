@@ -8,7 +8,7 @@ import dagger.Module;
 @Module(
         includes = {
                 AndroidModule.class,
-                IRModule.class
+                SDKModule.class
         }
 )
 public class RootModule {
