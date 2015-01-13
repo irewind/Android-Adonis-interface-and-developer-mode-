@@ -107,6 +107,7 @@ public interface ApiService {
     // --- Notifications --- //
 
     @POST("/user/notificationConfigMobile")
+    @FormUrlEncoded
     void userNotificationSettings(@Header("Authorization") String authorization,
                                   @Query("email") String email,
                                   Callback<NotificationSettingsResponse> cb);
