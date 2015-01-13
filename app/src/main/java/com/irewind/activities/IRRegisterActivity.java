@@ -156,7 +156,7 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
         mConfirm.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.confirm || id == EditorInfo.IME_NULL) {
+                if (id == R.id.signUp || id == EditorInfo.IME_NULL || id == EditorInfo.IME_ACTION_DONE) {
                     attemptRegister();
                     return true;
                 }
