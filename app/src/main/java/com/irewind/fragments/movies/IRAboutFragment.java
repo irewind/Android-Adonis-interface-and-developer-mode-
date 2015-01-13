@@ -184,6 +184,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void onEvent(VideoInfoEvent event) {
         if (event.video != null) {
+            this.video = event.video;
             updateVideoInfo(event.video);
         }
         progressBar.setVisibility(View.GONE);
