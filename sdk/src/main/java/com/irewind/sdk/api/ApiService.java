@@ -6,6 +6,7 @@ import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
+import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
@@ -90,13 +91,13 @@ public interface ApiService {
                     @Field("lastName") String lastName,
                     Callback<Boolean> cb);
 
-    @GET("/user/changePasswordMobile")
+    @POST("/user/changePasswordMobile")
+    @FormUrlEncoded
     void changePassword(@Header("Authorization") String authorization,
-                        @Query("id") long id,
-                        @Query("oldPassword") String oldPassword,
-                        @Query("newPassword") String newPassword,
-                        @Query("newPassword2") String newPassword2,
-                        Callback<Boolean> cb);
+                        @Field("oldPassword") String oldPassword,
+                        @Field("newPassword") String newPassword,
+                        @Field("newPassword2") String newPassword2,
+                        Callback<PasswordChangeResponse> cb);
 
     @POST("/user/mobileUnregister")
     @FormUrlEncoded

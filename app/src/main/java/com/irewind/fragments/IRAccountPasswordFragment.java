@@ -178,7 +178,7 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             focusView.requestFocus();
         } else {
             showProgress(true);
-            apiClient.changeUserPassword(apiClient.getActiveUser(), currentPassword, newPassword);
+            apiClient.changeUserPassword(currentPassword, newPassword);
         }
     }
 

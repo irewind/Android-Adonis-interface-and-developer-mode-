@@ -48,6 +48,7 @@ import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
+import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
 import com.irewind.sdk.api.response.SignUpResponse;
 import com.irewind.sdk.api.response.TagListResponse;
@@ -720,12 +721,12 @@ public class ApiClient {
         });
     }
 
-    public void changeUserPassword(final User user, final String currentPassword, final String newPassword) {
+    public void changeUserPassword(final String currentPassword, final String newPassword) {
         final Session session = getActiveSession();
-        apiService.changePassword(authHeader(session), user.getId(), currentPassword, newPassword, newPassword, new Callback<Boolean>() {
+        apiService.changePassword(authHeader(session), currentPassword, newPassword, newPassword, new Callback<PasswordChangeResponse>() {
             @Override
-            public void success(Boolean success, Response response) {
-                if (success) {
+            public void success(PasswordChangeResponse passwordChangeResponse, Response response) {
+                if (passwordChangeResponse.getResult() == true) {
                     eventBus.post(new PasswordChangeSuccessEvent());
                 } else {
                     eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.WrongPassword));
@@ -738,7 +739,7 @@ public class ApiClient {
                     refreshSession(session, new Callback<AccessToken>() {
                         @Override
                         public void success(AccessToken accessToken, Response response) {
-                            changeUserPassword(user, currentPassword, newPassword);
+                            changeUserPassword(currentPassword, newPassword);
                         }
 
                         @Override
