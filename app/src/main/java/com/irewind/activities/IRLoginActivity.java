@@ -480,6 +480,7 @@ public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
             @Override
             public void onConnectionFailed(ConnectionResult connectionResult) {
                 updateGPlusButtonState();
+                showProgress(false);
 
                 // Most of the time, the connection will fail with a user resolvable result. We can store
                 // that in our gPlusConnectionResult property ready to be used when the user clicks the
