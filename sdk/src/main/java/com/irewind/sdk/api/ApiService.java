@@ -211,6 +211,15 @@ public interface ApiService {
               @Body VoteRequest voteRequest,
               Callback<BaseResponse> cb);
 
+    // --- Views --- //
+
+    @POST("/rest/v2/increase-video-views")
+    @Headers("Content-Type: application/json")
+    void increaseViewCount(@Header("Authorization") String authorization,
+                           @Field("videoId") long videoID,
+                           Callback<BaseResponse> cb);
+
+
     // --- Comments --- //
 
     @GET("/rest/v2/video-comment/list")

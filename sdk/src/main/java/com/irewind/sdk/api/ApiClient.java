@@ -1306,6 +1306,38 @@ public class ApiClient {
         });
     }
 
+    // --- Views --- //
+
+    public void increaseViewCount(final long videoId) {
+        final Session session = getActiveSession();
+
+        apiService.increaseViewCount(authHeader(session), videoId, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                //TODO: send success event
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            increaseViewCount(videoId);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            //TODO: send failure event
+                        }
+                    });
+                } else {
+                    //TODO: send failure event
+                }
+            }
+        });
+    }
+
     // --- Permissions --- //
 
     public void listVideoViewPermissions(final long videoId) {
