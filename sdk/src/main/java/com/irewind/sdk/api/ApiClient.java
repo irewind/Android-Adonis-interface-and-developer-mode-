@@ -1151,10 +1151,17 @@ public class ApiClient {
 
         final Session session = getActiveSession();
 
+        User activeUser = getActiveUser();
+        if (activeUser == null) {
+            eventBus.post(new VideoListFailEvent(null, page));
+        }
+
+        final long loggedInUserId = activeUser.getId();
+
         SafeAsyncTask<VideoListResponse> task = new SafeAsyncTask<VideoListResponse>() {
             @Override
             public VideoListResponse call() throws Exception {
-                return apiService.videosForUser(authHeader(session), userId, page, perPage);
+                return apiService.videosForUser(authHeader(session), userId, loggedInUserId, page, perPage);
             }
 
             @Override
