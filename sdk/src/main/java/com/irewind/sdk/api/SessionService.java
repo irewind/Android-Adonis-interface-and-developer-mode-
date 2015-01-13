@@ -1,5 +1,6 @@
 package com.irewind.sdk.api;
 
+import com.irewind.sdk.api.response.SignUpResponse;
 import com.irewind.sdk.model.AccessToken;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
@@ -33,7 +34,7 @@ public interface SessionService {
                  @Field("firstName") String firstName,
                  @Field("lastName") String lastName,
                  @Field("password") String password,
-                 Callback<BaseResponse> cb);
+                 Callback<SignUpResponse> cb);
 
     @POST("/reset")
     @FormUrlEncoded

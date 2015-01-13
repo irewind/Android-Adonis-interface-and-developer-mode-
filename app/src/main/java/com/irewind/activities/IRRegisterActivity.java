@@ -348,6 +348,8 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
 
     @Subscribe
     public void onEvent(RegisterFailEvent event) {
+        showProgress(false);
+        
         if (event.reason == RegisterFailEvent.Reason.UserExists) {
             Toast.makeText(getApplicationContext(), getString(R.string.error_account_exists), Toast.LENGTH_LONG).show();
         } else {

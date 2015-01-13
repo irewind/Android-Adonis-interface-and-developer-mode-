@@ -49,6 +49,7 @@ import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
+import com.irewind.sdk.api.response.SignUpResponse;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
 import com.irewind.sdk.api.response.UserResponse;
@@ -371,15 +372,20 @@ public class ApiClient {
                          String firstName,
                          String lastName,
                          final String password) {
-        sessionService.addUser(email, firstName, lastName, password, new Callback<BaseResponse>() {
+        sessionService.addUser(email, firstName, lastName, password, new Callback<SignUpResponse>() {
             @Override
-            public void success(BaseResponse baseResponse, Response response) {
-                eventBus.post(new RegisterSuccessEvent());
+            public void success(SignUpResponse signUpResponse, Response response) {
+                if (signUpResponse.getError() == null || signUpResponse.getError().length() == 0) {
+                    eventBus.post(new RegisterSuccessEvent());
+                }
+                else {
+                    eventBus.post(new RegisterFailEvent(RegisterFailEvent.Reason.UserExists));
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                eventBus.post(new RegisterFailEvent(RegisterFailEvent.Reason.UserExists));
+                eventBus.post(new RegisterFailEvent(RegisterFailEvent.Reason.Unknown));
             }
         });
     }
