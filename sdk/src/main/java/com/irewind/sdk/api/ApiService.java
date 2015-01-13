@@ -90,7 +90,7 @@ public interface ApiService {
                     @Field("lastName") String lastName,
                     Callback<Boolean> cb);
 
-    @GET("/user/changePassword")
+    @GET("/user/changePasswordMobile")
     void changePassword(@Header("Authorization") String authorization,
                         @Query("id") long id,
                         @Query("oldPassword") String oldPassword,
