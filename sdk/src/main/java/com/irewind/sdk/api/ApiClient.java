@@ -786,7 +786,7 @@ public class ApiClient {
 
     public void getUserNotificationSettings(final User user) {
         final Session session = getActiveSession();
-        apiService.userNotificationSettings(authHeader(session), user.getId(), new Callback<NotificationSettingsResponse>() {
+        apiService.userNotificationSettings(authHeader(session), user.getEmail(), new Callback<NotificationSettingsResponse>() {
             @Override
             public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
                 NotificationSettingsResponse.EmbeddedResponse content = notificationSettingsResponse.getContent();

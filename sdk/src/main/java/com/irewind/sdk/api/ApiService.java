@@ -106,9 +106,9 @@ public interface ApiService {
 
     // --- Notifications --- //
 
-    @GET("/rest/user-notification/search/findByUser")
+    @POST("/user/notificationConfigMobile")
     void userNotificationSettings(@Header("Authorization") String authorization,
-                                  @Query("user") long userID,
+                                  @Query("email") String email,
                                   Callback<NotificationSettingsResponse> cb);
 
     @POST("/user/updateUserNotification?notificationType=comment")
