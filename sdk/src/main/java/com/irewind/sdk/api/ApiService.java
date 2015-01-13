@@ -6,6 +6,7 @@ import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
+import com.irewind.sdk.api.response.NotificationSettingsResponse2;
 import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.api.response.UserListResponse;
@@ -110,8 +111,8 @@ public interface ApiService {
     @POST("/user/notificationConfigMobile")
     @FormUrlEncoded
     void userNotificationSettings(@Header("Authorization") String authorization,
-                                  @Query("email") String email,
-                                  Callback<NotificationSettingsResponse> cb);
+                                  @Field("email") String email,
+                                  Callback<NotificationSettingsResponse2> cb);
 
     @POST("/user/updateUserNotification?notificationType=comment")
     @FormUrlEncoded

@@ -48,6 +48,7 @@ import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse;
+import com.irewind.sdk.api.response.NotificationSettingsResponse2;
 import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
 import com.irewind.sdk.api.response.SignUpResponse;
@@ -787,16 +788,11 @@ public class ApiClient {
 
     public void getUserNotificationSettings(final User user) {
         final Session session = getActiveSession();
-        apiService.userNotificationSettings(authHeader(session), user.getEmail(), new Callback<NotificationSettingsResponse>() {
+        apiService.userNotificationSettings(authHeader(session), user.getEmail(), new Callback<NotificationSettingsResponse2>() {
             @Override
-            public void success(NotificationSettingsResponse notificationSettingsResponse, Response response) {
-                NotificationSettingsResponse.EmbeddedResponse content = notificationSettingsResponse.getContent();
-                if (content != null) {
-                    List<NotificationSettings> results = notificationSettingsResponse.getContent().getNotificationSettings();
-                    eventBus.post(new NotificationSettingsListSuccessEvent(results.get(0)));
-                } else {
-                    eventBus.post(new NotificationSettingsListSuccessEvent(new NotificationSettings()));
-                }
+            public void success(NotificationSettingsResponse2 notificationSettingsResponse, Response response) {
+                NotificationSettings result = notificationSettingsResponse.getNotificationSettings();
+                eventBus.post(new NotificationSettingsListSuccessEvent(result));
             }
 
             @Override
