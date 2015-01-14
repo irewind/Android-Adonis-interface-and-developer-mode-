@@ -101,7 +101,6 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
             Log.i("toggleFullScreen", "API>=16");
             View decorView = getWindow().getDecorView();
             // Hide the status bar.
-            // int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(uiOptions);
@@ -113,12 +112,6 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
     @Override
     protected void onPause() {
         super.onPause();
-        orientationListener.disable();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
         if (Build.VERSION.SDK_INT < 16) {
             Log.i("toggleFullScreen", "API<16");
@@ -132,6 +125,12 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
             decorView.setSystemUiVisibility(uiOptions);
         }
 
+        orientationListener.disable();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         videoPlayerFragment.stop();
     }
 
