@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -124,10 +125,13 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                if (!getActivity().isFinishing()) {
+                FragmentActivity activity = getActivity();
+                if (activity != null && !activity.isFinishing()) {
                     Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
-                    intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_URI, video.getMp4HighResolutionURL());
-                    intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_THUMBNAIL_URI, video.getThumbnail());
+                    if (video != null) {
+                        intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_URI, video.getMp4HighResolutionURL());
+                        intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_THUMBNAIL_URI, video.getThumbnail());
+                    }
                     if (videoPlayerFragment.isPlaying()) {
                         intent.putExtra("video_pos", videoPlayerFragment.getVideoPosition());
                     }
@@ -168,8 +172,10 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
         ButterKnife.inject(this, view);
 
         videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
-        videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
-        videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
+        if (video != null) {
+            videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
+            videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
+        }
 
         btnAbout.setOnClickListener(this);
         btnRelated.setOnClickListener(this);
