@@ -2,8 +2,11 @@ package com.irewind.activities;
 
 import android.content.Intent;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.irewind.R;
 import com.irewind.fragments.VideoPlayerFragment;
@@ -88,6 +91,22 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (Build.VERSION.SDK_INT < 16) {
+            Log.i("toggleFullScreen", "API<16");
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            Log.i("toggleFullScreen", "API>=16");
+            View decorView = getWindow().getDecorView();
+            // Hide the status bar.
+            // int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+
         orientationListener.enable();
     }
 
@@ -100,6 +119,19 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (Build.VERSION.SDK_INT < 16) {
+            Log.i("toggleFullScreen", "API<16");
+            getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            Log.i("toggleFullScreen", "API>=16");
+            View decorView = getWindow().getDecorView();
+            // Hide the status bar.
+            int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+
         videoPlayerFragment.stop();
     }
 
