@@ -186,7 +186,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListEvent event) {
-        Log.d("on_event", "normal");
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
         if (!AppStatus.getInstance(getActivity()).isOnline()){
@@ -215,7 +214,6 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
 
     @Subscribe
     public void onEvent(VideoListFailEvent event) {
-        Log.d("on_event", "fail");
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
         if (!AppStatus.getInstance(getActivity()).isOnline()){

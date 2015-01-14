@@ -104,7 +104,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
         mAdapter = new IRPeopleAdapter(getActivity(), R.layout.row_people_list);
         mListView.setAdapter(mAdapter);
         mPullToRefreshListView.setVisibility(View.INVISIBLE);
-        emptyText.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -169,7 +168,6 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     void fetch(int page) {
         if (mAdapter.getCount() == 0){
             mPullToRefreshListView.setVisibility(View.INVISIBLE);
-            emptyText.setVisibility(View.INVISIBLE);
         }
 
         if (searchQuery != null && searchQuery.length() > 0) {
@@ -182,15 +180,13 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(UserListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
         if (!AppStatus.getInstance(getActivity()).isOnline()){
             emptyText.setText(getString(R.string.no_internet_connection));
         } else {
             emptyText.setText(getString(R.string.no_people));
         }
         mListView.setEmptyView(emptyText);
-
-        mPullToRefreshListView.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.VISIBLE);
 
         List<User> users = event.users;
         PageInfo pageInfo = event.pageInfo;
@@ -212,15 +208,13 @@ public class IRPeopleFragment extends Fragment implements AdapterView.OnItemClic
     @Subscribe
     public void onEvent(UserListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
+        mPullToRefreshListView.setVisibility(View.VISIBLE);
         if (!AppStatus.getInstance(getActivity()).isOnline()){
             emptyText.setText(getString(R.string.no_internet_connection));
         } else {
             emptyText.setText(getString(R.string.no_people));
         }
         mListView.setEmptyView(emptyText);
-
-        mPullToRefreshListView.setVisibility(View.VISIBLE);
-        emptyText.setVisibility(View.VISIBLE);
 
         if (mPullToRefreshListView.isRefreshing()) {
             mPullToRefreshListView.onRefreshComplete();
