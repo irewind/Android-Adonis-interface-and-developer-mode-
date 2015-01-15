@@ -92,7 +92,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
         apiClient.getEventBus().register(this);
 
-        if (profileImage != null && profileImage.length() > 0) {
+        if (profileImage != null && profileImage.trim().length() > 0) {
             Picasso.with(this).load(profileImage).placeholder(R.drawable.ic_launcher).into(profileImageView);
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);

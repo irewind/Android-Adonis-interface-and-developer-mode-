@@ -84,7 +84,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
             holder.parentCommentHolder.rootViewGroup.setVisibility(View.GONE);
             holder.childCommentHolder.rootViewGroup.setVisibility(View.GONE);
 
-            if (profileImage != null && profileImage.length() > 0) {
+            if (profileImage != null && profileImage.trim().length() > 0) {
                 Picasso.with(mContext).load(profileImage).placeholder(R.drawable.img_default_picture).into(holder.addCommentHolder.picture);
             } else {
                 holder.addCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
@@ -111,7 +111,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
 
                 holder.childCommentHolder.username.setText(comment.getUser().getDisplayName());
 
-                if (user.getPicture() != null && user.getPicture().length() > 0) {
+                if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                     Picasso.with(mContext).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(holder.childCommentHolder.picture);
                 } else {
                     holder.childCommentHolder.picture.setImageResource(R.drawable.img_default_picture);
@@ -134,7 +134,7 @@ public class IRCommentsAdapter extends ArrayAdapter<Comment> {
 
                 holder.parentCommentHolder.username.setText(comment.getUser().getDisplayName());
 
-                if (user.getPicture() != null && user.getPicture().length() > 0) {
+                if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                     Picasso.with(mContext).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(holder.parentCommentHolder.picture);
                 } else {
                     holder.parentCommentHolder.picture.setImageResource(R.drawable.img_default_picture);

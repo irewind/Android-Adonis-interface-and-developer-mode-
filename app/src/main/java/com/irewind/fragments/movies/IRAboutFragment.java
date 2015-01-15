@@ -156,7 +156,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
         User user = video.getUser();
 
         if (user != null) {
-            if (user.getPicture() != null && user.getPicture().length() > 0) {
+            if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                 Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImage);
             }
             txtAuthorName.setText(user.getDisplayName());

@@ -164,7 +164,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
         ct.start();
 
-        if (videoThumbnailURI != null) {
+        if (videoThumbnailURI != null && videoThumbnailURI.trim().length() > 0) {
             Picasso.with(getActivity()).load(videoThumbnailURI).into(videoPlaceholder);
         }
 

@@ -190,7 +190,7 @@ public class IRAccountNotificationFragment extends Fragment implements View.OnCl
 
     private void updateUserInfo(User user) {
         if (user != null) {
-            if (user.getPicture() != null && user.getPicture().length() > 0) {
+            if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                 Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImageView);
             } else {
                 profileImageView.setImageResource(R.drawable.img_default_picture);

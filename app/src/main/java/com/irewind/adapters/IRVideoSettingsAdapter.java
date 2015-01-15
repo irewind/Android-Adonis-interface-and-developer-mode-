@@ -82,7 +82,7 @@ public class IRVideoSettingsAdapter extends BaseExpandableListAdapter {
             });
         } else {
             User user = getChild(groupPosition, childPosition);
-            if (user.getPicture() != null && user.getPicture().length() > 0) {
+            if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                 Picasso.with(mContext).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(holder.profileImage);
             } else {
                 holder.profileImage.setImageResource(R.drawable.img_default_picture);

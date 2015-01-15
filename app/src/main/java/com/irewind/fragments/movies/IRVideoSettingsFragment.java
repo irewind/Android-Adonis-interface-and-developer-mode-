@@ -181,7 +181,9 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         emptyText.setVisibility(View.INVISIBLE);
         mPeopleListView.setEmptyView(emptyText);
 
-        Picasso.with(getActivity()).load(video.getThumbnail()).into(placeHolder);
+        if (video.getThumbnail() != null && video.getThumbnail().trim().length() > 0) {
+            Picasso.with(getActivity()).load(video.getThumbnail()).into(placeHolder);
+        }
 
         videoTitle.setOnClickListener(this);
     }
