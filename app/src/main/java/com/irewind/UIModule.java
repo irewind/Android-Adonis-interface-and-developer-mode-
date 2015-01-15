@@ -1,6 +1,7 @@
 package com.irewind;
 
 import com.irewind.activities.IRAddCommentActivity;
+import com.irewind.activities.IREditVideoTitleActivity;
 import com.irewind.activities.IRForgotPasswordActivity;
 import com.irewind.activities.IRLoginActivity;
 import com.irewind.activities.IRRegisterActivity;
@@ -43,6 +44,7 @@ import dagger.Module;
                 VideoPlayerFragment.class,
                 IRAboutFragment.class,
                 IRVideoSettingsFragment.class,
+                IREditVideoTitleActivity.class,
                 IRCommentsFragment.class,
                 IRAddCommentActivity.class,
                 IRRelatedFragment.class,

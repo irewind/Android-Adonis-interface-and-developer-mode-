@@ -2,10 +2,10 @@ package com.irewind.sdk.api;
 
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
+import com.irewind.sdk.api.request.UpdateVideoRequest;
 import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
-import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse2;
 import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.TagListResponse;
@@ -24,6 +24,7 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -169,6 +170,13 @@ public interface ApiService {
                                      @Query("pageNo") Integer page,
                                      @Query("pageSize") Integer size,
                                      @Query("tagList") String tagList);
+
+    @PATCH("/rest/video/{idKeyword}")
+    @Headers("Content-Type: application/json")
+    void updateVideo(@Header("Authorization") String authorization,
+                             @Path("idKeyword") long videoId,
+                             @Body UpdateVideoRequest updateVideoRequest,
+                             Callback<BaseResponse> cb);
 
     // --- Tags --- //
 

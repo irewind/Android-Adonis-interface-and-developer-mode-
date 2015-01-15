@@ -1,5 +1,7 @@
 package com.irewind.fragments.movies;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.IRAddCommentActivity;
+import com.irewind.activities.IREditVideoTitleActivity;
 import com.irewind.activities.IRMovieSettingsActivity;
 import com.irewind.adapters.IRPeopleAdapter;
 import com.irewind.adapters.IRVideoSettingsAdapter;
@@ -177,6 +181,8 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
         mPeopleListView.setEmptyView(emptyText);
 
         Picasso.with(getActivity()).load(video.getThumbnail()).into(placeHolder);
+
+        videoTitle.setOnClickListener(this);
     }
 
     @Override
@@ -249,6 +255,9 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             case R.id.btn_search:
                 IRMovieSettingsActivity.searchItem.expandActionView();
                 break;
+            case R.id.videoTitle:
+                updateVideoTitle();
+                break;
         }
     }
 
@@ -259,6 +268,38 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
 
         User user = mPeopleAdapter.getItem(position - 1);
         addPerson(user);
+    }
+
+
+    private static final int UPDATE_VIDEO_TITLE_REQUEST = 1;
+    private void updateVideoTitle() {
+        Intent intent = new Intent(getActivity(), IREditVideoTitleActivity.class);
+        intent.putExtra(IREditVideoTitleActivity.EXTRA_VIDEO_ID_KEY, video.getId());
+        intent.putExtra(IREditVideoTitleActivity.EXTRA_VIDEO_TITLE_KEY, video.getTitle());
+
+        User user = apiClient.getActiveUser();
+        if (user != null && user.getPicture() != null) {
+            intent.putExtra(IREditVideoTitleActivity.EXTRA_PROFILE_IMAGE_KEY, user.getPicture());
+        }
+
+        getActivity().startActivityForResult(intent, UPDATE_VIDEO_TITLE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == UPDATE_VIDEO_TITLE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                String title = data.getStringExtra(IREditVideoTitleActivity.EXTRA_VIDEO_TITLE_KEY);
+                if (title != null) {
+                    videoTitle.setText(title);
+                }
+                else {
+                    videoTitle.setText("");
+                }
+            }
+        }
     }
 
     private void updatePermissionInfo(VideoPermission permission, List<User> people) {

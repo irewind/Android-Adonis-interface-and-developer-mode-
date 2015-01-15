@@ -27,6 +27,8 @@ import com.irewind.sdk.api.event.RestErrorEvent;
 import com.irewind.sdk.api.event.SessionClosedEvent;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
+import com.irewind.sdk.api.event.VideoUpdateEvent;
+import com.irewind.sdk.api.event.VideoUpdateFailEvent;
 import com.irewind.sdk.api.event.UserDeleteSuccessEvent;
 import com.irewind.sdk.api.event.UserInfoLoadedEvent;
 import com.irewind.sdk.api.event.UserInfoUpdateFailEvent;
@@ -44,10 +46,10 @@ import com.irewind.sdk.api.event.VideoPermissionUpdateFailedEvent;
 import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
+import com.irewind.sdk.api.request.UpdateVideoRequest;
 import com.irewind.sdk.api.request.VoteRequest;
 import com.irewind.sdk.api.response.BaseResponse;
 import com.irewind.sdk.api.response.CommentListResponse;
-import com.irewind.sdk.api.response.NotificationSettingsResponse;
 import com.irewind.sdk.api.response.NotificationSettingsResponse2;
 import com.irewind.sdk.api.response.PasswordChangeResponse;
 import com.irewind.sdk.api.response.ResetPasswordResponse;
@@ -1228,6 +1230,39 @@ public class ApiClient {
                     });
                 } else {
                     eventBus.post(new TagListResponse());
+                }
+            }
+        });
+    }
+
+    public void updateVideoTitle(final long videoId, final String videoTitle) {
+        final Session session = getActiveSession();
+
+        UpdateVideoRequest updateVideoRequest = new UpdateVideoRequest();
+        updateVideoRequest.setTitle(videoTitle);
+
+        apiService.updateVideo(authHeader(session), videoId, updateVideoRequest, new Callback<BaseResponse>() {
+            @Override
+            public void success(BaseResponse baseResponse, Response response) {
+                eventBus.post(new VideoUpdateEvent());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (ErrorUtils.isUnauthorized(error)) {
+                    refreshSession(session, new Callback<AccessToken>() {
+                        @Override
+                        public void success(AccessToken accessToken, Response response) {
+                            updateVideoTitle(videoId, videoTitle);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            eventBus.post(new VideoUpdateFailEvent());
+                        }
+                    });
+                } else {
+                    eventBus.post(new VideoUpdateFailEvent());
                 }
             }
         });
