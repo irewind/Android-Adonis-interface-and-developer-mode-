@@ -117,6 +117,7 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
 
         apiClient.getEventBus().register(this);
 
+        apiClient.videoById(video.getId());
         apiClient.listVideoTags(video.getId());
     }
 

@@ -29,6 +29,7 @@ import com.irewind.common.IOnSearchCallback;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.UserListEvent;
 import com.irewind.sdk.api.event.UserListFailEvent;
+import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoPermissionListEvent;
 import com.irewind.sdk.api.event.VideoPermissionListFailedEvent;
 import com.irewind.sdk.api.event.VideoPermissionUpdateEvent;
@@ -234,6 +235,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
 
         apiClient.getEventBus().register(this);
 
+        apiClient.videoById(video.getId());
         apiClient.listVideoViewPermissions(video.getId());
     }
 
@@ -271,7 +273,6 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     }
 
 
-    private static final int UPDATE_VIDEO_TITLE_REQUEST = 1;
     private void updateVideoTitle() {
         Intent intent = new Intent(getActivity(), IREditVideoTitleActivity.class);
         intent.putExtra(IREditVideoTitleActivity.EXTRA_VIDEO_ID_KEY, video.getId());
@@ -282,24 +283,7 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
             intent.putExtra(IREditVideoTitleActivity.EXTRA_PROFILE_IMAGE_KEY, user.getPicture());
         }
 
-        getActivity().startActivityForResult(intent, UPDATE_VIDEO_TITLE_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == UPDATE_VIDEO_TITLE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                String title = data.getStringExtra(IREditVideoTitleActivity.EXTRA_VIDEO_TITLE_KEY);
-                if (title != null) {
-                    videoTitle.setText(title);
-                }
-                else {
-                    videoTitle.setText("");
-                }
-            }
-        }
+        getActivity().startActivity(intent);
     }
 
     private void updatePermissionInfo(VideoPermission permission, List<User> people) {
@@ -357,6 +341,12 @@ public class IRVideoSettingsFragment extends Fragment implements View.OnClickLis
     }
 
     // --- Events --- //
+
+    @Subscribe
+    public void onEvent(VideoInfoEvent event) {
+        this.video = event.video;
+        updateVideoInfo(video);
+    }
 
     @Subscribe
     public void onEvent(VideoPermissionListEvent event) {

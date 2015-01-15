@@ -132,11 +132,6 @@ public class IREditVideoTitleActivity extends IRBaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(titleEdit.getWindowToken(), 0);
 
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_VIDEO_TITLE_KEY, this.videoTitle);
-        Intent intent = getIntent();
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
         finish();
     }
 
