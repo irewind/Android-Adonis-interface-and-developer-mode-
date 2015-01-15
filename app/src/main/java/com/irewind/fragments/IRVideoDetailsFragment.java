@@ -129,6 +129,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
                 if (activity != null && !activity.isFinishing()) {
                     Intent intent = new Intent(getActivity(), IRFullScreenMovieActivity.class);
                     if (video != null) {
+                        intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_ID, video.getId());
                         intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_URI, video.getMp4HighResolutionURL());
                         intent.putExtra(IRFullScreenMovieActivity.EXTRA_VIDEO_THUMBNAIL_URI, video.getThumbnail());
                     }
@@ -173,6 +174,7 @@ public class IRVideoDetailsFragment extends Fragment implements View.OnClickList
 
         videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
         if (video != null) {
+            videoPlayerFragment.setVideoId(video.getId());
             videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
             videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
         }

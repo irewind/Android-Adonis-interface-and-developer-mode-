@@ -225,10 +225,10 @@ public interface ApiService {
     // --- Views --- //
 
     @POST("/rest/v2/increase-video-views")
-    @Headers("Content-Type: application/json")
+    @FormUrlEncoded
     void increaseViewCount(@Header("Authorization") String authorization,
                            @Field("videoId") long videoID,
-                           Callback<BaseResponse> cb);
+                           Callback<Boolean> cb);
 
 
     // --- Comments --- //

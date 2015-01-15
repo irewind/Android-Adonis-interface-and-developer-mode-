@@ -23,8 +23,11 @@ import android.widget.VideoView;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.player.SeekBarV3Fragment;
+import com.irewind.sdk.api.ApiClient;
 import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -51,10 +54,14 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     boolean isPlaying = false;
     boolean autoPause;
 
+    public long videoId;
     public String videoURI;
     public String videoThumbnailURI;
     public boolean autoplay = false;
     public int startPosition;
+
+    @Inject
+    ApiClient apiClient;
 
     CountDownTimer ct = new CountDownTimer(20000000, 500) {
 
@@ -83,6 +90,14 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         // Required empty public constructor
     }
 
+    public long getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(long videoId) {
+        this.videoId = videoId;
+    }
+
     public String getVideoURI() {
         return videoURI;
     }
@@ -106,6 +121,8 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     public boolean isPlaying(){
         return videoView != null ? videoView.isPlaying() : false;
     }
+
+    private boolean markedAsViewed;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -215,6 +232,11 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
                         progressBarVideo.setVisibility(View.INVISIBLE);
                         playPause.setVisibility(View.VISIBLE);
                         videoView.seekTo(startPosition);
+
+                        if (!markedAsViewed && startPosition == 0 && videoId > 0) {
+                            apiClient.increaseViewCount(videoId);
+                            markedAsViewed = true;
+                        }
                     }
                 });
                 videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {

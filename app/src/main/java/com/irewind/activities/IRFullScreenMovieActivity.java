@@ -17,11 +17,14 @@ import butterknife.ButterKnife;
 
 public class IRFullScreenMovieActivity extends IRBaseActivity implements OrientationManager.OrientationListener {
 
+
+    public final static String EXTRA_VIDEO_ID = "videoId";
     public final static String EXTRA_VIDEO_URI = "videoURI";
     public final static String EXTRA_VIDEO_THUMBNAIL_URI = "videoThumbnailURI";
 
     private VideoPlayerFragment videoPlayerFragment;
 
+    private long videoId;
     private String videoURI;
     private String videoThumbnailURI;
 
@@ -77,10 +80,12 @@ public class IRFullScreenMovieActivity extends IRBaseActivity implements Orienta
 
         orientationListener = new OrientationManager(this, SensorManager.SENSOR_DELAY_NORMAL, this);
 
+        videoId = getIntent().getLongExtra(EXTRA_VIDEO_ID, 0);
         videoURI = getIntent().getStringExtra(EXTRA_VIDEO_URI);
         videoThumbnailURI = getIntent().getStringExtra(EXTRA_VIDEO_THUMBNAIL_URI);
 
         videoPlayerFragment = (VideoPlayerFragment) getSupportFragmentManager().findFragmentById(R.id.player_fragment);
+        videoPlayerFragment.setVideoId(videoId);
         videoPlayerFragment.setVideoURI(videoURI);
         videoPlayerFragment.setVideoThumbnailURI(videoThumbnailURI);
         videoPlayerFragment.autoplay = true;

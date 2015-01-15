@@ -1343,9 +1343,9 @@ public class ApiClient {
     public void increaseViewCount(final long videoId) {
         final Session session = getActiveSession();
 
-        apiService.increaseViewCount(authHeader(session), videoId, new Callback<BaseResponse>() {
+        apiService.increaseViewCount(authHeader(session), videoId, new Callback<Boolean>() {
             @Override
-            public void success(BaseResponse baseResponse, Response response) {
+            public void success(Boolean success, Response response) {
                 //TODO: send success event
             }
 
@@ -1361,10 +1361,11 @@ public class ApiClient {
                         @Override
                         public void failure(RetrofitError error) {
                             //TODO: send failure event
+                            Log.d(TAG, "increaseViewCount: " + error.getLocalizedMessage());
                         }
                     });
                 } else {
-                    //TODO: send failure event
+                    Log.d(TAG, "increaseViewCount: " + error.getLocalizedMessage());
                 }
             }
         });
