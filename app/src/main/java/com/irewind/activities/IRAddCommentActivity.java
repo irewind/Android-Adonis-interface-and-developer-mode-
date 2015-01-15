@@ -78,13 +78,6 @@ public class IRAddCommentActivity extends IRBaseActivity {
             }
         });
 
-        commentEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addComment();
-            }
-        });
-
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
