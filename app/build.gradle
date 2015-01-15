@@ -23,8 +23,8 @@ android {
         applicationId "com.irewind"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 33
-        versionName "1.0.0.33"
+        versionCode 34
+        versionName "1.0.0.34"
         multiDexEnabled true
     }
     buildTypes {
