@@ -20,10 +20,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.player.SeekBarV3Fragment;
 import com.irewind.sdk.api.ApiClient;
+import com.irewind.sdk.api.event.VideoViewCountUpdateEvent;
 import com.irewind.utils.AppStatus;
 import com.squareup.picasso.Picasso;
 
@@ -179,6 +181,8 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     public void onResume() {
         super.onResume();
 
+        apiClient.getEventBus().register(this);
+
         ct.start();
 
         if (videoThumbnailURI != null && videoThumbnailURI.trim().length() > 0) {
@@ -193,6 +197,9 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onPause() {
         super.onPause();
+
+        apiClient.getEventBus().unregister(this);
+
         if (videoView != null) {
             videoView.pause();
             playPause.setImageResource(R.drawable.play);
@@ -235,7 +242,6 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
                         if (!markedAsViewed && startPosition == 0 && videoId > 0) {
                             apiClient.increaseViewCount(videoId);
-                            markedAsViewed = true;
                         }
                     }
                 });
@@ -446,5 +452,12 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
                 play();
                 break;
         }
+    }
+
+    // --- Events --- //
+
+    @Subscribe
+    public void onEvent(VideoViewCountUpdateEvent event) {
+        markedAsViewed = true;
     }
 }
