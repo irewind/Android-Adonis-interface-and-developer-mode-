@@ -43,6 +43,8 @@ import com.irewind.sdk.api.event.VideoPermissionListEvent;
 import com.irewind.sdk.api.event.VideoPermissionListFailedEvent;
 import com.irewind.sdk.api.event.VideoPermissionUpdateEvent;
 import com.irewind.sdk.api.event.VideoPermissionUpdateFailedEvent;
+import com.irewind.sdk.api.event.VideoViewCountFailEvent;
+import com.irewind.sdk.api.event.VideoViewCountUpdateEvent;
 import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.request.CreateCommentRequest;
 import com.irewind.sdk.api.request.ReplyCommentRequest;
@@ -1346,7 +1348,12 @@ public class ApiClient {
         apiService.increaseViewCount(authHeader(session), videoId, new Callback<Boolean>() {
             @Override
             public void success(Boolean success, Response response) {
-                //TODO: send success event
+                if (success) {
+                    eventBus.post(new VideoViewCountUpdateEvent(videoId));
+                }
+                else {
+                    eventBus.post(new VideoViewCountFailEvent(videoId));
+                }
             }
 
             @Override
@@ -1362,10 +1369,12 @@ public class ApiClient {
                         public void failure(RetrofitError error) {
                             //TODO: send failure event
                             Log.d(TAG, "increaseViewCount: " + error.getLocalizedMessage());
+                            eventBus.post(new VideoViewCountFailEvent(videoId));
                         }
                     });
                 } else {
                     Log.d(TAG, "increaseViewCount: " + error.getLocalizedMessage());
+                    eventBus.post(new VideoViewCountFailEvent(videoId));
                 }
             }
         });

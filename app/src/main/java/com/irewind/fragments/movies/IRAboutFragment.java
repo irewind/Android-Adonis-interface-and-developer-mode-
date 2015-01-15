@@ -24,6 +24,7 @@ import com.irewind.activities.IRTabActivity;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.VideoInfoEvent;
 import com.irewind.sdk.api.event.VideoInfoFailEvent;
+import com.irewind.sdk.api.event.VideoViewCountUpdateEvent;
 import com.irewind.sdk.api.event.VoteEvent;
 import com.irewind.sdk.api.response.TagListResponse;
 import com.irewind.sdk.model.Tag;
@@ -194,6 +195,11 @@ public class IRAboutFragment extends Fragment implements View.OnClickListener{
     @Subscribe
     public void onEvent(VideoInfoFailEvent event) {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    public void onEvent(VideoViewCountUpdateEvent event) {
+        apiClient.videoById(event.videoId);
     }
 
     @Subscribe
