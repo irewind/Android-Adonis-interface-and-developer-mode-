@@ -146,12 +146,12 @@ public interface ApiService {
                    @Path("id") long videoID,
                    Callback<Video> cb);
 
-    @GET("/rest/v2/search-videos?myMoviesOnly=false")
+    @GET("/rest/v2/search-videos?myMoviesOnly=false&sortColumn=createdDate")
     VideoListResponse2 listVideos(@Header("Authorization") String authorization,
                                   @Query("pageNo") Integer page,
                                   @Query("pageSize") Integer size);
 
-    @GET("/rest/v2/search-videos?myMoviesOnly=false")
+    @GET("/rest/v2/search-videos?myMoviesOnly=false&sortColumn=createdDate")
     VideoListResponse2 searchVideos(@Header("Authorization") String authorization,
                                     @Query("searchTerm") String query,
                                     @Query("pageNo") Integer page,
