@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
@@ -135,5 +136,7 @@ public class IRAddCommentActivity extends IRBaseActivity {
     @Subscribe
     public void onEvent(CommentAddFailEvent event) {
         progressBar.setVisibility(View.GONE);
+
+        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
     }
 }

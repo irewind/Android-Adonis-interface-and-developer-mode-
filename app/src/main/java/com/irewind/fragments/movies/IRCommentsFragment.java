@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -138,6 +139,15 @@ public class IRCommentsFragment extends Fragment implements IRCommentsAdapter.Ac
 
     @Override
     public void addComment() {
+        if (this.video == null) {
+            return;
+        }
+
+        if (!this.video.getAllowComments()) {
+            Toast.makeText(getActivity(), getString(R.string.comments_disabled_msg), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(getActivity(), IRAddCommentActivity.class);
         intent.putExtra(IRAddCommentActivity.EXTRA_VIDEO_ID_KEY, video.getId());
 

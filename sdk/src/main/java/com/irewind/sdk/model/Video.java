@@ -52,6 +52,9 @@ public class Video extends BaseResponse implements Serializable{
     @SerializedName("publicToken")
     private String publicToken;
 
+    @SerializedName("allowComments")
+    private Boolean allowComments;
+
     public long getId() {
         return id;
     }
@@ -112,6 +115,10 @@ public class Video extends BaseResponse implements Serializable{
         return publicToken;
     }
 
+    public Boolean getAllowComments() {
+        return allowComments;
+    }
+
     @Override
     public String toString() {
         if (super.getError() != null) {
@@ -136,6 +143,7 @@ public class Video extends BaseResponse implements Serializable{
                 ", user=" + user +
                 ", authorName='" + authorName + '\'' +
                 ", publicToken='" + publicToken + '\'' +
+                ", allowComments='" + allowComments + '\'' +
                 '}';
     }
 }

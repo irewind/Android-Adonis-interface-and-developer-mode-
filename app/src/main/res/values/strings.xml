@@ -119,6 +119,8 @@
     <string name="error_missing_lastname">Please enter your last name</string>
     <string name="error_invalid_password_2">Password must have at least six characters.</string>
     <string name="error_bad_email">There is no account associated with this email address.</string>
+    <string name="error_unknown">Something went wrong. Please try again later.</string>
+    <string name="comments_disabled_msg">Comments are disabled for this video.</string>
     <string name="title_activity_irweb_view">IRWebViewActivity</string>
     <string name="title_activity_iraccount_notification">IRAccountNotificationActivity</string>
     <string name="title_activity_iraccount_personal_fragment">IRAccountPersonalFragment</string>
