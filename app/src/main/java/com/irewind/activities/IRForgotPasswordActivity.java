@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.common.KeyboardDismisser;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.ResetPasswordFailEvent;
 import com.irewind.sdk.api.event.ResetPasswordSuccesEvent;
@@ -96,6 +97,8 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
                 return false;
             }
         });
+
+        KeyboardDismisser.attachToActivity(this);
     }
 
     @Override

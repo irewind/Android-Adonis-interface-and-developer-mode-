@@ -38,6 +38,7 @@ import com.google.android.gms.plus.model.people.Person;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.common.KeyboardDismisser;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.SessionOpenFailEvent;
 import com.irewind.sdk.api.event.SessionOpenedEvent;
@@ -132,6 +133,9 @@ public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
         Bundle extraBundle = intent.getExtras();
 
         final View activityRootView = findViewById(R.id.activityRoot);
+
+        KeyboardDismisser.attachToActivity(this);
+
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override

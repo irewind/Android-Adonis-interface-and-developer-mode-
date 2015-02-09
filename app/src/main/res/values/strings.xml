@@ -22,10 +22,10 @@
     <string name="cookie"><u>Cookie Policy</u></string>
     <string name="cookie_s"><u>Cookie policy</u></string>
     <string name="submit">Submit</string>
-    <string name="forgot_info">Please enter the email address you registered with. We will send you an e-mail with instructions for changing your password.</string>
+    <string name="forgot_info">Please enter the email address you registered with. We will send you an email with instructions for changing your password.</string>
     <string name="title_activity_irconfirm_change">IRConfirmChangeActivity</string>
     <string name="confirmation_email">Confirmation email sent</string>
-    <string name="title_activity_irtab">IRTabActivity</string>
+    <string name="title_activity_irtab">iRewind</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="confirm_password">Confirm password</string>
     <string name="error_match">Passwords doesn\'t match</string>

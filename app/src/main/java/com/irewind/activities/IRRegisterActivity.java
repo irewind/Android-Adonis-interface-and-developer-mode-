@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.common.KeyboardDismisser;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.RegisterFailEvent;
 import com.irewind.sdk.api.event.RegisterSuccessEvent;
@@ -163,6 +164,8 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
                 return false;
             }
         });
+
+        KeyboardDismisser.attachToActivity(this);
     }
 
     @Override
