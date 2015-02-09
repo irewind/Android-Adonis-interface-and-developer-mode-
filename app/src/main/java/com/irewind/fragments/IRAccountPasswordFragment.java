@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.common.KeyboardDismisser;
 import com.irewind.sdk.api.ApiClient;
 import com.irewind.sdk.api.event.NoActiveUserEvent;
 import com.irewind.sdk.api.event.PasswordChangeFailEvent;
@@ -112,6 +113,8 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
         super.onPause();
 
         apiClient.getEventBus().unregister(this);
+
+        KeyboardDismisser.hideSoftKeyboard(this.getActivity());
     }
 
     @Override
