@@ -259,9 +259,17 @@ public class IRRegisterActivity extends IRBaseActivity implements View.OnClickLi
             errorText.setText(getString(R.string.error_missing_firstname));
             focusView = mFirst;
             cancel = true;
+        } else if (firstname.length() > 20) {
+            errorText.setText(getString(R.string.error_name_too_long));
+            focusView = mFirst;
+            cancel = true;
         } else if (TextUtils.isEmpty(lastname)) {
 //            mLast.setError(getString(R.string.error_field_required));
             errorText.setText(getString(R.string.error_missing_lastname));
+            focusView = mLast;
+            cancel = true;
+        } else if (lastname.length() > 20) {
+            errorText.setText(getString(R.string.error_name_too_long));
             focusView = mLast;
             cancel = true;
         } else if (TextUtils.isEmpty(email)) {

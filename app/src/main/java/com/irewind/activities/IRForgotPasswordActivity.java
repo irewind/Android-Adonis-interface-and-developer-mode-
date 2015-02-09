@@ -222,11 +222,11 @@ public class IRForgotPasswordActivity extends IRBaseActivity implements View.OnC
         showProgress(false);
 
         if (event.reason == ResetPasswordFailEvent.Reason.NoUser) {
-//            Toast.makeText(getApplicationContext(), getString(R.string.error_email_account_missing), Toast.LENGTH_LONG).show();
             errorText.setText(getString(R.string.error_bad_email));
             errorLayout.setVisibility(View.VISIBLE);
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_unknown), Toast.LENGTH_LONG).show();
+            errorText.setText(getString(R.string.error_unknown));
+            errorLayout.setVisibility(View.VISIBLE);
         }
     }
 }

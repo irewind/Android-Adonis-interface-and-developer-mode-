@@ -259,17 +259,6 @@ public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
-            Toast.makeText(this, "keyboard visible", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.hardKeyboardHidden ==
-                Configuration.HARDKEYBOARDHIDDEN_YES) {
-            Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         Session.getActiveSession().onActivityResult(this, requestCode, responseCode, intent);
 

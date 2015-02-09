@@ -85,7 +85,7 @@
     <string name="save">Save</string>
     <string name="add_another">Add another</string>
     <string name="add_another_underline"><u>Add another</u></string>
-    <string name="title_activity_ircomment">IRCommentActivity</string>
+    <string name="title_activity_ircomment">Comments</string>
     <string name="title_activity_edit_video_title">Edit Video Title</string>
     <string name="post">Post</string>
     <string name="post_comment">Post a comment</string>
@@ -117,6 +117,7 @@
     <string name="error_password_missing">Password should have at least six characters.</string>
     <string name="error_missing_firstname">Please enter your first name</string>
     <string name="error_missing_lastname">Please enter your last name</string>
+    <string name="error_name_too_long">Please enter an name of at most 20 characters</string>
     <string name="error_invalid_password_2">Password must have at least six characters.</string>
     <string name="error_bad_email">There is no account associated with this email address.</string>
     <string name="error_unknown">Something went wrong. Please try again later.</string>
