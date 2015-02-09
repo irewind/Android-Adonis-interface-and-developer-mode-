@@ -3,15 +3,12 @@ package com.irewind.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -28,7 +25,6 @@ import com.irewind.sdk.api.event.VideoListFailEvent;
 import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.Video;
 import com.irewind.utils.AppStatus;
-import com.irewind.utils.Log;
 
 import java.util.List;
 
@@ -46,25 +42,24 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     TextView emptyText;
     @InjectView(R.id.progress)
     CircularProgressBar progressBar;
-
-    private GridView mGridView;
-    private IRVideoGridAdapter mAdapter;
-
     @Inject
     ApiClient apiClient;
-
+    private GridView mGridView;
+    private IRVideoGridAdapter mAdapter;
     private int lastPageListed = 0;
     private int numberOfPagesAvailable = 0;
 
+    private boolean rememberResults;
+
     private String searchQuery = "";
+
+    public IRLibraryFragment() {
+        // Required empty public constructor
+    }
 
     public static IRLibraryFragment newInstance() {
         IRLibraryFragment fragment = new IRLibraryFragment();
         return fragment;
-    }
-
-    public IRLibraryFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -127,14 +122,18 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
             }
         };
 
-        if (IRTabActivity.searchItem != null) {
-            IRTabActivity.searchItem.collapseActionView();
+        if (!rememberResults) {
+            if (IRTabActivity.searchItem != null) {
+                IRTabActivity.searchItem.collapseActionView();
+            }
+
+            searchQuery = "";
+
+            apiClient.getEventBus().register(this);
+            fetch(0);
         }
 
-        searchQuery = "";
-
-        apiClient.getEventBus().register(this);
-        fetch(0);
+        rememberResults = false;
     }
 
     @Override
@@ -152,6 +151,8 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        rememberResults = true;
+
         Video video = mAdapter.getItem(position);
 
         Intent movieIntent = new Intent(getActivity(), IRMovieActivity.class);
@@ -164,7 +165,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_search:
-                if (IRTabActivity.searchView != null){
+                if (IRTabActivity.searchView != null) {
                     IRTabActivity.searchView.setQueryHint(getString(R.string.search_videos));
                 }
                 IRTabActivity.searchItem.expandActionView();
@@ -173,7 +174,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     void fetch(int page) {
-        if (mAdapter.getCount() == 0){
+        if (mAdapter.getCount() == 0) {
             mPullToRefreshGridView.setVisibility(View.INVISIBLE);
         }
 
@@ -188,7 +189,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onEvent(VideoListEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
-        if (!AppStatus.getInstance(getActivity()).isOnline()){
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
             emptyText.setText(getString(R.string.no_internet_connection));
         } else {
             emptyText.setText(getString(R.string.no_videos));
@@ -216,7 +217,7 @@ public class IRLibraryFragment extends Fragment implements AdapterView.OnItemCli
     public void onEvent(VideoListFailEvent event) {
         progressBar.setVisibility(View.INVISIBLE);
         mPullToRefreshGridView.setVisibility(View.VISIBLE);
-        if (!AppStatus.getInstance(getActivity()).isOnline()){
+        if (!AppStatus.getInstance(getActivity()).isOnline()) {
             emptyText.setText(getString(R.string.no_internet_connection));
         } else {
             emptyText.setText(getString(R.string.no_videos));
