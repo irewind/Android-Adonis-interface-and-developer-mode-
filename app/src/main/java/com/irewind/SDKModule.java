@@ -40,7 +40,7 @@ public class SDKModule {
     @Provides
     iRewindConfig provideConfig() {
 //        return new iRewindConfig("http://web01.dev.irewind.com/api", "web-client", "web-client-secret");
-        return new iRewindConfig("http://video.irewind.com/api", "web-client", "web-client-secret");
+        return new iRewindConfig("http://video.irewind.com/api", "android-irwnd-2015", "android-irwnd-2015-secret");
     }
 
     @Singleton
