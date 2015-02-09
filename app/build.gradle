@@ -76,14 +76,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':fb')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':PullToRefresh-Library')
     compile project(':sdk')
-    // Multi-dex Lib
+    compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services:6.1.71'
     compile 'com.jakewharton:butterknife:6.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
     compile 'com.sothree.slidinguppanel:library:2.0.2'
     compile 'com.github.markushi:circlebutton:1.1'
     compile 'uk.co.chrisjenx:calligraphy:1.2.0'
@@ -93,6 +94,4 @@ dependencies {
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.github.castorflex.smoothprogressbar:library:1.0.0'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.0.1'
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.google.android.gms:play-services:6.1.71'
 }

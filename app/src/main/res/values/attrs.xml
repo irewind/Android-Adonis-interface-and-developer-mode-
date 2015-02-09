@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="JazzyViewPager">
-        <attr name="style">
+        <attr name="viewPagerStyle">
             <enum name="standard" value="0" />
             <enum name="tablet" value="1" />
             <enum name="cubein" value="2" />
