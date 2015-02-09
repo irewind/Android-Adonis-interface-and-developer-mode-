@@ -69,6 +69,9 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
     @InjectView(R.id.date)
     TextView date;
 
+    @InjectView(R.id.change_password_section)
+    ViewGroup changePasswordSection;
+
     @InjectView(R.id.changePassword)
     Button changePassword;
 
@@ -205,6 +208,14 @@ public class IRAccountFragment extends Fragment implements View.OnClickListener 
 
     private void updateUserInfo(User user) {
         if (user != null) {
+
+            if (user.getAuthProvider() != null && (user.getAuthProvider().equals("GOOGLE") || user.getAuthProvider().equals("FACEBOOK"))) {
+                changePasswordSection.setVisibility(View.GONE);
+            }
+            else {
+                changePasswordSection.setVisibility(View.VISIBLE);
+            }
+
             if (user.getPicture() != null && user.getPicture().trim().length() > 0) {
                 Picasso.with(getActivity()).load(user.getPicture()).placeholder(R.drawable.img_default_picture).into(profileImageView);
             } else {
