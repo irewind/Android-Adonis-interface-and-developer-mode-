@@ -134,8 +134,8 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
                 break;
             case R.id.btnDelete:
                 new AlertDialog.Builder(this.getActivity())
-                        .setTitle("Delete")
-                        .setMessage("Are you sure you want to delete your account?")
+                        .setTitle(getString(R.string.delete))
+                        .setMessage(getString(R.string.delete_confirmation_msg))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 delete();

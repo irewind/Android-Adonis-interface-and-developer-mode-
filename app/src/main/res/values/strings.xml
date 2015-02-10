@@ -131,5 +131,7 @@
     <string name="next">Next</string>
     <string name="register_short">Reg.</string>
     <string name="recover_short">Rec.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirmation_msg">Are you sure you want to delete your account?</string>
 
 </resources>
