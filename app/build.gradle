@@ -24,7 +24,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 38
-        versionName "1.0.0.38-snapshot"
+        versionName "1.0.0.38"
         multiDexEnabled true
     }
     buildTypes {
