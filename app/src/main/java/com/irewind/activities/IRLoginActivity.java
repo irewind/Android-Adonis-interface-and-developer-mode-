@@ -631,7 +631,6 @@ public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
         showProgress(false);
 
         if (event.reason == SessionOpenFailEvent.Reason.BadCredentials) {
-//            Toast.makeText(getApplicationContext(), getString(R.string.error_bad_credentials), Toast.LENGTH_LONG).show();
             errorText.setText(getString(R.string.error_bad_credentials));
             errorLayout.setVisibility(View.VISIBLE);
         } else if (event.reason == SessionOpenFailEvent.Reason.Unknown) {

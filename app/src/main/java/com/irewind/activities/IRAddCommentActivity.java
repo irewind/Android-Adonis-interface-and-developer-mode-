@@ -109,7 +109,9 @@ public class IRAddCommentActivity extends IRBaseActivity {
 
     void addComment() {
         String content = commentEdit.getText().toString();
-        if (content == null || content.trim().length() == 0) {
+        if (content == null || content.trim().length() < 2) {
+
+            Toast.makeText(getApplicationContext(), getString(R.string.error_invalid_comment), Toast.LENGTH_LONG).show();
             return;
         }
 

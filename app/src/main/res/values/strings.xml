@@ -133,5 +133,6 @@
     <string name="recover_short">Rec.</string>
     <string name="delete">Delete</string>
     <string name="delete_confirmation_msg">Are you sure you want to delete your account?</string>
+    <string name="error_invalid_comment">Comment should be at least 2 characters long!</string>
 
 </resources>
