@@ -1,9 +1,6 @@
 package com.irewind.fragments;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,7 +38,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     @InjectView(R.id.imageViewPlay)
     ImageView playPause;
     @InjectView(R.id.seekBarLayout)
-    LinearLayout layoutBottom;
+    LinearLayout seekBarLayout;
     @InjectView(R.id.videoProgress)
     CircularProgressBar progressBarVideo;
     @InjectView(R.id.playerLayout)
@@ -87,10 +84,6 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         }
 
     };
-
-    public VideoPlayerFragment() {
-        // Required empty public constructor
-    }
 
     public long getVideoId() {
         return videoId;
@@ -269,141 +262,24 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    @SuppressLint("NewApi")
     public void hide() {
+        ObjectAnimator animation = ObjectAnimator.ofFloat(playPause, "alpha", 0f);
+        animation.setDuration(500);
+        animation.start();
 
-        try {
-            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
-            params2.width = layoutBottom.getWidth();
-            layoutBottom.setLayoutParams(params2);
-
-            RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams) playPause.getLayoutParams();
-            params3.setMargins((int) playPause.getX(), 0, 0, 0);
-            try {
-                params3.removeRule(RelativeLayout.CENTER_HORIZONTAL);
-            } catch (Exception e) {
-
-            }
-            playPause.setLayoutParams(params3);
-
-
-//            int mUIFlag = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-//
-//            getActivity().getWindow().getDecorView().setSystemUiVisibility(mUIFlag);   //undocumented
-//            getActivity().getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-//
-//                @Override
-//                public void onSystemUiVisibilityChange(int visibility) {
-//                    // TODO Auto-generated method stub
-//                    if (visibility == 0) hideShow();
-//                }
-//            });
-            //getWindowManager().getDefaultDisplay().getre
-
-        } catch (NoSuchMethodError e) {
-            // TODO: handle exception
-        }
-        try {
-
-
-            ObjectAnimator animation = ObjectAnimator.ofFloat(playPause, "alpha", 0f);
-            animation.setDuration(500);
-
-            animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int pixels = (int) (-layoutBottom.getHeight() * (animation.getAnimatedFraction()));
-
-                    LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
-                    params2.setMargins(0, -pixels, 0, 0);
-                    layoutBottom.setLayoutParams(params2);
-
-                }
-            });
-
-            animation.addListener(new Animator.AnimatorListener() {
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
-                    params2.setMargins(0, layoutBottom.getHeight(), 0, 0);
-                    layoutBottom.setLayoutParams(params2);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    // TODO Auto-generated method stub
-
-                }
-            });
-
-            animation.start();
-
-        } catch (NoClassDefFoundError e) {
-            // TODO: handle exception
-        }
+        animation = ObjectAnimator.ofFloat(seekBarLayout, "alpha", 0f);
+        animation.setDuration(500);
+        animation.start();
     }
 
     public void show() {
         ObjectAnimator animation = ObjectAnimator.ofFloat(playPause, "alpha", 1f);
         animation.setDuration(500);
-
-        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int pixels = (int) (-layoutBottom.getHeight() * (1 - animation.getAnimatedFraction()));
-
-                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
-                params2.setMargins(0, -pixels, 0, 0);
-                layoutBottom.setLayoutParams(params2);
-
-            }
-        });
-
-        animation.addListener(new Animator.AnimatorListener() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) layoutBottom.getLayoutParams();
-                params2.setMargins(0, 0, 0, 0);
-                layoutBottom.setLayoutParams(params2);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
         animation.start();
 
+        animation = ObjectAnimator.ofFloat(seekBarLayout, "alpha", 1f);
+        animation.setDuration(500);
+        animation.start();
     }
 
     public void hideShow() {
