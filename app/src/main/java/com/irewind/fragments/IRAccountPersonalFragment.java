@@ -192,9 +192,17 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
             mFirst.setError(getString(R.string.error_field_required));
             focusView = mFirst;
             cancel = true;
+        } else if (firstname.length() > 20) {
+            mLast.setError(getString(R.string.error_name_too_long));
+            focusView = mFirst;
+            cancel = true;
         } else if (TextUtils.isEmpty(lastname)){
             mLast.setError(getString(R.string.error_field_required));
             focusView = mLast;
+            cancel = true;
+        } else if (lastname.length() > 20) {
+            mLast.setError(getString(R.string.error_name_too_long));
+            focusView = mFirst;
             cancel = true;
         }
 
