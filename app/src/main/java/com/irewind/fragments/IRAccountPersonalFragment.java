@@ -2,6 +2,8 @@ package com.irewind.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -131,7 +133,21 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
                 change();
                 break;
             case R.id.btnDelete:
-                delete();
+                new AlertDialog.Builder(this.getActivity())
+                        .setTitle("Delete")
+                        .setMessage("Are you sure you want to delete your account?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                delete();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 break;
         }
     }
