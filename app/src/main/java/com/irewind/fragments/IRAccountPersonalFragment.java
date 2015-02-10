@@ -193,7 +193,7 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
             focusView = mFirst;
             cancel = true;
         } else if (firstname.length() > 20) {
-            mLast.setError(getString(R.string.error_name_too_long));
+            mFirst.setError(getString(R.string.error_name_too_long));
             focusView = mFirst;
             cancel = true;
         } else if (TextUtils.isEmpty(lastname)){
@@ -202,9 +202,12 @@ public class IRAccountPersonalFragment extends Fragment implements View.OnClickL
             cancel = true;
         } else if (lastname.length() > 20) {
             mLast.setError(getString(R.string.error_name_too_long));
-            focusView = mFirst;
+            focusView = mLast;
             cancel = true;
         }
+
+        mFirst.setError(null);
+        mLast.setError(null);
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first

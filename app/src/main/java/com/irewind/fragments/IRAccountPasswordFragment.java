@@ -177,6 +177,10 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
             cancel = true;
         }
 
+        editCurrent.setError(null);
+        editNew.setError(null);
+        editConfirm.setError(null);
+
         if (cancel){
             focusView.requestFocus();
         } else {
