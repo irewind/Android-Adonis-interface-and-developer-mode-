@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.IntentCompat;
 import android.text.TextUtils;
@@ -562,8 +563,13 @@ public class IRLoginActivity extends IRBaseActivity implements OnClickListener {
             String lastname = person.getName().getFamilyName();
             String pictureUrl = person.getImage().getUrl();
 
-            userEmail = email;
+            if (pictureUrl != null) {
+                Uri uri = Uri.parse(pictureUrl);
+                uri = uri.buildUpon().clearQuery().appendQueryParameter("sx", "320").build();
+                pictureUrl = uri.toString();
+            }
 
+            userEmail = email;
             apiClient.loginGOOGLE(userEmail, socialId, firstname, lastname, pictureUrl);
         } else {
             Log.d("PLUS_INFO", "is null");
