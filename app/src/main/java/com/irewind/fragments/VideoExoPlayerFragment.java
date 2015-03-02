@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ import com.irewind.utils.exoplayer.VideoControllerView;
 import com.irewind.utils.exoplayer.player.DefaultRendererBuilder;
 import com.irewind.utils.exoplayer.player.DemoPlayer;
 import com.irewind.utils.exoplayer.player.UnsupportedDrmException;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -78,10 +81,16 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
     public static Uri contentUri;
     private int contentType = DemoUtil.TYPE_OTHER;
     public static String contentId = "";
+    private boolean replay = false;
 
 
     @InjectView(R.id.videoProgress)
     CircularProgressBar progressBarVideo;
+    @InjectView(R.id.videoPlaceholder)
+    ImageView videoPlaceholder;
+    @InjectView(R.id.placeholderLayout)
+    RelativeLayout placeholderLayout;
+    private View rooTview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,13 +100,14 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
     }
 
 
-    public static VideoExoPlayerFragment newInstance(String contentUri, int contentType, String contentId) {
+    public static VideoExoPlayerFragment newInstance(String contentUri, int contentType, String contentId,String videoUrl) {
         VideoExoPlayerFragment fragment = new VideoExoPlayerFragment();
         Bundle bundle = new Bundle();
 
         bundle.putString("contentUri", contentUri);
         bundle.putInt("contentType", contentType);
         bundle.putString("contentId", contentId);
+        bundle.putString("url_thumbnail", videoUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,7 +115,7 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rooTview = inflater.inflate(R.layout.fragment_exoplayer, container, false);
+        rooTview = inflater.inflate(R.layout.fragment_exoplayer, container, false);
 
         ButterKnife.inject(this, rooTview);
         return rooTview;
@@ -120,46 +130,26 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
             contentType = getArguments().getInt("contentType");
             contentId = getArguments().getString("contentId");
         }
-        View root = view.findViewById(R.id.root);
-        root.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    toggleControlsVisibility();
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    view.performClick();
-                }
-                return true;
-            }
-        });
 
-        shutterView = view.findViewById(R.id.shutter);
+        placeholderLayout.setOnClickListener(this);
 
-        surfaceView = (VideoSurfaceView) view.findViewById(R.id.surface_view);
-        surfaceView.getHolder().addCallback(this);
-        debugTextView = (TextView) view.findViewById(R.id.debug_text_view);
-        debugTextView.setVisibility(View.GONE);
-        btnPlayPause = (ImageButton) view.findViewById(R.id.btnPlayPause);
-        btnPlayPause.setOnClickListener(this);
+        Log.d("photourl",""+ getArguments().getString("url_thumbnail"));
+        try {
 
-        playerStateTextView = (TextView) view.findViewById(R.id.player_state_view);
-        playerStateTextView.setVisibility(View.GONE);
-        subtitleView = (SubtitleView) view.findViewById(R.id.subtitles);
+            Picasso.with(mContext).load(getArguments().getString("url_thumbnail")).into(videoPlaceholder);
+        } catch (Exception e) {
 
-        mediaController = new VideoControllerView(mContext);
-        mediaController.setAnchorView((ViewGroup) root);
+        }
 
-
-        DemoUtil.setDefaultCookieManager();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        configureSubtitleView();
-        if (player == null) {
+        // configureSubtitleView();
+        if (player == null && mediaController != null) {
             preparePlayer();
-        } else if (player != null) {
+        } else if (player != null && mediaController != null) {
             player.setBackgrounded(false);
         }
     }
@@ -167,12 +157,15 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
     @Override
     public void onPause() {
         super.onPause();
-        if (!enableBackgroundAudio) {
-            releasePlayer();
-        } else {
-            player.setBackgrounded(true);
+        if (player != null && mediaController != null) {
+            if (!enableBackgroundAudio) {
+                releasePlayer();
+            } else {
+                player.setBackgrounded(true);
+            }
+            shutterView.setVisibility(View.VISIBLE);
         }
-        shutterView.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -193,14 +186,53 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
                         mediaController.getmPlayer().pause();
                     } else {
                         mediaController.getmPlayer().start();
-                        if (mediaController.getmPlayer().getCurrentPosition() == mediaController.getmPlayer().getDuration()) {
-                            Log.d("player position:", "" + mediaController.getmPlayer().getCurrentPosition());
-                            Log.d("player length:", "" + mediaController.getmPlayer().getDuration());
+
+                        if (replay) {
+                            mediaController.getmPlayer().seekTo(0);
+                            mediaController.getmPlayer().start();
+                            replay = false;
                         }
                         hide();
                     }
                     updatePausePlay();
                 }
+                break;
+
+            case R.id.placeholderLayout:
+                placeholderLayout.setVisibility(View.GONE);
+                View root = rooTview.findViewById(R.id.root);
+                root.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                            toggleControlsVisibility();
+                        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                            view.performClick();
+                        }
+                        return true;
+                    }
+                });
+
+                shutterView = rooTview.findViewById(R.id.shutter);
+
+
+                surfaceView = (VideoSurfaceView) rooTview.findViewById(R.id.surface_view);
+                surfaceView.getHolder().addCallback(this);
+                debugTextView = (TextView) rooTview.findViewById(R.id.debug_text_view);
+                debugTextView.setVisibility(View.GONE);
+                btnPlayPause = (ImageButton) rooTview.findViewById(R.id.btnPlayPause);
+                btnPlayPause.setOnClickListener(this);
+
+                playerStateTextView = (TextView) rooTview.findViewById(R.id.player_state_view);
+                playerStateTextView.setVisibility(View.GONE);
+                subtitleView = (SubtitleView) rooTview.findViewById(R.id.subtitles);
+
+                mediaController = new VideoControllerView(mContext);
+                mediaController.setAnchorView((ViewGroup) root);
+
+                onResume();
+
+                DemoUtil.setDefaultCookieManager();
                 break;
         }
     }
@@ -253,6 +285,7 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
     public void onStateChanged(boolean playWhenReady, int playbackState) {
         if (playbackState == ExoPlayer.STATE_ENDED) {
             showControls();
+            replay = true;
             Log.d("player_state: ", "ended");
         }
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
@@ -264,6 +297,7 @@ public class VideoExoPlayerFragment extends Fragment implements SurfaceHolder.Ca
                 break;
             case ExoPlayer.STATE_ENDED:
                 text += "ended";
+                replay = true;
                 Log.d("player_state: ", "ended");
                 break;
             case ExoPlayer.STATE_IDLE:

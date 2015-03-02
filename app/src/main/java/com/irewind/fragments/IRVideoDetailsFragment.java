@@ -136,7 +136,7 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
                 videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
                 if (video != null) {
                     videoPlayerFragment.setVideoId(video.getId());
-                   // videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
+                    // videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
                     videoPlayerFragment.setVideoURI("http://player.vimeo.com/external/111527832.sd.mp4?s=1645e3111ac746d9cbf3a4f7e6ef357a");
                     videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
                     videoPlayerFragment.startPosition = startPosition;
@@ -148,9 +148,10 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
 
                 bundle.putInt("contentType", DemoUtil.TYPE_DASH);
                 bundle.putString("contentId", "" + video.getId());
+                bundle.putString("url_thumbnail", "" + video.getThumbnail());
                 frameLayout = (FrameLayout) rootView.findViewById(R.id.player_fragment);
 
-                videoExoPlayerFragment = VideoExoPlayerFragment.newInstance(video.getMp4HighResolutionURL(), DemoUtil.TYPE_OTHER, "" + video.getId());
+                videoExoPlayerFragment = VideoExoPlayerFragment.newInstance(video.getMp4HighResolutionURL(), DemoUtil.TYPE_OTHER, "" + video.getId(), video.getThumbnail());
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .disallowAddToBackStack()
