@@ -1,1 +1,1 @@
-include ':sdk', ':app', ':PullToRefresh-Library'
+include ':sdk', ':app', ':PullToRefresh-Library', ':libraryExoPlayer'

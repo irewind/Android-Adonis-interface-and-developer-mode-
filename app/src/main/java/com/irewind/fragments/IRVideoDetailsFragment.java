@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.irewind.Injector;
 import com.irewind.R;
 import com.irewind.adapters.IRVideoPagerAdapter;
 import com.irewind.sdk.model.Video;
 import com.irewind.ui.views.NonSwipeableViewPager;
+import com.irewind.utils.Constants;
+import com.irewind.utils.exoplayer.DemoUtil;
 import com.jazzyviewpager.JazzyViewPager;
 
 import butterknife.ButterKnife;
@@ -24,6 +27,7 @@ import butterknife.InjectView;
 public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPageChangeListener, View.OnClickListener {
 
     VideoPlayerFragment videoPlayerFragment;
+    VideoExoPlayerFragment videoExoPlayerFragment;
 
     @InjectView(R.id.tabs)
     View tabs;
@@ -42,6 +46,10 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
     private Video video;
 
     private int selectedPaneIndex;
+    private int playerType;
+    private int layoutId;
+    private View rootView;
+    private FrameLayout frameLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +67,18 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_irvideo_details, container, false);
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= 17) {
+            playerType = Constants.TYPE_EXO;
+            layoutId = R.layout.fragment_irvideo_details_exoplayer;
+        } else {
+            playerType = Constants.TYPE_NORMAL;
+            layoutId = R.layout.fragment_irvideo_details;
+        }
+
+        rootView = inflater.inflate(layoutId, container, false);
+        return rootView;
     }
 
     @Override
@@ -71,7 +90,7 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
         btnRelated.setOnClickListener(this);
         btnComments.setOnClickListener(this);
 
-        setupVideoPlayer();;
+        setupVideoPlayer(playerType);
         updatePaneButtons();
         setupViewPager(JazzyViewPager.TransitionEffect.Standard);
     }
@@ -82,28 +101,66 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
 
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            videoPlayerFragment.getView().getLayoutParams().height = (int)getResources().getDimension(R.dimen.video_dim);
+            if (videoPlayerFragment != null) {
+                videoPlayerFragment.getView().getLayoutParams().height = (int) getResources().getDimension(R.dimen.video_dim);
+            } else {
+
+                if (frameLayout != null) {
+                    frameLayout.getLayoutParams().height = (int) getResources().getDimension(R.dimen.video_dim);
+                }
+
+            }
 
             tabs.setVisibility(View.VISIBLE);
             mViewPager.setVisibility(View.VISIBLE);
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (videoPlayerFragment != null) {
+                videoPlayerFragment.getView().getLayoutParams().height = ActionBar.LayoutParams.MATCH_PARENT;
+            } else {
+                if (frameLayout != null) {
+                    frameLayout.getLayoutParams().height = ActionBar.LayoutParams.MATCH_PARENT;
+                }
 
-            videoPlayerFragment.getView().getLayoutParams().height = ActionBar.LayoutParams.MATCH_PARENT;
+
+            }
 
             tabs.setVisibility(View.GONE);
             mViewPager.setVisibility(View.GONE);
         }
     }
 
-    private void  setupVideoPlayer() {
-        videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
-        if (video != null) {
-            videoPlayerFragment.setVideoId(video.getId());
-            videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
-            videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
-            videoPlayerFragment.startPosition = startPosition;
+    private void setupVideoPlayer(int type) {
+
+        switch (type) {
+            case 1:
+                videoPlayerFragment = (VideoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
+                if (video != null) {
+                    videoPlayerFragment.setVideoId(video.getId());
+                   // videoPlayerFragment.setVideoURI(video.getMp4HighResolutionURL());
+                    videoPlayerFragment.setVideoURI("http://player.vimeo.com/external/111527832.sd.mp4?s=1645e3111ac746d9cbf3a4f7e6ef357a");
+                    videoPlayerFragment.setVideoThumbnailURI(video.getThumbnail());
+                    videoPlayerFragment.startPosition = startPosition;
+                }
+                break;
+            case 2:
+                Bundle bundle = new Bundle();
+                bundle.putString("contentUri", video.getMp4HighResolutionURL());
+
+                bundle.putInt("contentType", DemoUtil.TYPE_DASH);
+                bundle.putString("contentId", "" + video.getId());
+                frameLayout = (FrameLayout) rootView.findViewById(R.id.player_fragment);
+
+                videoExoPlayerFragment = VideoExoPlayerFragment.newInstance(video.getMp4HighResolutionURL(), DemoUtil.TYPE_OTHER, "" + video.getId());
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .disallowAddToBackStack()
+                        .replace(R.id.player_fragment, videoExoPlayerFragment)
+                        .commit();
+                // videoExoPlayerFragment = (VideoExoPlayerFragment) getChildFragmentManager().findFragmentById(R.id.player_fragment);
+
+                break;
         }
+
     }
 
     private void setupViewPager(JazzyViewPager.TransitionEffect effect) {
@@ -143,7 +200,8 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
     }
 
     @Override
-    public void onPageScrolled(int i, float v, int i2) {}
+    public void onPageScrolled(int i, float v, int i2) {
+    }
 
     @Override
     public void onPageSelected(int i) {
@@ -152,7 +210,8 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
     }
 
     @Override
-    public void onPageScrollStateChanged(int i) {}
+    public void onPageScrollStateChanged(int i) {
+    }
 
     private void updatePaneButtons() {
         switch (selectedPaneIndex) {
@@ -175,6 +234,8 @@ public class IRVideoDetailsFragment extends Fragment implements ViewPager.OnPage
     }
 
     public void stopPlayback() {
-        videoPlayerFragment.stop();
+        if (videoPlayerFragment != null) {
+            videoPlayerFragment.stop();
+        }
     }
 }

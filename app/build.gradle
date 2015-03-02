@@ -24,7 +24,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 39
-        versionName "1.0.0.39-snapshot"
+        versionName "1.0.0.40-snapshot"
         multiDexEnabled true
     }
     buildTypes {
@@ -95,4 +95,5 @@ dependencies {
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'com.github.castorflex.smoothprogressbar:library:1.0.0'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.0.1'
+    compile project(':libraryExoPlayer')
 }

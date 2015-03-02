@@ -16,4 +16,5 @@
     <color name="tag_color">#C0C2C7</color>
     <color name="tab_gray">#8D8D92</color>
     <color name="tab_gray_dots">#9B9DA2</color>
+    <color name="dim_foreground_dark">#bebebe</color>
 </resources>

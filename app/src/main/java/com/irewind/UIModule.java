@@ -16,6 +16,7 @@ import com.irewind.fragments.IRMoreFragment;
 import com.irewind.fragments.IRPeopleFragment;
 import com.irewind.fragments.IRPersonFragment;
 import com.irewind.fragments.IRVideoDetailsFragment;
+import com.irewind.fragments.VideoExoPlayerFragment;
 import com.irewind.fragments.VideoPlayerFragment;
 import com.irewind.fragments.movies.IRAboutFragment;
 import com.irewind.fragments.movies.IRCommentsFragment;
@@ -42,6 +43,7 @@ import dagger.Module;
                 IRLibraryFragment.class,
                 IRVideoDetailsFragment.class,
                 VideoPlayerFragment.class,
+                VideoExoPlayerFragment.class,
                 IRAboutFragment.class,
                 IRVideoSettingsFragment.class,
                 IREditVideoTitleActivity.class,
