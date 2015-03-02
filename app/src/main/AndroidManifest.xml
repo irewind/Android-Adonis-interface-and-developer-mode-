@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.irewind"
+    android:installLocation="preferExternal" >
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Include following permission if you want to cache images on SD card -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!--
+ To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
+     option is required to comply with the Google+ Sign-In developer policies
+    -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+
+    <application
+        android:name=".IRApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/IRAppTheme.Splash" >
+        <activity
+            android:name=".activities.IRSplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Splash" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.IRLoginActivity"
+            android:label="@string/title_activity_irlogin"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Splash"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRForgotPasswordActivity"
+            android:label="@string/title_activity_irforgot_password"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Splash"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRRegisterActivity"
+            android:label="@string/title_activity_irregister"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Splash"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRTabActivity"
+            android:label="@string/title_activity_irtab"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRAddCommentActivity"
+            android:label="@string/title_activity_ircomment"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Dialog"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/title_facebook_login" />
+        <activity
+            android:name=".activities.IREditVideoTitleActivity"
+            android:label="@string/title_activity_edit_video_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme.Dialog"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <service android:name="irewind.services.ServiciuGpsLogging" />
+        <service
+            android:name="irewind.services.ReceiveTransitionsIntentService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="4a9d7c15ee3f03a7f1d65eaed144b5e7c1dae1ea" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name=".activities.IRWebViewActivity"
+            android:label="@string/title_activity_irweb_view"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme" />
+        <activity
+            android:name=".activities.IRAccountNotificationActivity"
+            android:label="@string/title_activity_iraccount_notification"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRAccountPersonalActivity"
+            android:label="@string/title_activity_iraccount_personal_fragment"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRAccountPasswordActivity"
+            android:label="@string/title_activity_iraccount_password"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRPersonActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRMovieActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".activities.IRMovieSettingsActivity"
+            android:label="@string/title_activity_irmovie_settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/IRAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+    </application>
+
+</manifest>

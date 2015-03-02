@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_light_video"
+    tools:context="com.irewind.fragments.IRVideoDetailsFragment">
+
+    <fragment
+        android:id="@+id/player_fragment"
+        android:name="com.irewind.fragments.VideoPlayerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/video_dim" />
+
+    <LinearLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/player_fragment"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_tab_video"
+            android:text="@string/about"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/related"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_tab_video"
+            android:text="@string/related"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/comments"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_tab_video"
+            android:text="@string/comments"
+            android:textColor="@drawable/ir_text_tab_color_change"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <com.irewind.ui.views.NonSwipeableViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
+
+</RelativeLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="default_notif_comment_video">false</bool>
+    <bool name="default_notif_like_video">false</bool>
+    <bool name="default_notif_share_video">false</bool>
+    <bool name="default_notif_message_video">false</bool>
+</resources>

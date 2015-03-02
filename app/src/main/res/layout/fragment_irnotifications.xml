@@ -1,0 +1,264 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.irewind.fragments.IRAccountNotificationFragment"
+    tools:ignore="MissingPrefix">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/top"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/backgroundImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_profile" />
+
+                <ImageButton
+                    android:id="@+id/photo"
+                    android:layout_width="30dp"
+                    android:layout_height="31dp"
+                    android:src="@drawable/ic_camera"
+                    android:scaleType="fitCenter"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="10dp"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+
+                    <com.irewind.ui.views.RoundedImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginTop="2dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/img_default_picture" />
+
+                    <TextView
+                        android:id="@+id/nameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/profileImageView"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:text=""
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/nameTextView"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:text="Joined: 6 months ago"
+                        android:textColor="#bbb"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relFirst"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/top"
+                android:layout_marginRight="15dp"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:id="@+id/titleCommentVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:text="@string/comment_video_notif"
+                    android:layout_toLeftOf="@+id/switchCommentNotifications" />
+
+                <CheckBox
+                    android:id="@+id/switchCommentNotifications"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:clickable="false"
+                    android:button="@drawable/checkbox" />
+
+                <Button
+                    android:id="@+id/checkCommentVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator"
+                android:layout_below="@+id/relFirst"
+                android:layout_marginTop="5dp" />
+
+            <RelativeLayout
+                android:id="@+id/relLast"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/separator1"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:id="@+id/titleLast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:layout_marginRight="10dp"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/switchLikeNotifications"
+                    android:text="@string/like_video_notif" />
+
+                <CheckBox
+                    android:id="@+id/switchLikeNotifications"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:button="@drawable/checkbox" />
+
+                <Button
+                    android:id="@+id/checkLikeVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator"
+                android:layout_below="@+id/relLast"
+                android:layout_marginTop="5dp" />
+
+            <RelativeLayout
+                android:id="@+id/relLast2"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/separator2"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_height="48dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/titleLast3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:layout_marginRight="20dp"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/switchShareNotifications"
+                    android:text="@string/share_video_notif" />
+
+                <CheckBox
+                    android:id="@+id/switchShareNotifications"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:button="@drawable/checkbox" />
+
+                <Button
+                    android:id="@+id/checkShareVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator"
+                android:layout_below="@+id/relLast2"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/relLast3"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/separator3"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_height="48dp"
+                android:visibility="gone">
+
+                <TextView
+                    fontPath="fonts/OpenSansRegular.ttf"
+                    android:id="@+id/titleLast4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:layout_marginRight="20dp"
+                    android:paddingLeft="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/switchMessageNotifications"
+                    android:text="@string/message_notif" />
+
+                <CheckBox
+                    android:id="@+id/switchMessageNotifications"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:button="@drawable/checkbox" />
+
+                <Button
+                    android:id="@+id/checkMessageVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/separator4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator"
+                android:layout_below="@+id/relLast3"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

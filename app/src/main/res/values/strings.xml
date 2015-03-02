@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">iRewind</string>
+    <string name="title_activity_irsplash">IRSplashActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_sign_in_facebook">Sign in with Facebook</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="title_activity_irforgot_password">Recover password</string>
+    <string name="login_sign_up"><u>Sign up</u></string>
+    <string name="title_activity_irregister">IRRegisterActivity</string>
+    <string name="action_sign_in_google">Sign in with Google</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="join">Join</string>
+    <string name="register_sign_in"><u>Sign in</u></string>
+    <string name="terms"><u>Terms of Service</u>,</string>
+    <string name="term_cond">Terms &amp; conditions</string>
+    <string name="policy"><u>Privacy Policy</u></string>
+    <string name="policy_s"><u>Privacy policy</u></string>
+    <string name="cookie"><u>Cookie Policy</u></string>
+    <string name="cookie_s"><u>Cookie policy</u></string>
+    <string name="submit">Submit</string>
+    <string name="forgot_info">Please enter the email address you registered with. We will send you an email with instructions for changing your password.</string>
+    <string name="title_activity_irconfirm_change">IRConfirmChangeActivity</string>
+    <string name="confirmation_email">Confirmation email sent</string>
+    <string name="title_activity_irtab">iRewind</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="error_match">Passwords doesn\'t match</string>
+    <string name="waiting_location">Waiting for location</string>
+    <string name="not_in_area">You are not in an iRewind enabled area.\n\n Based on your location this functionality will be automatically made available.</string>
+    <string name="checked_in">You are now checked in.\n\n Enjoy your journey! When you are done, check out to receive your iRewind movie.</string>
+
+    <string-array name="jazzy_effects">
+        <item>Standard</item>
+        <item>Tablet</item>
+        <item>CubeIn</item>
+        <item>CubeOut</item>
+        <item>FlipVertical</item>
+        <item>FlipHorizontal</item>
+        <item>Stack</item>
+        <item>ZoomIn</item>
+        <item>ZoomOut</item>
+        <item>RotateUp</item>
+        <item>RotateDown</item>
+        <item>Accordion</item>
+    </string-array>
+
+    <string name="facebook_app_id">323445897713125</string>
+    <string name="title_facebook_login">Login to Facebook</string>
+    <string name="account">Account</string>
+    <string name="personal_data">Personal data</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="change">Change</string>
+    <string name="current_password">Current Password</string>
+    <string name="change_password">Change password</string>
+    <string name="upper_password">Password</string>
+    <string name="new_password">New password</string>
+    <string name="notif_email">Notification emails</string>
+    <string name="comment_video_notif">Someone makes a comment on one of my videos</string>
+    <string name="like_video_notif">Someone likes one of my videos</string>
+    <string name="notifications">Notifications</string>
+    <string name="more">Profile</string>
+    <string name="terms_link">http://video.irewind.com/api/terms</string>
+    <string name="privacy_policy">http://video.irewind.com/api/privacy</string>
+    <string name="cookie_link">http://video.irewind.com/api/cookies</string>
+    <string name="no_people">No people</string>
+    <string name="no_comments">No comments</string>
+    <string name="by">By</string>
+    <string name="movies">Movies</string>
+    <string name="people">People</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="about">About</string>
+    <string name="related">Related</string>
+    <string name="comments">Comments</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="dummy_text">Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</string>
+    <string name="no_videos">No videos</string>
+    <string name="no_related_videos">No related videos</string>
+    <string name="reply"><u>Reply</u></string>
+    <string name="movie_settings">Movie settings</string>
+    <string name="save">Save</string>
+    <string name="add_another">Add another</string>
+    <string name="add_another_underline"><u>Add another</u></string>
+    <string name="title_activity_ircomment">Comments</string>
+    <string name="title_activity_edit_video_title">Edit Video Title</string>
+    <string name="post">Post</string>
+    <string name="post_comment">Post a comment</string>
+    <string name="edit_clip_name">Edit clip name</string>
+    <string name="comment_hint">Write your comment...</string>
+    <string name="email_address">EMAIL ADDRESS</string>
+    <string name="change_caps">CHANGE</string>
+    <string name="password_big">PASSWORD</string>
+    <string name="personal_name">PERSONAL NAME</string>
+    <string name="edit">EDIT</string>
+    <string name="share_video_notif">Someone shares one of my videos</string>
+    <string name="message_notif">Someone mesasges me</string>
+    <string name="first_name_caps">FIRST NAME</string>
+    <string name="first_name_small">first name</string>
+    <string name="last_name_caps">LAST NAME</string>
+    <string name="last_name_small">last name</string>
+    <string name="current_password_caps">CURRENT PASSWORD</string>
+    <string name="current_password_small">Enter current password</string>
+    <string name="new_password_caps">NEW PASSWORD</string>
+    <string name="new_password_small">Enter new password</string>
+    <string name="confirm_password_caps">CONFIRM PASSWORD</string>
+    <string name="confirm_password_small">Enter confirm password</string>
+    <string name="email_address_small">email address</string>
+    <string name="change_email">Change email</string>
+    <string name="title_activity_irfull_screen_movie">IRFullScreenMovieActivity</string>
+    <string name="search_videos">Search videos</string>
+    <string name="search_people">Search people</string>
+    <string name="error_email_missing">Please enter your email</string>
+    <string name="error_password_missing">Password should have at least six characters.</string>
+    <string name="error_missing_firstname">Please enter your first name</string>
+    <string name="error_missing_lastname">Please enter your last name</string>
+    <string name="error_name_too_long">Please enter an name of at most 20 characters</string>
+    <string name="error_invalid_password_2">Password must have at least six characters.</string>
+    <string name="error_bad_email">There is no account associated with this email address.</string>
+    <string name="error_unknown">Something went wrong. Please try again later.</string>
+    <string name="comments_disabled_msg">Comments are disabled for this video.</string>
+    <string name="title_activity_irweb_view">IRWebViewActivity</string>
+    <string name="title_activity_iraccount_notification">IRAccountNotificationActivity</string>
+    <string name="title_activity_iraccount_personal_fragment">IRAccountPersonalFragment</string>
+    <string name="title_activity_iraccount_password">IRAccountPasswordActivity</string>
+    <string name="title_activity_irmovie_settings">IRMovieSettingsActivity</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="next">Next</string>
+    <string name="register_short">Reg.</string>
+    <string name="recover_short">Rec.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirmation_msg">Are you sure you want to delete your account?</string>
+    <string name="error_invalid_comment">Comment should be at least 2 characters long!</string>
+
+
+    <string name="enable_background_audio">Play in background</string>
+
+    <string name="video">Video</string>
+
+    <string name="audio">Audio</string>
+
+    <string name="text">Text</string>
+
+    <string name="logging">Logging</string>
+
+    <string name="logging_normal">Normal</string>
+
+    <string name="logging_verbose">Verbose</string>
+
+    <string name="retry">Retry</string>
+
+    <string name="off">[off]</string>
+
+    <string name="on">[on]</string>
+
+    <string name="drm_error_not_supported">Protected content not supported on API levels below 18</string>
+
+    <string name="drm_error_unsupported_scheme">This device does not support the required DRM scheme</string>
+
+    <string name="drm_error_unknown">An unknown DRM error occurred</string>
+
+    <string name="failed">Playback failed</string>
+
+</resources>

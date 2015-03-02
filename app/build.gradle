@@ -1,0 +1,99 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
+
+    defaultConfig {
+        applicationId "com.irewind"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 39
+        versionName "1.0.0.40-snapshot"
+        multiDexEnabled true
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            // zipAlign false // this is default for debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def apk = output.outputFile;
+            def newName;
+
+            if (variant.buildType.name == "release") {
+                newName = apk.name.replace(".apk", "-release-irewind" + "-v" + defaultConfig.versionName + ".apk");
+            } else {
+                newName = apk.name.replace(".apk", "-irewind" + "-v" + defaultConfig.versionName + ".apk");
+            }
+
+
+            output.outputFile = new File(apk.parentFile, newName);
+
+            if (variant.buildType.zipAlignEnabled) {
+                output.outputFile = new File(apk.parentFile, newName.replace("-unaligned", ""));
+            }
+
+            logger.info('INFO: Set outputFile to ' + output.outputFile + " for [" + variant.name + "]");
+        }
+    }
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'jni/'] } }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+        incremental true
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':PullToRefresh-Library')
+    compile project(':sdk')
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.jakewharton:butterknife:6.+'
+    compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
+    compile 'com.sothree.slidinguppanel:library:2.0.2'
+    compile 'com.github.markushi:circlebutton:1.1'
+    compile 'uk.co.chrisjenx:calligraphy:1.2.0'
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.github.castorflex.smoothprogressbar:library:1.0.0'
+    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.0.1'
+    compile project(':libraryExoPlayer')
+}

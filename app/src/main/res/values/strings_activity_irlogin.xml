@@ -1,0 +1,24 @@
+<resources>
+    <string name="title_activity_irlogin">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign In</string>
+    <string name="plus_sign_out">Switch Google+ account</string>
+    <string name="plus_disconnect">Disconnect from Google+</string>
+    <string name="registration_pending_approval">Registration succeded! An activation email has been sent.</string>
+    <string name="reset_password_succeded">A reset link has been sent to your email address</string>
+    <string name="change_password_succeded">Password updated!</string>
+    <string name="profile_update_succeded">Profile updated!</string>
+    <string name="error_account_exists">Account already registered</string>
+    <string name="error_bad_credentials">Can\`t login, the credentials provided are not valid!</string>
+    <string name="error_invalid_email">Please enter a valid email</string>
+    <string name="error_invalid_password">Password should have at least six characters.</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_current_password">Current password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_email_account_missing">This email address is not registered</string>
+
+</resources>
