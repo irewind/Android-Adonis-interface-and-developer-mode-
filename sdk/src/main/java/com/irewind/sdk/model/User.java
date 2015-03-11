@@ -3,6 +3,11 @@ package com.irewind.sdk.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class User implements Serializable {
 
@@ -22,7 +27,7 @@ public class User implements Serializable {
     private String fullname;
 
     @SerializedName("createdDate")
-    private long createdDate;
+    private String createdDate;
 
     @SerializedName("status")
     private String status;
@@ -37,7 +42,7 @@ public class User implements Serializable {
     private String picture;
 
     @SerializedName("lastLoginDate")
-    private long lastLoginDate;
+    private String lastLoginDate;
 
     @SerializedName("vpsId")
     private long vpsId;
@@ -62,7 +67,10 @@ public class User implements Serializable {
         return fullname;
     }
 
-    public long getCreatedDate() {
+    public String getCreatedDate() {
+
+
+
         return createdDate;
     }
 
@@ -82,7 +90,9 @@ public class User implements Serializable {
         return picture;
     }
 
-    public long getLastLoginDate() {
+    public String getLastLoginDate() {
+
+
         return lastLoginDate;
     }
 
@@ -114,7 +124,7 @@ public class User implements Serializable {
         return name;
     }
 
-    public User(long id, long vpsId, String email, String firstname, String lastname, String fullname, long createdDate, String status, String authProvider, String role, String picture, long lastLoginDate) {
+    public User(long id, long vpsId, String email, String firstname, String lastname, String fullname, String createdDate, String status, String authProvider, String role, String picture, String lastLoginDate) {
         this.id = id;
         this.vpsId = vpsId;
         this.email = email;

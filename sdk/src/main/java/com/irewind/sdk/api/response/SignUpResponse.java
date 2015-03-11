@@ -16,4 +16,6 @@ public class SignUpResponse {
     public String getError() {
         return error;
     }
+
+
 }

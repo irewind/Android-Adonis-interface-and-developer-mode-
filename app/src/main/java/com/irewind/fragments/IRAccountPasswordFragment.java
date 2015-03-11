@@ -30,6 +30,8 @@ import com.irewind.utils.AppStatus;
 import com.irewind.utils.CheckUtil;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -197,7 +199,14 @@ public class IRAccountPasswordFragment extends Fragment implements View.OnClickL
                 profileImageView.setImageResource(R.drawable.img_default_picture);
             }
             nameTextView.setText(user.getDisplayName());
-            date.setText("Joined: " + DateUtils.getRelativeTimeSpanString(user.getCreatedDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            try {
+                Date parsedDate = fromUser.parse(user.getCreatedDate());
+                date.setText("Joined: " + DateUtils.getRelativeTimeSpanString(parsedDate.getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+          //  date.setText("Joined: " + user.getCreatedDate());
         } else {
             profileImageView.setImageResource(R.drawable.img_default_picture);
             nameTextView.setText("");

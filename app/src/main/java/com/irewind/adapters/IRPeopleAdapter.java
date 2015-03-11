@@ -14,6 +14,8 @@ import com.irewind.ui.views.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,11 +72,22 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
 
         holder.name.setText(user.getDisplayName());
 
-        if (user.getLastLoginDate() > 0) {
-            holder.date.setText(DateUtils.getRelativeTimeSpanString(user.getLastLoginDate(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
-        } else {
+        SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        try {
+            Date parsedDate = fromUser.parse(user.getLastLoginDate());
+            if (parsedDate.getTime() > 0) {
+                holder.date.setText(DateUtils.getRelativeTimeSpanString(parsedDate.getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            } else {
+                holder.date.setText("");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
             holder.date.setText("");
         }
+
+
+      //  holder.date.setText(user.getLastLoginDate());
+
 
         return convertView;
     }

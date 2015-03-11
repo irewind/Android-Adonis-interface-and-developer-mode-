@@ -17,14 +17,14 @@ repositories {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.irewind"
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 39
-        versionName "1.0.0.40"
+        versionName "1.0.0.41-snapshot"
         multiDexEnabled true
     }
     buildTypes {

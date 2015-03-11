@@ -32,12 +32,13 @@ public abstract class UserCachingStrategy {
                 bundle.getString(UserCachingStrategy.FIRSTNAME_KEY),
                 bundle.getString(UserCachingStrategy.LASTNAME_KEY),
                 bundle.getString(UserCachingStrategy.FULLNAME_KEY),
-                bundle.getLong(UserCachingStrategy.CREATED_DATE_KEY),
+                //   bundle.getLong(UserCachingStrategy.CREATED_DATE_KEY),
+                bundle.getString(UserCachingStrategy.CREATED_DATE_KEY),
                 bundle.getString(UserCachingStrategy.STATUS_KEY),
                 bundle.getString(UserCachingStrategy.AUTHPROVIDER_KEY),
                 bundle.getString(UserCachingStrategy.ROLE_KEY),
                 bundle.getString(UserCachingStrategy.PICTURE_KEY),
-                bundle.getLong(UserCachingStrategy.LAST_LOGIN_DATE_KEY)
+                bundle.getString(UserCachingStrategy.LAST_LOGIN_DATE_KEY)
         );
     }
 
@@ -50,12 +51,13 @@ public abstract class UserCachingStrategy {
         bundle.putString(UserCachingStrategy.FIRSTNAME_KEY, user.getFirstname());
         bundle.putString(UserCachingStrategy.LASTNAME_KEY, user.getLastname());
         bundle.putString(UserCachingStrategy.FULLNAME_KEY, user.getFullname());
-        bundle.putLong(UserCachingStrategy.CREATED_DATE_KEY, user.getCreatedDate());
+        //   bundle.putLong(UserCachingStrategy.CREATED_DATE_KEY, user.getCreatedDate());
+        bundle.putString(UserCachingStrategy.CREATED_DATE_KEY, user.getCreatedDate());
         bundle.putString(UserCachingStrategy.STATUS_KEY, user.getStatus());
         bundle.putString(UserCachingStrategy.AUTHPROVIDER_KEY, user.getAuthProvider());
         bundle.putString(UserCachingStrategy.ROLE_KEY, user.getRole());
         bundle.putString(UserCachingStrategy.PICTURE_KEY, user.getPicture());
-        bundle.putLong(UserCachingStrategy.LAST_LOGIN_DATE_KEY, user.getLastLoginDate());
+        bundle.putString(UserCachingStrategy.LAST_LOGIN_DATE_KEY, user.getLastLoginDate());
 
         return bundle;
     }

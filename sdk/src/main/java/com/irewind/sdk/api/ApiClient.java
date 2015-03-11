@@ -70,7 +70,11 @@ import com.irewind.sdk.model.PageInfo;
 import com.irewind.sdk.model.User;
 import com.irewind.sdk.model.Video;
 import com.irewind.sdk.model.VideoPermission;
+import com.irewind.sdk.util.MainLog;
 import com.irewind.sdk.util.SafeAsyncTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -189,11 +193,24 @@ public class ApiClient {
     private static final String adminSecret = "iRewind_123";
 
     private void getAccessToken(String username, String password, final Callback<AccessToken> cb) {
+
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", username);
+            jsonObject.put("password", password);
+
+            MainLog.logMsg(TAG, "getAccessToken data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         sessionService.getAccessToken(username, password, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
                 if (cb != null) {
                     cb.success(accessToken, response);
+                    MainLog.logMsg(TAG,"getAccessToken "+accessToken.toString());
+                    MainLog.logMsg(TAG,"getAccessToken "+response.toString());
                 }
             }
 
@@ -201,22 +218,37 @@ public class ApiClient {
             public void failure(RetrofitError error) {
                 if (cb != null) {
                     cb.failure(error);
+
                 }
             }
         });
     }
 
     public void openSession(String username, String password) {
+
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username", username);
+            jsonObject.put("password", password);
+
+            MainLog.logMsg(TAG, "openSession data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         getAccessToken(username, password, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
                 accessToken.setLastRefreshDate(new Date());
+                MainLog.logMsg(TAG,""+accessToken.toString());
                 openActiveSessionWithAccessToken(context, accessToken);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.BadCredentials, null));
+
             }
         });
     }
@@ -378,6 +410,20 @@ public class ApiClient {
                          String firstName,
                          String lastName,
                          final String password) {
+
+
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("firstName", firstName);
+            jsonObject.put("lastName", lastName);
+            jsonObject.put("password", password);
+
+            MainLog.logMsg(TAG, "register data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         sessionService.addUser(email, firstName, lastName, password, new Callback<SignUpResponse>() {
             @Override
             public void success(SignUpResponse signUpResponse, Response response) {
@@ -401,6 +447,19 @@ public class ApiClient {
                               final String firstName,
                               final String lastName,
                               final String pictureURL) {
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("socialId", socialId);
+            jsonObject.put("firstName", firstName);
+            jsonObject.put("lastName", lastName);
+            jsonObject.put("pictureURL", pictureURL);
+
+            MainLog.logMsg(TAG, "loginFACEBOOK data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
@@ -409,6 +468,8 @@ public class ApiClient {
                     public void success(AccessToken userAccessToken, Response response) {
                         if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
                             eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
+                            MainLog.logMsg(TAG, "" + userAccessToken.toString());
+
                         } else {
                             userAccessToken.setLastRefreshDate(new Date());
                             openActiveSessionWithAccessToken(context, userAccessToken);
@@ -434,6 +495,22 @@ public class ApiClient {
                             final String firstName,
                             final String lastName,
                             final String pictureURL) {
+
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("socialId", socialId);
+            jsonObject.put("firstName", firstName);
+            jsonObject.put("lastName", lastName);
+            jsonObject.put("lastName", lastName);
+            jsonObject.put("pictureURL", pictureURL);
+
+            MainLog.logMsg(TAG, "loginGOOGLE data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
@@ -442,10 +519,16 @@ public class ApiClient {
                     public void success(AccessToken userAccessToken, Response response) {
                         if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
                             eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
+
                         } else {
                             userAccessToken.setLastRefreshDate(new Date());
                             openActiveSessionWithAccessToken(context, userAccessToken);
+                            MainLog.logMsg(TAG, "" + userAccessToken.toString());
+
                         }
+
+
+
                     }
 
                     @Override
@@ -505,6 +588,7 @@ public class ApiClient {
         return authHeader(session.getTokenInfo());
     }
 
+
     private String authHeader(AccessToken accessToken) {
         return "Bearer " + accessToken.getCurrentToken();
     }
@@ -520,6 +604,15 @@ public class ApiClient {
     }
 
     public void getUserByEmail(final String email) {
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+
+            MainLog.logMsg(TAG, "getUserByEmail data sent: " + jsonObject.toString(2));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         final Session session = getActiveSession();
         apiService.userByEmail(authHeader(session), email, new Callback<UserResponse>() {
             @Override
@@ -530,6 +623,8 @@ public class ApiClient {
                     List<User> users = userResponse.getEmbedded().getUsers();
                     if (users != null && users.size() > 0) {
                         User user = users.get(0);
+
+                        MainLog.logMsg(TAG,"getUserByEmail "+user.toString());
                         setActiveUser(user);
                     } else {
                         eventBus.post(new UserInfoLoadedEvent(null));
@@ -731,7 +826,7 @@ public class ApiClient {
         apiService.changePassword(authHeader(session), currentPassword, newPassword, newPassword, new Callback<PasswordChangeResponse>() {
             @Override
             public void success(PasswordChangeResponse passwordChangeResponse, Response response) {
-                if (passwordChangeResponse.getResult() == true) {
+                if (passwordChangeResponse.getResult()) {
                     eventBus.post(new PasswordChangeSuccessEvent());
                 } else {
                     eventBus.post(new PasswordChangeFailEvent(PasswordChangeFailEvent.Reason.WrongPassword));

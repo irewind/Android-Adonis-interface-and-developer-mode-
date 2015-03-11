@@ -63,7 +63,7 @@ public class VideoControllerView extends FrameLayout {
     private Context mContext;
     private ViewGroup mAnchor;
     private View mRoot;
-    private ProgressBar mProgress;
+    private SeekBar mProgress;
     private TextView mEndTime, mCurrentTime;
     private boolean mShowing;
     private boolean mDragging;
@@ -202,7 +202,7 @@ public class VideoControllerView extends FrameLayout {
             mPrevButton.setVisibility(View.GONE);
         }
 
-        mProgress = (ProgressBar) v.findViewById(R.id.mediacontroller_progress);
+        mProgress = (SeekBar) v.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
                 SeekBar seeker = (SeekBar) mProgress;
