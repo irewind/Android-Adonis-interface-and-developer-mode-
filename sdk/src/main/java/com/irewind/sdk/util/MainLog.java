@@ -7,11 +7,12 @@ import android.util.Log;
  */
 public class MainLog {
 
-    private static boolean isDebugging = true;
+    private static boolean isDebugging = false;
 
     public static void logMsg(String tag, String message) {
         if (isDebugging) {
             Log.d(tag, "" + message);
+
         }
     }
 

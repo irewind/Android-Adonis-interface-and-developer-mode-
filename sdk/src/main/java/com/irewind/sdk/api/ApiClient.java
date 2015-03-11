@@ -199,7 +199,7 @@ public class ApiClient {
             jsonObject.put("username", username);
             jsonObject.put("password", password);
 
-            MainLog.logMsg(TAG, "getAccessToken data sent: " + jsonObject.toString(2));
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -209,8 +209,7 @@ public class ApiClient {
             public void success(AccessToken accessToken, Response response) {
                 if (cb != null) {
                     cb.success(accessToken, response);
-                    MainLog.logMsg(TAG,"getAccessToken "+accessToken.toString());
-                    MainLog.logMsg(TAG,"getAccessToken "+response.toString());
+
                 }
             }
 
@@ -463,12 +462,13 @@ public class ApiClient {
         getAccessToken(adminUsername, adminSecret, new Callback<AccessToken>() {
             @Override
             public void success(AccessToken accessToken, Response response) {
+                MainLog.logMsg("accesToken admin",""+accessToken.toString());
                 apiService.socialLoginFacebook(authHeader(accessToken), email, socialId, firstName, lastName, pictureURL, new Callback<AccessToken>() {
                     @Override
                     public void success(AccessToken userAccessToken, Response response) {
                         if (userAccessToken.getError() != null && userAccessToken.getError().length() > 0) {
                             eventBus.post(new SessionOpenFailEvent(SessionOpenFailEvent.Reason.Unknown, userAccessToken.getError()));
-                            MainLog.logMsg(TAG, "" + userAccessToken.toString());
+                          MainLog.logMsg(TAG, " error: " + userAccessToken.toString());
 
                         } else {
                             userAccessToken.setLastRefreshDate(new Date());
@@ -1372,9 +1372,12 @@ public class ApiClient {
 
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.video = config.getBaseURL() + "/rest/video/" + videoId;
+        MainLog.logMsg("vote video",voteRequest.video);
+        MainLog.logMsg("vote video session header",authHeader(session));
         voteRequest.voteType = VoteRequest.VOTE_TYPE_LIKE;
 
         apiService.vote(authHeader(session), voteRequest, new Callback<BaseResponse>() {
+
             @Override
             public void success(BaseResponse baseResponse, Response response) {
                 eventBus.post(new VoteEvent());

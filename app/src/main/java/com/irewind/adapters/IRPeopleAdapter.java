@@ -80,7 +80,7 @@ public class IRPeopleAdapter extends ArrayAdapter<User> {
             } else {
                 holder.date.setText("");
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             holder.date.setText("");
         }
