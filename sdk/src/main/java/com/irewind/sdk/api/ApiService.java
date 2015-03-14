@@ -141,7 +141,7 @@ public interface ApiService {
 
     // --- Videos --- //
 
-    @GET("/rest/v2/videoById/<id>")
+    @GET("/rest/v2/videoById/{id}")
     void videoById(@Header("Authorization") String authorization,
                    @Path("id") long videoID,
                    Callback<Video> cb);

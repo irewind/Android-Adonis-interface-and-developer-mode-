@@ -1430,6 +1430,7 @@ public class ApiClient {
                         public void failure(RetrofitError error) {
                             eventBus.post(new VoteEvent());
                         }
+
                     });
                 } else {
                     eventBus.post(new VoteEvent());
