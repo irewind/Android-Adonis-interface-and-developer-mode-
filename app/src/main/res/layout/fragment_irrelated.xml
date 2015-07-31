@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    tools:context="com.irewind.fragments.movies.IRRelatedFragment"
+    tools:context="com.irewindb.fragments.movies.IRRelatedFragment"
     android:background="@android:color/transparent">
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView

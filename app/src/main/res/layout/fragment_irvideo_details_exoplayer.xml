@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_light_video"
-    tools:context="com.irewind.fragments.IRVideoDetailsFragment">
+    tools:context="com.irewindb.fragments.IRVideoDetailsFragment">
 
     <FrameLayout
         android:id="@+id/player_fragment"

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.irewind.fragments.IRMoreFragment"
+    tools:context="com.irewindb.fragments.IRMoreFragment"
     tools:ignore="MissingPrefix">
 
     <RelativeLayout
@@ -76,4 +76,14 @@
         android:layout_width="match_parent"
         android:layout_height="153dp"
         android:layout_below="@+id/top" />
+
+
+    <TextView
+
+        android:id="@+id/CameraRecord"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>

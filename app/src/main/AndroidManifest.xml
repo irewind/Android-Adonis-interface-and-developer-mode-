@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.irewind"
     android:installLocation="preferExternal" >
 
@@ -21,9 +22,14 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <!-- video record and upload -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -34,7 +40,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/IRAppTheme.Splash" >
+        android:theme="@style/IRAppTheme.Splash"
+        tools:replace="android:theme" >
         <activity
             android:name=".activities.IRSplashActivity"
             android:label="@string/app_name"
@@ -86,9 +93,9 @@
             android:theme="@style/IRAppTheme.Dialog"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
-        <service android:name="irewind.services.ServiciuGpsLogging" />
+        <service android:name="irewindb.services.ServiciuGpsLogging" />
         <service
-            android:name="irewind.services.ReceiveTransitionsIntentService"
+            android:name="irewindb.services.ReceiveTransitionsIntentService"
             android:enabled="true"
             android:exported="false"
             android:label="@string/app_name" />
@@ -142,6 +149,30 @@
             android:screenOrientation="portrait"
             android:theme="@style/IRAppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name=".activities.CameraRecActivity"
+            android:label="@string/title_activity_camera_rec"
+            android:screenOrientation="landscape" >
+        </activity>
+
+        <service
+            android:name=".services.SegmentUploaderService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <activity
+            android:name=".activities.DevMenu"
+            android:label="@string/title_activity_dev_menu" >
+        </activity>
+        <activity
+            android:name=".activities.FakeBeaconActivity"
+            android:label="@string/title_activity_fake_beacon" >
+        </activity>
+        <activity
+            android:name=".activities.FakeCameraActivity"
+            android:label="@string/title_activity_fake_camera" >
         </activity>
     </application>
 

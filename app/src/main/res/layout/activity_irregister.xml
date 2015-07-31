@@ -10,7 +10,7 @@
     <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.irewind.activities.IRRegisterActivity"
+        tools:context="com.irewindb.activities.IRRegisterActivity"
         android:background="@drawable/bg_app">
 
         <fr.castorflex.android.circularprogressbar.CircularProgressBar

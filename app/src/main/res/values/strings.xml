@@ -163,5 +163,9 @@
     <string name="drm_error_unknown">An unknown DRM error occurred</string>
 
     <string name="failed">Playback failed</string>
+    <string name="title_activity_camera_rec">CameraRecActivity</string>
+    <string name="title_activity_dev_menu">DevMenu</string>
+    <string name="title_activity_fake_beacon">FakeBeaconActivity</string>
+    <string name="title_activity_fake_camera">FakeCameraActivity</string>
 
 </resources>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    tools:context="com.irewind.fragments.movies.IRCommentsFragment">
+    tools:context="com.irewindb.fragments.movies.IRCommentsFragment">
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/commentsListView"

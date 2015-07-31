@@ -7,7 +7,7 @@
     android:gravity="bottom"
     sothree:panelHeight="68dp"
     sothree:shadowHeight="4dp"
-    tools:context="com.irewind.fragments.movies.IRVideoSettingsFragment">
+    tools:context="com.irewindb.fragments.movies.IRVideoSettingsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

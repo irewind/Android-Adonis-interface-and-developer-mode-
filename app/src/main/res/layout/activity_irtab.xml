@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/irapptheme_color"
-    tools:context="com.irewind.activities.IRTabActivity">
+    tools:context="com.irewindb.activities.IRTabActivity">
 
     <FrameLayout
         android:id="@+id/container"

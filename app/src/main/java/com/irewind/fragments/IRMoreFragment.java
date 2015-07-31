@@ -8,8 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +20,8 @@ import android.widget.Toast;
 import com.google.common.eventbus.Subscribe;
 import com.irewind.Injector;
 import com.irewind.R;
+import com.irewind.activities.CameraRecActivity;
+import com.irewind.activities.DevMenu;
 import com.irewind.activities.IRTabActivity;
 import com.irewind.activities.IRWebViewActivity;
 import com.irewind.adapters.IRMoreAdapter;
@@ -88,6 +88,15 @@ public class IRMoreFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TextView launchRec = (TextView)view.findViewById(R.id.CameraRecord);
+        launchRec.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent i = new Intent(getActivity(), DevMenu.class);
+                startActivity(i);
+                return false;
+            }
+        });
         ButterKnife.inject(this, view);
         setupAdapter();
     }

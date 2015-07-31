@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
     android:orientation="vertical"
-    tools:context="com.irewind.activities.IRConfirmChangeActivity">
+    tools:context="com.irewindb.activities.IRConfirmChangeActivity">
 
     <RelativeLayout
         android:id="@+id/top"

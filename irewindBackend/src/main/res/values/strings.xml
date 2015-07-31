@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Irewind</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_track">TrackActivity</string>
+    <string name="title_activity_video_play">VideoPlay</string>
+    <string name="app_id">323445897713125</string>
+    <string name="title_activity_ticket__dialog">Ticket_Dialog</string>
+    <string name="title_activity_video_play_multi">VideoPlayMulti</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_buy__screen">Buy_Screen</string>
+    <string name="title_activity_log">LogActivity</string>
+    <string name="title_activity_container">ContainerActivity</string>
+    <string name="title_activity_orange_oauth">OrangeOauthActivity</string>
+    <string name="title_activity_facebook_oauth">FacebookOauthActivity</string>
+    <string name="title_activity_settings_fragment">SettingsFragment</string>
+    <string name="title_activity_debug">DebugActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_alert">AlertActivity</string>
+    <string name="title_activity_orange_or__buy__dialog">Orange_or_Buy_Dialog</string>
+    <!-- visible strings: -->
+
+    <string name="my_movies">Gallery</string>
+    <string name="camera">Camera Rec</string>
+    <string name="sign_in">Sign in</string>
+    <string name="my_profile">My profile</string>
+    <string name="locations">Locations</string>
+    <string name="history">History</string>
+    <string name="credits">Credits</string>
+    <string name="settings">Settings</string>
+    <string name="help">Help</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="irewind">irewind</string>
+    <string name="swipe_up_for">Swipe up for information cards</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forgot_pass">Forgot password?</string>
+    <string name="send_profile">Login</string>
+    <string name="dont_have_an">Don\'t have an account yet?</string>
+    <string name="make_an_account">Create an Account</string>
+    <string name="connect_facebook">Connect w/ Facebook</string>
+    <string name="orange_connect">Orange connect</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="low_res">Low res</string>
+    <string name="hd">HD</string>
+    <string name="downloading">Downloading...</string>
+    <string name="see_track">See track</string>
+    <string name="saved">Saved</string>
+    <string name="expires_in">Your movie will expire in</string>
+    <string name="days">days!</string>
+    <string name="new_video">New</string>
+    <string name="gps_tracking_state">GPS Tracking State</string>
+    <string name="tracking">tracking</string>
+    <string name="not_tracking">not tracking</string>
+    <string name="wake_lock_text">Run when screen is off</string>
+    <string name="wake_lock_on">run</string>
+    <string name="wake_lock_off">don\'t run</string>
+    <string name="download_finished_prev">Your video is ready! Check it out in the Movies tab!</string>
+    <string name="download_finished_hd">Your video is ready! Check it out in the HD tab!</string>
+    <string name="sign_in_with_a">Sign in as a different user</string>
+    <string name="Edit">Edit</string>
+    <string name="Done">Done</string>
+    <string name="hd_movies">Hd movies</string>
+    <string name="distance">Distance</string>
+    <string name="average_speed">Average speed</string>
+    <string name="top_speed">Top speed</string>
+    <string name="duration">Duration</string>
+    <string name="start_time">Start time</string>
+    <string name="stop_time">Stop time</string>
+    <string name="feedback">Feedback</string>
+    <string name="tell_us">Tell us what bothers you :)</string>
+    <string name="first_use_no_internet_alert">The application requires network acces for the initial setup. Please enable wifi/data conection and retry.</string>
+    <string name="first_use_no_internet_positive_button">Retry</string>
+    <string name="first_use_no_internet_negative_button">Exit</string>
+    <string name="log_in_message">Synchronising your movie history.</string>
+    <string name="no_internet_message">You are not connected to the internet!</string>
+    <string name="no_gps_alert">You need to activate GPS to iRewind.</string>
+    <string name="no_gps_positive_button">Activate now</string>
+    <string name="no_gps_negative_button">Don\'t activate</string>
+    <string name="no_position_at_map_center">Waiting for location</string>
+    <string name="name">Name</string>
+    <string name="name_extra"></string>
+    <string name="email">Email</string>
+    <string name="email_extra">It\'s safe with us</string>
+    <string name="password_extra">At least 6 characters, please</string>
+    <string name="repeat_password">Retype password</string>
+    <string name="repeat_password_extra">sorry for that</string>
+    <string name="phone_number">Phone number</string>
+    <string name="phone_number_extra">optional</string>
+    <string name="register">Register</string>
+    <string name="cancel">Cancel</string>
+    <string name="storage_space">You don’t have enough storage available. Please clear up somespace.</string>
+    <string name="return_to_location">Please return to the iRewind location if you want to save your movie.</string>
+    <string name="sign_up">Sign up</string>
+    <string name="download_start">Download started! You can close this window. The movie will be downloaded and it will appear in your gallery!</string>
+    <string name="share_on_fb">Share on Facebook</string>
+    <string name="save_on_device">Save on device</string>
+    <string name="send_by_email">Send by mail</string>
+    <string name="you_are_out">You are out of area. The nearest iRewind location is xxx km/m
+
+away</string>
+
+    <!-- new strings -->
+
+    <string name="wait_message">Please wait for the download to finish.</string>
+    <string name="link_facebook">link w/ Facebook</string>
+    <string name="link_orange">link w/ Orange</string>
+    <string name="is_linked_facebook">Facebook account linked</string>
+    <string name="is_linked_orange">Orange account linked</string>
+    <string name="orange_or_credits"> Sorry! You don\'t have enough credits to get a HD movie. Please buy some or login with your Orange account.</string>
+    <string name="buy_credits">Buy credits</string>
+    <string name="expired">Expired</string>
+    <string name="no_movies">You have no movie</string>
+    <string name="title_activity_camera_rec">CameraRecActivity</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_map_camera_poligon">MapCameraPoligonActivity</string>
+
+</resources>

@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 19
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile project(':androidIBeaconLibrary')
+    compile 'org.apache.httpcomponents:httpmime:4.2.3'
+//    compile 'com.google.android.gms:play-services:+'
+    compile 'com.google.android.gms:play-services:6.1.71'
+    compile files('libs/isoviewer-1.0-RC-24.jar')
+}
